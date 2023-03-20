@@ -65,7 +65,10 @@ def process_file(
     with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
         TRANSCRIPT_WRITE_FUNC[format](result['segments'], file=fp)
 
-    with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w') as fp:
+    with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
+        fp.write(result['text'])
+
+    with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
         json.dump(url_data, fp, indent=4, ensure_ascii=False)
 
 

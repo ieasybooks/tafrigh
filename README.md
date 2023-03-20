@@ -118,3 +118,7 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
     --output_dir . \
     --format srt
 ```
+
+------------------
+
+تم الاعتماد بشكل كبير على مستودع [yt-whisper](https://github.com/m1guelpf/yt-whisper) لإنجاز تفريغ بشكل أسرع.
