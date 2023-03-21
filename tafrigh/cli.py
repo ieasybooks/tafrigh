@@ -24,7 +24,11 @@ def main() -> None:
     args = cli_utils.parse_args()
 
     prepare_output_dir(args.output_dir)
-    model, args.language = whisper_utils.load_model(args.model, args.language)
+    model, args.language = whisper_utils.load_model(
+        args.model_name_or_ct2_model_path,
+        args.language,
+        args.ct2_compute_type,
+    )
 
     for url in args.urls:
         url_data = process_url(url, args.save_yt_dlp_responses, args.output_dir)
@@ -72,16 +76,17 @@ def process_file(
     verbose: bool,
 ) -> None:
     warnings.filterwarnings('ignore')
-    result = whisper_utils.transcript_audio(f"{url_data['id']}.mp3", model, task, language, output_dir, verbose)
+    segments = whisper_utils.transcript_audio(f"{url_data['id']}.mp3", model, task, language, output_dir, verbose)
     warnings.filterwarnings('default')
 
     if format != TranscriptType.NONE:
         with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
-            TRANSCRIPT_WRITE_FUNC[format](result['segments'], file=fp)
+            TRANSCRIPT_WRITE_FUNC[format](segments, file=fp)
 
     if output_txt_file:
         with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
-            fp.write(result['text'])
+            fp.write('\n'.join(list(map(lambda segment: segment['text'].strip(), segments))))
+            fp.write('\n')
 
     if save_yt_dlp_responses:
         with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:

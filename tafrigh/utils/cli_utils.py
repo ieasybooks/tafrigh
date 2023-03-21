@@ -11,20 +11,18 @@ from tafrigh.types.transcript_type import TranscriptType
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('urls', nargs='+', type=str, help='Video/Playlist URLs to transcribe.')
+    parser.add_argument('urls', nargs='+', help='Video/Playlist URLs to transcribe.')
 
     parser.add_argument(
         '-m',
-        '--model',
+        '--model_name_or_ct2_model_path',
         default='small',
-        choices=whisper.available_models(),
-        help='Name of the Whisper model to use.',
+        help='Name of the Whisper model to use or a path to CTranslate2 model converted using `ct2-transformers-converter` tool.',
     )
 
     parser.add_argument(
         '-t',
         '--task',
-        type=str,
         default='transcribe',
         choices=[
             'transcribe',
@@ -36,7 +34,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '-l',
         '--language',
-        type=str,
         default=None,
         choices=sorted(LANGUAGES.keys()) + sorted([k.title() for k in TO_LANGUAGE_CODE.keys()]),
         help='Language spoken in the audio, skip to perform language detection.',
@@ -65,7 +62,20 @@ def parse_args() -> argparse.Namespace:
         help='Whether to save the yt-dlp library JSON responses or not.',
     )
 
-    parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to save the outputs.')
+    parser.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
+
+    parser.add_argument(
+        '--ct2_compute_type',
+        default='default',
+        choices=[
+            'default',
+            'int8',
+            'int8_float16',
+            'int16',
+            'float16',
+        ],
+        help='Quantization type applied while converting the model to CTranslate2 format.',
+    )
 
     parser.add_argument(
         '--verbose',
