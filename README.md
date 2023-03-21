@@ -58,7 +58,7 @@
     </ul>
   </li>
   <li>مجلد المخرجات: يمكنك تحديد مجلد الاخراج من خلال الاختيار <code dir="ltr">--output_dir</code>. بشكل تلقائي سيكون المجلد الحالي هو مجلد الاخراج إذا لم يتم تحديده</li>
-  <li>حفظ مخرجات مكتبة yt-dlp من خلال تمرير الاختيار <code dir="ltr">--save_yt_dlp_responses</code></li>
+  <li>حفظ مخرجات مكتبة <code>yt-dlp</code> بصيغة <code>json</code> من خلال تمرير الاختيار <code dir="ltr">--save_yt_dlp_responses</code></li>
 </ul>
 
 ```bash
