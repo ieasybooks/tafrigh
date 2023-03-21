@@ -7,8 +7,10 @@ setup(
     py_modules=['tafrigh'],
     author='الكتب المٌيسّرة',
     install_requires=[
+        'faster-whisper @ https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz',
+        'openai-whisper',
+        'transformers',
         'yt-dlp',
-        'openai-whisper'
     ],
     description='تفريغ النصوص وإنشاء ملفات SRT و VTT بناءً على نموذج Whisper من OpenAI.',
     entry_points={
