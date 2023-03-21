@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class TranscriptType(Enum):
+    NONE = 'none'
     SRT = 'srt'
     VTT = 'vtt'
 

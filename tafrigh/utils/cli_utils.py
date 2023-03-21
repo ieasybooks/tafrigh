@@ -50,7 +50,7 @@ def parse_args() -> argparse.Namespace:
         default=TranscriptType.SRT,
         choices=list(TranscriptType),
         type=TranscriptType,
-        help='Subtitle format to output.',
+        help='Transcript format to output, pass none to skip writing transcripts.',
     )
 
     parser.add_argument(

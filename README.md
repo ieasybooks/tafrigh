@@ -53,6 +53,7 @@
   <li>
     صيغة المخرجات: يمكنك تحديد صيغة المخرجات من خلال الاختيار <code dir="ltr">--format</code>. الصيغ المتوفرة:
     <ul dir="rtl">
+      <li><code dir="ltr">none</code> (لن يتم إنشاء ملف في حال تمرير هذه الصيغة)</li>
       <li><code dir="ltr">srt</code> <strong>(الاختيار التلقائي)</strong></li>
       <li><code dir="ltr">vtt</code></li>
     </ul>
@@ -65,7 +66,7 @@
 ➜ tafrigh --help
 usage: tafrigh [-h] [-m {tiny.en,tiny,base.en,base,small.en,small,medium.en,medium,large-v1,large-v2,large}] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}]
-               [-o OUTPUT_DIR] [-f {srt,vtt}] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--verbose | --no-verbose]
+               [-o OUTPUT_DIR] [-f {none,srt,vtt}] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--verbose | --no-verbose]
                urls [urls ...]
 
 positional arguments:
@@ -81,8 +82,8 @@ options:
                         Language spoken in the audio, skip to perform language detection.
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         Directory to save the outputs.
-  -f {srt,vtt}, --format {srt,vtt}
-                        Subtitle format to output.
+  -f {none,srt,vtt}, --format {none,srt,vtt}
+                        Transcript format to output, pass none to skip writing transcripts.
   --save_yt_dlp_responses, --no-save_yt_dlp_responses
                         Whether to save the yt-dlp library JSON responses or not. (default: False)
   --verbose, --no-verbose

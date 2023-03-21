@@ -73,8 +73,9 @@ def process_file(
     result = whisper_utils.transcript_audio(f"{url_data['id']}.mp3", model, task, language, output_dir, verbose)
     warnings.filterwarnings('default')
 
-    with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
-        TRANSCRIPT_WRITE_FUNC[format](result['segments'], file=fp)
+    if format != TranscriptType.NONE:
+        with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
+            TRANSCRIPT_WRITE_FUNC[format](result['segments'], file=fp)
 
     with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
         fp.write(result['text'])
