@@ -19,19 +19,18 @@ def write_srt(transcript: Iterator[dict], file: TextIO):
         file.write(f"{segment['text'].strip().replace('-->', '->')}\n\n")
 
 
-def format_timestamp(seconds: float, include_hours: bool = False, decimal_marker: str = '.'):
-    assert seconds >= 0, 'non-negative timestamp expected'
+def format_timestamp(seconds: float, include_hours: bool = False, decimal_marker: str = '.') -> str:
+    assert seconds >= 0, 'Non-negative timestamp expected'
 
-    milliseconds = round(seconds * 1000.0)
+    total_milliseconds = int(round(seconds * 1_000))
 
-    hours = milliseconds // 3_600_000
-    milliseconds -= hours * 3_600_000
+    hours, total_milliseconds = divmod(total_milliseconds, 3_600_000)
+    minutes, total_milliseconds = divmod(total_milliseconds, 60_000)
+    seconds, milliseconds = divmod(total_milliseconds, 1_000)
 
-    minutes = milliseconds // 60_000
-    milliseconds -= minutes * 60_000
+    if include_hours or hours > 0:
+        time_str = f'{hours:02d}:{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}'
+    else:
+        time_str = f'{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}'
 
-    seconds = milliseconds // 1_000
-    milliseconds -= seconds * 1_000
-
-    hours_marker = f"{hours:02d}:" if include_hours or hours > 0 else ""
-    return f"{hours_marker}{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
+    return time_str
