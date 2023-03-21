@@ -27,22 +27,32 @@ def main() -> None:
     model, args.language = whisper_utils.load_model(args.model, args.language)
 
     for url in args.urls:
-        url_data = process_url(url, args.output_dir)
+        url_data = process_url(url, args.output_dir, args.save_yt_dlp_responses)
 
         for element in url_data:
-            process_file(element, model, args.task, args.language, args.output_dir, args.format, args.verbose)
+            process_file(
+                element,
+                model,
+                args.task,
+                args.language,
+                args.output_dir,
+                args.format,
+                args.save_yt_dlp_responses,
+                args.verbose,
+            )
 
 
 def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
-def process_url(url: str, output_dir: str) -> List[Dict[str, Any]]:
+def process_url(url: str, output_dir: str, save_yt_dlp_responses: bool) -> List[Dict[str, Any]]:
     url_data = yt_dlp_utils.download_and_get_url_data(url, output_dir)
 
     if '_type' in url_data and url_data['_type'] == 'playlist':
-        with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w') as fp:
-            json.dump(url_data, fp, indent=4, ensure_ascii=False)
+        if save_yt_dlp_responses:
+            with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w') as fp:
+                json.dump(url_data, fp, indent=4, ensure_ascii=False)
 
         return url_data['entries']
     else:
@@ -56,6 +66,7 @@ def process_file(
     language: str,
     output_dir: str,
     format: TranscriptType,
+    save_yt_dlp_responses: bool,
     verbose: bool,
 ) -> None:
     warnings.filterwarnings('ignore')
@@ -68,8 +79,9 @@ def process_file(
     with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
         fp.write(result['text'])
 
-    with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
-        json.dump(url_data, fp, indent=4, ensure_ascii=False)
+    if save_yt_dlp_responses:
+        with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
+            json.dump(url_data, fp, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':

@@ -54,6 +54,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '--save_yt_dlp_responses',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Whether to save the yt-dlp library JSON responses or not.',
+    )
+
+    parser.add_argument(
         '--verbose',
         action=argparse.BooleanOptionalAction,
         default=False,
