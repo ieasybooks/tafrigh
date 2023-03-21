@@ -42,8 +42,6 @@ def parse_args() -> argparse.Namespace:
         help='Language spoken in the audio, skip to perform language detection.',
     )
 
-    parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to save the outputs.')
-
     parser.add_argument(
         '-f',
         '--format',
@@ -54,11 +52,20 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '--output_txt_file',
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help='Whether to produce a text file or not.',
+    )
+
+    parser.add_argument(
         '--save_yt_dlp_responses',
         action=argparse.BooleanOptionalAction,
         default=False,
         help='Whether to save the yt-dlp library JSON responses or not.',
     )
+
+    parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to save the outputs.')
 
     parser.add_argument(
         '--verbose',

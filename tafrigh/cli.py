@@ -27,7 +27,7 @@ def main() -> None:
     model, args.language = whisper_utils.load_model(args.model, args.language)
 
     for url in args.urls:
-        url_data = process_url(url, args.output_dir, args.save_yt_dlp_responses)
+        url_data = process_url(url, args.save_yt_dlp_responses, args.output_dir)
 
         for element in url_data:
             process_file(
@@ -35,9 +35,10 @@ def main() -> None:
                 model,
                 args.task,
                 args.language,
-                args.output_dir,
                 args.format,
+                args.output_txt_file,
                 args.save_yt_dlp_responses,
+                args.output_dir,
                 args.verbose,
             )
 
@@ -46,7 +47,7 @@ def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
-def process_url(url: str, output_dir: str, save_yt_dlp_responses: bool) -> List[Dict[str, Any]]:
+def process_url(url: str, save_yt_dlp_responses: bool, output_dir: str) -> List[Dict[str, Any]]:
     url_data = yt_dlp_utils.download_and_get_url_data(url, output_dir)
 
     if '_type' in url_data and url_data['_type'] == 'playlist':
@@ -64,9 +65,10 @@ def process_file(
     model: whisper.Whisper,
     task: str,
     language: str,
-    output_dir: str,
     format: TranscriptType,
+    output_txt_file: bool,
     save_yt_dlp_responses: bool,
+    output_dir: str,
     verbose: bool,
 ) -> None:
     warnings.filterwarnings('ignore')
@@ -77,8 +79,9 @@ def process_file(
         with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
             TRANSCRIPT_WRITE_FUNC[format](result['segments'], file=fp)
 
-    with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
-        fp.write(result['text'])
+    if output_txt_file:
+        with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
+            fp.write(result['text'])
 
     if save_yt_dlp_responses:
         with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
