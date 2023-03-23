@@ -40,6 +40,33 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '--beam_size',
+        type=int,
+        default=5,
+        help='Number of beams in beam search, only applicable when temperature is zero.',
+    )
+
+    parser.add_argument(
+        '--ct2_compute_type',
+        default='default',
+        choices=[
+            'default',
+            'int8',
+            'int8_float16',
+            'int16',
+            'float16',
+        ],
+        help='Quantization type applied while converting the model to CTranslate2 format.',
+    )
+
+    parser.add_argument(
+        '--min_words_per_segment',
+        type=int,
+        default=30,
+        help='The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one. Pass 0 to disable this behavior.',
+    )
+
+    parser.add_argument(
         '-f',
         '--format',
         default=TranscriptType.SRT,
@@ -63,26 +90,6 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
-
-    parser.add_argument(
-        '--ct2_compute_type',
-        default='default',
-        choices=[
-            'default',
-            'int8',
-            'int8_float16',
-            'int16',
-            'float16',
-        ],
-        help='Quantization type applied while converting the model to CTranslate2 format.',
-    )
-
-    parser.add_argument(
-        '--beam_size',
-        type=int,
-        default=5,
-        help='Number of beams in beam search, only applicable when temperature is zero.',
-    )
 
     parser.add_argument(
         '--verbose',
