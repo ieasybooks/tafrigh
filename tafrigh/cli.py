@@ -106,7 +106,7 @@ def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int)
 
     for segment in segments:
         if tmp_segment:
-            tmp_segment['text'] += f" {segment['text']}"
+            tmp_segment['text'] += f" {segment['text'].strip()}"
             tmp_segment['end'] = segment['end']
 
             if len(tmp_segment['text'].split()) >= min_words_per_segment:
@@ -116,6 +116,9 @@ def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int)
             tmp_segment = segment
         elif len(segment['text'].split()) >= min_words_per_segment:
             compacted_segments.append(segment)
+
+    if tmp_segment:
+        compacted_segments.append(tmp_segment)
 
     return compacted_segments
 
