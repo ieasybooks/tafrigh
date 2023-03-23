@@ -34,17 +34,23 @@ def main() -> None:
         url_data = process_url(url, args.save_yt_dlp_responses, args.output_dir)
 
         for element in url_data:
-            process_file(
+            segments = process_file(
                 element,
                 model,
                 args.task,
                 args.language,
                 args.beam_size,
+                args.output_dir,
+                args.verbose,
+            )
+
+            write_outputs(
+                element,
+                segments,
                 args.format,
                 args.output_txt_file,
                 args.save_yt_dlp_responses,
                 args.output_dir,
-                args.verbose,
             )
 
 
@@ -71,12 +77,9 @@ def process_file(
     task: str,
     language: str,
     beam_size: int,
-    format: TranscriptType,
-    output_txt_file: bool,
-    save_yt_dlp_responses: bool,
     output_dir: str,
     verbose: bool,
-) -> None:
+) -> List[Dict[str, Any]]:
     warnings.filterwarnings('ignore')
     segments = whisper_utils.transcript_audio(
         f"{url_data['id']}.m4a",
@@ -89,6 +92,17 @@ def process_file(
     )
     warnings.filterwarnings('default')
 
+    return segments
+
+
+def write_outputs(
+    url_data: Dict[str, Any],
+    segments: List[Dict[str, Any]],
+    format: TranscriptType,
+    output_txt_file: bool,
+    save_yt_dlp_responses: bool,
+    output_dir: str,
+) -> None:
     if format != TranscriptType.NONE:
         with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
             TRANSCRIPT_WRITE_FUNC[format](segments, file=fp)
