@@ -39,6 +39,7 @@ def main() -> None:
                 model,
                 args.task,
                 args.language,
+                args.beam_size,
                 args.format,
                 args.output_txt_file,
                 args.save_yt_dlp_responses,
@@ -69,6 +70,7 @@ def process_file(
     model: whisper.Whisper,
     task: str,
     language: str,
+    beam_size: int,
     format: TranscriptType,
     output_txt_file: bool,
     save_yt_dlp_responses: bool,
@@ -76,7 +78,15 @@ def process_file(
     verbose: bool,
 ) -> None:
     warnings.filterwarnings('ignore')
-    segments = whisper_utils.transcript_audio(f"{url_data['id']}.m4a", model, task, language, output_dir, verbose)
+    segments = whisper_utils.transcript_audio(
+        f"{url_data['id']}.m4a",
+        model,
+        task,
+        language,
+        beam_size,
+        output_dir,
+        verbose,
+    )
     warnings.filterwarnings('default')
 
     if format != TranscriptType.NONE:

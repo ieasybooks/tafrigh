@@ -78,6 +78,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '--beam_size',
+        type=int,
+        default=5,
+        help='Number of beams in beam search, only applicable when temperature is zero.',
+    )
+
+    parser.add_argument(
         '--verbose',
         action=argparse.BooleanOptionalAction,
         default=False,

@@ -27,6 +27,7 @@ def transcript_audio(
     model: Union[whisper.Whisper, faster_whisper.WhisperModel],
     task: str,
     language: str,
+    beam_size: int,
     output_dir: str,
     verbose: bool,
 ) -> List[Dict[str, Any]]:
@@ -37,6 +38,7 @@ def transcript_audio(
             **{
                 'task': task,
                 'language': language,
+                'beam_size': beam_size,
             },
         )['segments']
     elif type(model) is faster_whisper.WhisperModel:
@@ -44,6 +46,7 @@ def transcript_audio(
             audio=os.path.join(output_dir, audio_file_path),
             task=task,
             language=language,
+            beam_size=beam_size,
         )[0]
 
         segments = list(map(lambda segment: {
