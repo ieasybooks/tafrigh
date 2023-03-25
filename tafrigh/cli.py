@@ -51,7 +51,6 @@ def main() -> None:
                 segments,
                 args.format,
                 args.output_txt_file,
-                args.save_yt_dlp_responses,
                 args.output_dir,
             )
 
@@ -61,16 +60,26 @@ def prepare_output_dir(output_dir: str) -> None:
 
 
 def process_url(url: str, save_yt_dlp_responses: bool, output_dir: str) -> List[Dict[str, Any]]:
+    return_data = None
     url_data = yt_dlp_utils.download_and_get_url_data(url, output_dir)
 
     if '_type' in url_data and url_data['_type'] == 'playlist':
-        if save_yt_dlp_responses:
-            with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w') as fp:
-                json.dump(url_data, fp, indent=4, ensure_ascii=False)
+        for entry in url_data['entries']:
+            for requested_download in entry['requested_downloads']:
+                del requested_download['__postprocessors']
 
-        return url_data['entries']
+        return_data = url_data['entries']
     else:
-        return [url_data]
+        for requested_download in url_data['requested_downloads']:
+            del requested_download['__postprocessors']
+
+        return_data = [url_data]
+
+    if save_yt_dlp_responses:
+        with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
+            json.dump(url_data, fp, indent=4, ensure_ascii=False)
+
+    return return_data
 
 
 def process_file(
@@ -128,7 +137,6 @@ def write_outputs(
     segments: List[Dict[str, Any]],
     format: TranscriptType,
     output_txt_file: bool,
-    save_yt_dlp_responses: bool,
     output_dir: str,
 ) -> None:
     if format != TranscriptType.NONE:
@@ -139,10 +147,6 @@ def write_outputs(
         with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
             fp.write('\n'.join(list(map(lambda segment: segment['text'].strip(), segments))))
             fp.write('\n')
-
-    if save_yt_dlp_responses:
-        with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
-            json.dump(url_data, fp, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':
