@@ -9,6 +9,7 @@ setup(
     install_requires=[
         'faster-whisper @ https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz',
         'openai-whisper',
+        'stable-ts',
         'tqdm',
         'transformers',
         'yt-dlp',
