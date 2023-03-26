@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import warnings
 
 from typing import Any, Dict, List
@@ -20,8 +21,8 @@ TRANSCRIPT_WRITE_FUNC = {
 }
 
 
-def main() -> None:
-    args = cli_utils.parse_args()
+def main(argv: List[str]) -> None:
+    args = cli_utils.parse_args(argv)
 
     prepare_output_dir(args.output_dir)
     model, args.language = whisper_utils.load_model(
@@ -150,4 +151,4 @@ def write_outputs(
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])

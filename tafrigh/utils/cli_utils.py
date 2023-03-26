@@ -1,14 +1,14 @@
 
 import argparse
 
-import whisper
+from typing import List
 
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
 from tafrigh.types.transcript_type import TranscriptType
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
     parser.add_argument('urls', nargs='+', help='Video/Playlist URLs to transcribe.')
@@ -98,4 +98,4 @@ def parse_args() -> argparse.Namespace:
         help='Whether to print out the progress and debug messages.',
     )
 
-    return parser.parse_args()
+    return parser.parse_args(argv)
