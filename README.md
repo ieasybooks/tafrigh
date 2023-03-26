@@ -145,6 +145,26 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
     --format srt
 ```
 
+### تسريع عملية التفريغ
+
+يمكنك استخدام مكتبة `faster_whisper` التي توفّر سرعة أكبر في تفريغ المواد من خلال تحويل النماذج المقدمة من شركة OpenAI باستخدام أداة `ct2-transformers-converter` كالتالي:
+
+```
+ct2-transformers-converter --model openai/whisper-large-v2 --output_dir whisper-large-v2-ct2 --quantization float16 
+```
+
+ثم تمرير مسار مجلد النموذج المُحوّل إلى تفريغ كالتالي:
+
+```
+tafrigh "https://youtu.be/3K5Jh_-UYeA" \
+    --model_name_or_ct2_model_path /path/to/whisper-large-v2-ct2 \
+    --task transcribe \
+    --language ar \
+    --output_dir . \
+    --format srt \
+    --ct2_compute_type float16
+```
+
 ------------------
 
 تم الاعتماد بشكل كبير على مستودع [yt-whisper](https://github.com/m1guelpf/yt-whisper) لإنجاز تفريغ بشكل أسرع.
