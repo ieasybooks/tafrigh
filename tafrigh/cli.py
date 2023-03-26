@@ -21,39 +21,54 @@ TRANSCRIPT_WRITE_FUNC = {
 }
 
 
-def main(argv: List[str]) -> None:
-    args = cli_utils.parse_args(argv)
+def main():
+    args = cli_utils.parse_args(sys.argv[1:])
 
-    prepare_output_dir(args.output_dir)
-    model, args.language = whisper_utils.load_model(
-        args.model_name_or_ct2_model_path,
-        args.language,
-        args.ct2_compute_type,
+    farrigh(
+        urls=args.urls,
+        model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
+        task=args.task,
+        language=args.language,
+        beam_size=args.beam_size,
+        ct2_compute_type=args.ct2_compute_type,
+        min_words_per_segment=args.min_words_per_segment,
+        format=args.format,
+        output_txt_file=args.output_txt_file,
+        save_yt_dlp_responses=args.save_yt_dlp_responses,
+        output_dir=args.output_dir,
+        verbose=args.verbose,
     )
 
-    for url in args.urls:
-        url_data = process_url(url, args.save_yt_dlp_responses, args.output_dir)
+
+def farrigh(
+    urls: List[str],
+    model_name_or_ct2_model_path: str,
+    task: str,
+    language: str,
+    beam_size: int,
+    ct2_compute_type: str,
+    min_words_per_segment: int,
+    format: TranscriptType,
+    output_txt_file: bool,
+    save_yt_dlp_responses: bool,
+    output_dir: str,
+    verbose: bool,
+) -> None:
+    prepare_output_dir(output_dir)
+
+    model, language = whisper_utils.load_model(
+        model_name_or_ct2_model_path,
+        language,
+        ct2_compute_type,
+    )
+
+    for url in urls:
+        url_data = process_url(url, save_yt_dlp_responses, output_dir)
 
         for element in url_data:
-            segments = process_file(
-                element,
-                model,
-                args.task,
-                args.language,
-                args.beam_size,
-                args.output_dir,
-                args.verbose,
-            )
-
-            segments = compact_segments(segments, args.min_words_per_segment)
-
-            write_outputs(
-                element,
-                segments,
-                args.format,
-                args.output_txt_file,
-                args.output_dir,
-            )
+            segments = process_file(element, model, task, language, beam_size, output_dir, verbose)
+            segments = compact_segments(segments, min_words_per_segment)
+            write_outputs(element, segments, format, output_txt_file, output_dir)
 
 
 def prepare_output_dir(output_dir: str) -> None:
@@ -151,4 +166,4 @@ def write_outputs(
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
