@@ -5,6 +5,7 @@ import warnings
 
 from typing import Any, Dict, List
 
+import tqdm
 import whisper
 
 from tafrigh.types.transcript_type import TranscriptType
@@ -62,10 +63,10 @@ def farrigh(
         ct2_compute_type,
     )
 
-    for url in urls:
+    for url in tqdm.tqdm(urls, desc='URLs'):
         url_data = process_url(url, save_yt_dlp_responses, output_dir)
 
-        for element in url_data:
+        for element in tqdm.tqdm(url_data, desc='URL elements'):
             segments = process_file(element, model, task, language, beam_size, output_dir, verbose)
             segments = compact_segments(segments, min_words_per_segment)
             write_outputs(element, segments, format, output_txt_file, output_dir)
