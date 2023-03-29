@@ -1,13 +1,10 @@
-import os
 import logging
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import Tuple, Union
 
 import faster_whisper
 import stable_whisper
 import whisper
-
-from tqdm import tqdm
 
 
 def load_model(

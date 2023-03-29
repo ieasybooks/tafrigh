@@ -7,18 +7,12 @@ from typing import Any, Dict, List
 import tqdm
 
 from tafrigh.recognizer import Recognizer
+from tafrigh.transcript_writer import TranscriptWriter
 from tafrigh.types.transcript_type import TranscriptType
 
 from tafrigh.utils import cli_utils
-from tafrigh.utils import transcript_utils
 from tafrigh.utils import whisper_utils
 from tafrigh.utils import yt_dlp_utils
-
-
-TRANSCRIPT_WRITE_FUNC = {
-    TranscriptType.VTT: transcript_utils.write_vtt,
-    TranscriptType.SRT: transcript_utils.write_srt,
-}
 
 
 def main():
@@ -67,7 +61,6 @@ def farrigh(
 
         for element in tqdm.tqdm(url_data, desc='URL elements'):
             recognizer = Recognizer(verbose=verbose)
-
             segments = recognizer.recognize_whisper(
                 os.path.join(output_dir, f"{element['id']}.m4a"),
                 model,
@@ -78,7 +71,10 @@ def farrigh(
 
             segments = compact_segments(segments, min_words_per_segment)
 
-            write_outputs(element, segments, format, output_txt_file, output_dir)
+            transcript_writer = TranscriptWriter()
+            transcript_writer.write(format, os.path.join(output_dir, f"{url_data['id']}.{format}"), segments)
+            if output_txt_file:
+                transcript_writer.write(TranscriptType.TXT, os.path.join(output_dir, f"{url_data['id']}.txt"), segments)
 
 
 def prepare_output_dir(output_dir: str) -> None:
@@ -132,23 +128,6 @@ def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int)
         compacted_segments.append(tmp_segment)
 
     return compacted_segments
-
-
-def write_outputs(
-    url_data: Dict[str, Any],
-    segments: List[Dict[str, Any]],
-    format: TranscriptType,
-    output_txt_file: bool,
-    output_dir: str,
-) -> None:
-    if format != TranscriptType.NONE:
-        with open(os.path.join(output_dir, f"{url_data['id']}.{format}"), 'w', encoding='utf-8') as fp:
-            TRANSCRIPT_WRITE_FUNC[format](segments, file=fp)
-
-    if output_txt_file:
-        with open(os.path.join(output_dir, f"{url_data['id']}.txt"), 'w', encoding='utf-8') as fp:
-            fp.write('\n'.join(list(map(lambda segment: segment['text'].strip(), segments))))
-            fp.write('\n')
 
 
 if __name__ == '__main__':

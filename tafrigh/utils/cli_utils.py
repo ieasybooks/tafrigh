@@ -70,7 +70,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         '-f',
         '--format',
         default=TranscriptType.SRT,
-        choices=list(TranscriptType),
+        choices=[TranscriptType.VTT, TranscriptType.SRT],
         type=TranscriptType,
         help='Transcript format to output, pass none to skip writing transcripts.',
     )
