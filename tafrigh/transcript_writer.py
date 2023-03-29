@@ -4,9 +4,6 @@ from tafrigh.types.transcript_type import TranscriptType
 
 
 class TranscriptWriter:
-    def __init__(self):
-        pass
-
     def write(self, format: TranscriptType, file_path: str, segments: List[Dict[str, Any]]) -> None:
         if format == TranscriptType.VTT:
             self.write_vtt(file_path, segments)

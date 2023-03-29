@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 
@@ -9,10 +8,9 @@ import tqdm
 from tafrigh.recognizer import Recognizer
 from tafrigh.transcript_writer import TranscriptWriter
 from tafrigh.types.transcript_type import TranscriptType
-
 from tafrigh.utils import cli_utils
 from tafrigh.utils import whisper_utils
-from tafrigh.utils import yt_dlp_utils
+from tafrigh.youtube_downloader import YoutubeDownloader
 
 
 def main():
@@ -57,7 +55,12 @@ def farrigh(
     )
 
     for url in tqdm.tqdm(urls, desc='URLs'):
-        url_data = process_url(url, save_yt_dlp_responses, output_dir)
+        url_data = YoutubeDownloader(output_dir=output_dir).download(url, save_response=save_yt_dlp_responses)
+
+        if '_type' in url_data and url_data['_type'] == 'playlist':
+            url_data = url_data['entries']
+        else:
+            url_data = [url_data]
 
         for element in tqdm.tqdm(url_data, desc='URL elements'):
             recognizer = Recognizer(verbose=verbose)
@@ -72,36 +75,13 @@ def farrigh(
             segments = compact_segments(segments, min_words_per_segment)
 
             transcript_writer = TranscriptWriter()
-            transcript_writer.write(format, os.path.join(output_dir, f"{url_data['id']}.{format}"), segments)
+            transcript_writer.write(format, os.path.join(output_dir, f"{element['id']}.{format}"), segments)
             if output_txt_file:
-                transcript_writer.write(TranscriptType.TXT, os.path.join(output_dir, f"{url_data['id']}.txt"), segments)
+                transcript_writer.write(TranscriptType.TXT, os.path.join(output_dir, f"{element['id']}.txt"), segments)
 
 
 def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
-
-
-def process_url(url: str, save_yt_dlp_responses: bool, output_dir: str) -> List[Dict[str, Any]]:
-    return_data = None
-    url_data = yt_dlp_utils.download_and_get_url_data(url, output_dir)
-
-    if '_type' in url_data and url_data['_type'] == 'playlist':
-        for entry in url_data['entries']:
-            for requested_download in entry['requested_downloads']:
-                del requested_download['__postprocessors']
-
-        return_data = url_data['entries']
-    else:
-        for requested_download in url_data['requested_downloads']:
-            del requested_download['__postprocessors']
-
-        return_data = [url_data]
-
-    if save_yt_dlp_responses:
-        with open(os.path.join(output_dir, f"{url_data['id']}.json"), 'w', encoding='utf-8') as fp:
-            json.dump(url_data, fp, indent=4, ensure_ascii=False)
-
-    return return_data
 
 
 def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int) -> List[Dict[str, Any]]:
