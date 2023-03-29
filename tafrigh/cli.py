@@ -1,13 +1,12 @@
 import json
 import os
 import sys
-import warnings
 
 from typing import Any, Dict, List
 
 import tqdm
-import whisper
 
+from tafrigh.recognizer import Recognizer
 from tafrigh.types.transcript_type import TranscriptType
 
 from tafrigh.utils import cli_utils
@@ -67,8 +66,18 @@ def farrigh(
         url_data = process_url(url, save_yt_dlp_responses, output_dir)
 
         for element in tqdm.tqdm(url_data, desc='URL elements'):
-            segments = process_file(element, model, task, language, beam_size, output_dir, verbose)
+            recognizer = Recognizer(verbose=verbose)
+
+            segments = recognizer.recognize_whisper(
+                os.path.join(output_dir, f"{element['id']}.m4a"),
+                model,
+                task,
+                language,
+                beam_size,
+            )
+
             segments = compact_segments(segments, min_words_per_segment)
+
             write_outputs(element, segments, format, output_txt_file, output_dir)
 
 
@@ -97,30 +106,6 @@ def process_url(url: str, save_yt_dlp_responses: bool, output_dir: str) -> List[
             json.dump(url_data, fp, indent=4, ensure_ascii=False)
 
     return return_data
-
-
-def process_file(
-    url_data: Dict[str, Any],
-    model: whisper.Whisper,
-    task: str,
-    language: str,
-    beam_size: int,
-    output_dir: str,
-    verbose: bool,
-) -> List[Dict[str, Any]]:
-    warnings.filterwarnings('ignore')
-    segments = whisper_utils.transcript_audio(
-        f"{url_data['id']}.m4a",
-        model,
-        task,
-        language,
-        beam_size,
-        output_dir,
-        verbose,
-    )
-    warnings.filterwarnings('default')
-
-    return segments
 
 
 def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int) -> List[Dict[str, Any]]:
