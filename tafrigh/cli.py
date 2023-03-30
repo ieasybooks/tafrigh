@@ -22,6 +22,7 @@ def main():
     farrigh(
         urls=args.urls,
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
+        wit_client_access_token=args.wit_client_access_token,
         task=args.task,
         language=args.language,
         beam_size=args.beam_size,
@@ -38,6 +39,7 @@ def main():
 def farrigh(
     urls: List[str],
     model_name_or_ct2_model_path: str,
+    wit_client_access_token: str,
     task: str,
     language: str,
     beam_size: int,
@@ -61,6 +63,7 @@ def farrigh(
         process_url(
             url,
             model,
+            wit_client_access_token,
             task,
             language,
             beam_size,
@@ -80,6 +83,7 @@ def prepare_output_dir(output_dir: str) -> None:
 def process_url(
     url: str,
     model: Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str],
+    wit_client_access_token: str,
     task: str,
     language: str,
     beam_size: int,
@@ -101,14 +105,13 @@ def process_url(
         if not element:
             continue
 
+        file_path = os.path.join(output_dir, f"{element['id']}.wav")
+
         recognizer = Recognizer(verbose=verbose)
-        segments = recognizer.recognize_whisper(
-            os.path.join(output_dir, f"{element['id']}.m4a"),
-            model,
-            task,
-            language,
-            beam_size,
-        )
+        if wit_client_access_token:
+            segments = recognizer.recognize_wit(file_path, wit_client_access_token)
+        else:
+            segments = recognizer.recognize_whisper(file_path, model, task, language, beam_size)
 
         transcript_writer = TranscriptWriter()
 

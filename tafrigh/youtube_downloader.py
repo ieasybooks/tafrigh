@@ -15,13 +15,13 @@ class YoutubeDownloader:
         return {
             'quiet': True,
             'verbose': False,
-            'format': 'm4a/bestaudio/best',
+            'format': 'wav/bestaudio/best',
             'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
             'ignoreerrors': True,
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'm4a',
+                    'preferredcodec': 'wav',
                 },
             ],
         }

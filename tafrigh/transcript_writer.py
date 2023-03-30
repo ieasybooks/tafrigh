@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 from tafrigh.types.transcript_type import TranscriptType
 
@@ -8,7 +8,7 @@ class TranscriptWriter:
         self,
         format: TranscriptType,
         file_path: str,
-        segments: List[Dict[str, Any]],
+        segments: List[Dict[str, Union[str, int]]],
         min_words_per_segment: int = 0,
     ) -> None:
         if format == TranscriptType.VTT:
@@ -18,26 +18,41 @@ class TranscriptWriter:
         elif format == TranscriptType.TXT:
             self.write_txt(file_path, segments, min_words_per_segment)
 
-    def write_vtt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+    def write_vtt(
+        self,
+        file_path: str,
+        segments: List[Dict[str, Union[str, int]]],
+        min_words_per_segment: int = 0,
+    ) -> None:
         segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_vtt(segments))
 
-    def write_srt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+    def write_srt(
+        self,
+        file_path: str,
+        segments: List[Dict[str, Union[str, int]]],
+        min_words_per_segment: int = 0,
+    ) -> None:
         segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_srt(segments))
 
-    def write_txt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+    def write_txt(
+        self,
+        file_path: str,
+        segments: List[Dict[str, Union[str, int]]],
+        min_words_per_segment: int = 0,
+    ) -> None:
         segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_txt(segments))
 
-    def generate_vtt(self, segments: List[Dict[str, Any]]) -> str:
+    def generate_vtt(self, segments: List[Dict[str, Union[str, int]]]) -> str:
         return 'WEBVTT\n\n' + ''.join(
             f"{self._format_timestamp(segment['start'])} --> {self._format_timestamp(segment['end'])}\n"
             f"{segment['text'].strip()}\n\n"
             for segment in segments
         )
 
-    def generate_srt(self, segments: List[Dict[str, Any]]) -> str:
+    def generate_srt(self, segments: List[Dict[str, Union[str, int]]]) -> str:
         return ''.join(
             f"{i}\n"
             f"{self._format_timestamp(segment['start'], include_hours=True, decimal_marker=',')} --> "
@@ -46,7 +61,7 @@ class TranscriptWriter:
             for i, segment in enumerate(segments, start=1)
         )
 
-    def generate_txt(self, segments: List[Dict[str, Any]]) -> str:
+    def generate_txt(self, segments: List[Dict[str, Union[str, int]]]) -> str:
         return '\n'.join(list(map(lambda segment: segment['text'].strip(), segments))) + '\n'
 
     def _write_to_file(self, file_path: str, content: str) -> None:
@@ -69,7 +84,11 @@ class TranscriptWriter:
 
         return time_str
 
-    def _compact_segments(self, segments: List[Dict[str, Any]], min_words_per_segment: int) -> List[Dict[str, Any]]:
+    def _compact_segments(
+        self,
+        segments: List[Dict[str, Union[str, int]]],
+        min_words_per_segment: int,
+    ) -> List[Dict[str, Union[str, int]]]:
         if min_words_per_segment == 0:
             return segments
 

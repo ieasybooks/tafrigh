@@ -1,11 +1,18 @@
+import json
+import logging
+import os
+import requests
+import tempfile
 import warnings
 
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
 import faster_whisper
 import whisper
 
 from tqdm import tqdm
+
+from tafrigh.audio_splitter import AudioSplitter
 
 
 class Recognizer:
@@ -19,7 +26,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Union[str, int]]]:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
 
@@ -40,6 +47,36 @@ class Recognizer:
                     beam_size,
                 )
 
+    def recognize_wit(self, file_path: str, wit_client_access_token: str) -> List[Dict[str, Union[str, int]]]:
+        segments = AudioSplitter().split(file_path, tempfile.gettempdir(), expand_segments_with_noise=True)
+
+        transcriptions = []
+        for segment_file_path, start, end in tqdm(segments):
+            with open(segment_file_path, 'rb') as wav_file:
+                audio_content = wav_file.read()
+
+            response = requests.post(
+                'https://api.wit.ai/speech',
+                headers={
+                    'Authorization': f'Bearer {wit_client_access_token}',
+                    'Content-Type': 'audio/wav',
+                },
+                data=audio_content,
+            )
+
+            os.remove(segment_file_path)
+
+            if response.status_code == 200:
+                transcriptions.append({
+                    'start': start,
+                    'end': end,
+                    'text': json.loads(response.text.split('\r\n')[-1])['text'],
+                })
+            else:
+                logging.warn(f'Error in requesting wit.ai API: {response.status_code}.')
+
+        return transcriptions
+
     def _recognize_stable_whisper(
         self,
         audio_file_path: str,
@@ -47,7 +84,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Union[str, int]]]:
         segments = model.transcribe(
             audio=audio_file_path,
             verbose=self.verbose,
@@ -72,7 +109,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Union[str, int]]]:
         segments, info = model.transcribe(
             audio=audio_file_path,
             task=task,
