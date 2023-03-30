@@ -7,8 +7,10 @@ setup(
     py_modules=['tafrigh'],
     author='الكتب المٌيسّرة',
     install_requires=[
+        'auditok',
         'faster-whisper @ https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz',
         'openai-whisper',
+        'numpy',
         'stable-ts',
         'tqdm',
         'transformers',

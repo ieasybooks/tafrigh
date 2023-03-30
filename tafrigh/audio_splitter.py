@@ -1,0 +1,123 @@
+import os
+import tempfile
+import wave
+
+from typing import List, Tuple
+
+import numpy as np
+
+from auditok.core import split
+
+
+class AudioSplitter:
+    def split(
+        self,
+        file_path: str,
+        output_dir: str,
+        min_dur: float = 0.5,
+        max_dur: float = 15,
+        max_silence: float = 0.5,
+        energy_threshold: float = 50,
+        expand_segments_with_noise: bool = False,
+        noise_seconds: int = 1,
+        noise_amplitude: int = 10,
+    ) -> List[Tuple[str, int, int]]:
+        sampling_rate, data = self._read_audio(file_path)
+        temp_file_name = self._write_temp_audio(sampling_rate, data)
+        segments = self._split_audio(temp_file_name, min_dur, max_dur, max_silence, energy_threshold)
+
+        os.remove(temp_file_name)
+
+        if expand_segments_with_noise:
+            expanded_segments = self._expand_segments_with_noise(
+                segments,
+                noise_seconds,
+                noise_amplitude,
+                sampling_rate,
+                data.dtype,
+            )
+        else:
+            expanded_segments = [(segment, segment.meta.start, segment.meta.end) for segment in segments]
+
+        return self._save_segments(output_dir, sampling_rate, expanded_segments)
+
+    def _read_audio(self, file_path: str) -> Tuple[int, np.ndarray]:
+        with wave.open(file_path, 'rb') as wave_file:
+            num_frames = wave_file.getnframes()
+            num_channels = wave_file.getnchannels()
+            sample_rate = wave_file.getframerate()
+
+            data = wave_file.readframes(num_frames)
+
+            if num_channels > 1:
+                data = np.frombuffer(data, dtype=np.int16).reshape(-1, num_channels)
+                data = np.mean(data, axis=1)
+            else:
+                data = np.frombuffer(data, dtype=np.int16)
+
+        return sample_rate, data
+
+    def _write_audio(self, file_path: str, sampling_rate: int, data: np.ndarray) -> None:
+        with wave.open(file_path, 'wb') as wave_file:
+            wave_file.setnchannels(1)
+            wave_file.setsampwidth(2)
+            wave_file.setframerate(sampling_rate)
+            wave_file.writeframes(data.astype(np.int16).tobytes())
+
+    def _write_temp_audio(self, sampling_rate: int, data: np.ndarray) -> str:
+        with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_file:
+            temp_file_name = temp_file.name
+            self._write_audio(temp_file_name, sampling_rate, data)
+
+        return temp_file_name
+
+    def _split_audio(
+        self,
+        temp_file_name: str,
+        min_dur: float,
+        max_dur: float,
+        max_silence: float,
+        energy_threshold: float,
+    ):
+        return split(
+            temp_file_name,
+            min_dur=min_dur,
+            max_dur=max_dur,
+            max_silence=max_silence,
+            energy_threshold=energy_threshold,
+        )
+
+    def _expand_segments_with_noise(
+        self,
+        segments: List,
+        noise_seconds: int,
+        noise_amplitude: int,
+        sampling_rate: int,
+        dtype: np.dtype,
+    ) -> List[Tuple[np.ndarray, int, int]]:
+        expanded_segments = []
+
+        for segment in segments:
+            # Have different noise in the beginning and the end gave us better results :).
+            prepend_noise = np.random.normal(0, noise_amplitude, int(noise_seconds * sampling_rate)).astype(dtype)
+            append_noise = np.random.normal(0, noise_amplitude, int(noise_seconds * sampling_rate)).astype(dtype)
+
+            expanded_segment = np.concatenate((prepend_noise, segment, append_noise))
+            expanded_segments.append((expanded_segment, segment.meta.start, segment.meta.end))
+
+        return expanded_segments
+
+    def _save_segments(
+        self,
+        output_dir: str,
+        sampling_rate: int,
+        expanded_segments: List[Tuple[np.ndarray, int, int]],
+    ) -> List[Tuple[str, int, int]]:
+        output_files = []
+
+        for i, (expanded_segment, start, end) in enumerate(expanded_segments):
+            output_file = os.path.join(output_dir, f"segment_{i + 1}.wav")
+            self._write_audio(output_file, sampling_rate, expanded_segment)
+            output_files.append((output_file, start, end))
+
+        return output_files
