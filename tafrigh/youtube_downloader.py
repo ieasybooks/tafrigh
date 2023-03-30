@@ -17,6 +17,7 @@ class YoutubeDownloader:
             'verbose': False,
             'format': 'm4a/bestaudio/best',
             'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
+            'ignoreerrors': True,
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',
@@ -38,7 +39,8 @@ class YoutubeDownloader:
 
         if '_type' in url_data and url_data['_type'] == 'playlist':
             for entry in url_data['entries']:
-                self._remove_postprocessors(entry['requested_downloads'])
+                if entry:
+                    self._remove_postprocessors(entry['requested_downloads'])
         else:
             self._remove_postprocessors(url_data['requested_downloads'])
 
