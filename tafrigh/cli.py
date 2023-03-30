@@ -53,11 +53,14 @@ def farrigh(
 ) -> None:
     prepare_output_dir(output_dir)
 
-    model, language = whisper_utils.load_model(
-        model_name_or_ct2_model_path,
-        language,
-        ct2_compute_type,
-    )
+    model = None
+
+    if not wit_client_access_token:
+        model, language = whisper_utils.load_model(
+            model_name_or_ct2_model_path,
+            language,
+            ct2_compute_type,
+        )
 
     for url in tqdm(urls, desc='URLs'):
         process_url(
