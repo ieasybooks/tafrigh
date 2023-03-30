@@ -1,9 +1,12 @@
 import os
 import sys
 
-from typing import Any, Dict, List
+from typing import List, Tuple, Union
 
-import tqdm
+import faster_whisper
+import whisper
+
+from tqdm import tqdm
 
 from tafrigh.recognizer import Recognizer
 from tafrigh.transcript_writer import TranscriptWriter
@@ -54,60 +57,72 @@ def farrigh(
         ct2_compute_type,
     )
 
-    for url in tqdm.tqdm(urls, desc='URLs'):
-        url_data = YoutubeDownloader(output_dir=output_dir).download(url, save_response=save_yt_dlp_responses)
-
-        if '_type' in url_data and url_data['_type'] == 'playlist':
-            url_data = url_data['entries']
-        else:
-            url_data = [url_data]
-
-        for element in tqdm.tqdm(url_data, desc='URL elements'):
-            recognizer = Recognizer(verbose=verbose)
-            segments = recognizer.recognize_whisper(
-                os.path.join(output_dir, f"{element['id']}.m4a"),
-                model,
-                task,
-                language,
-                beam_size,
-            )
-
-            segments = compact_segments(segments, min_words_per_segment)
-
-            transcript_writer = TranscriptWriter()
-            transcript_writer.write(format, os.path.join(output_dir, f"{element['id']}.{format}"), segments)
-            if output_txt_file:
-                transcript_writer.write(TranscriptType.TXT, os.path.join(output_dir, f"{element['id']}.txt"), segments)
+    for url in tqdm(urls, desc='URLs'):
+        process_url(
+            url,
+            model,
+            task,
+            language,
+            beam_size,
+            min_words_per_segment,
+            format,
+            output_txt_file,
+            save_yt_dlp_responses,
+            output_dir,
+            verbose,
+        )
 
 
 def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
-def compact_segments(segments: List[Dict[str, Any]], min_words_per_segment: int) -> List[Dict[str, Any]]:
-    if min_words_per_segment == 0:
-        return segments
+def process_url(
+    url: str,
+    model: Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str],
+    task: str,
+    language: str,
+    beam_size: int,
+    min_words_per_segment: int,
+    format: TranscriptType,
+    output_txt_file: bool,
+    save_yt_dlp_responses: bool,
+    output_dir: str,
+    verbose: bool,
+) -> None:
+    url_data = YoutubeDownloader(output_dir=output_dir).download(url, save_response=save_yt_dlp_responses)
 
-    compacted_segments = list()
-    tmp_segment = None
+    if '_type' in url_data and url_data['_type'] == 'playlist':
+        url_data = url_data['entries']
+    else:
+        url_data = [url_data]
 
-    for segment in segments:
-        if tmp_segment:
-            tmp_segment['text'] += f" {segment['text'].strip()}"
-            tmp_segment['end'] = segment['end']
+    for element in tqdm(url_data, desc='URL elements'):
+        recognizer = Recognizer(verbose=verbose)
+        segments = recognizer.recognize_whisper(
+            os.path.join(output_dir, f"{element['id']}.m4a"),
+            model,
+            task,
+            language,
+            beam_size,
+        )
 
-            if len(tmp_segment['text'].split()) >= min_words_per_segment:
-                compacted_segments.append(tmp_segment)
-                tmp_segment = None
-        elif len(segment['text'].split()) < min_words_per_segment:
-            tmp_segment = segment
-        elif len(segment['text'].split()) >= min_words_per_segment:
-            compacted_segments.append(segment)
+        transcript_writer = TranscriptWriter()
 
-    if tmp_segment:
-        compacted_segments.append(tmp_segment)
+        transcript_writer.write(
+            format,
+            os.path.join(output_dir, f"{element['id']}.{format}"),
+            segments,
+            min_words_per_segment,
+        )
 
-    return compacted_segments
+        if output_txt_file:
+            transcript_writer.write(
+                TranscriptType.TXT,
+                os.path.join(output_dir, f"{element['id']}.txt"),
+                segments,
+                min_words_per_segment,
+            )
 
 
 if __name__ == '__main__':

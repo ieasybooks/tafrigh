@@ -4,21 +4,30 @@ from tafrigh.types.transcript_type import TranscriptType
 
 
 class TranscriptWriter:
-    def write(self, format: TranscriptType, file_path: str, segments: List[Dict[str, Any]]) -> None:
+    def write(
+        self,
+        format: TranscriptType,
+        file_path: str,
+        segments: List[Dict[str, Any]],
+        min_words_per_segment: int = 0,
+    ) -> None:
         if format == TranscriptType.VTT:
-            self.write_vtt(file_path, segments)
+            self.write_vtt(file_path, segments, min_words_per_segment)
         elif format == TranscriptType.SRT:
-            self.write_srt(file_path, segments)
+            self.write_srt(file_path, segments, min_words_per_segment)
         elif format == TranscriptType.TXT:
-            self.write_txt(file_path, segments)
+            self.write_txt(file_path, segments, min_words_per_segment)
 
-    def write_vtt(self, file_path: str, segments: List[Dict[str, Any]]) -> None:
+    def write_vtt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+        segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_vtt(segments))
 
-    def write_srt(self, file_path: str, segments: List[Dict[str, Any]]) -> None:
+    def write_srt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+        segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_srt(segments))
 
-    def write_txt(self, file_path: str, segments: List[Dict[str, Any]]) -> None:
+    def write_txt(self, file_path: str, segments: List[Dict[str, Any]], min_words_per_segment: int = 0) -> None:
+        segments = self._compact_segments(segments, min_words_per_segment)
         self._write_to_file(file_path, self.generate_txt(segments))
 
     def generate_vtt(self, segments: List[Dict[str, Any]]) -> str:
@@ -59,3 +68,28 @@ class TranscriptWriter:
             time_str = f"{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
 
         return time_str
+
+    def _compact_segments(self, segments: List[Dict[str, Any]], min_words_per_segment: int) -> List[Dict[str, Any]]:
+        if min_words_per_segment == 0:
+            return segments
+
+        compacted_segments = list()
+        tmp_segment = None
+
+        for segment in segments:
+            if tmp_segment:
+                tmp_segment['text'] += f" {segment['text'].strip()}"
+                tmp_segment['end'] = segment['end']
+
+                if len(tmp_segment['text'].split()) >= min_words_per_segment:
+                    compacted_segments.append(tmp_segment)
+                    tmp_segment = None
+            elif len(segment['text'].split()) < min_words_per_segment:
+                tmp_segment = segment
+            elif len(segment['text'].split()) >= min_words_per_segment:
+                compacted_segments.append(segment)
+
+        if tmp_segment:
+            compacted_segments.append(tmp_segment)
+
+        return compacted_segments
