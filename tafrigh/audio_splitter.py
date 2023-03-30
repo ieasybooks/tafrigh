@@ -1,12 +1,12 @@
 import os
 import tempfile
-import wave
 
 from typing import List, Tuple
 
 import numpy as np
 
 from auditok.core import split
+from scipy.io import wavfile
 
 
 class AudioSplitter:
@@ -42,27 +42,15 @@ class AudioSplitter:
         return self._save_segments(output_dir, sampling_rate, expanded_segments)
 
     def _read_audio(self, file_path: str) -> Tuple[int, np.ndarray]:
-        with wave.open(file_path, 'rb') as wave_file:
-            num_frames = wave_file.getnframes()
-            num_channels = wave_file.getnchannels()
-            sample_rate = wave_file.getframerate()
+        sampling_rate, data = wavfile.read(file_path)
 
-            data = wave_file.readframes(num_frames)
+        if len(data.shape) > 1 and data.shape[1] > 1:
+            data = np.mean(data, axis=1)
 
-            if num_channels > 1:
-                data = np.frombuffer(data, dtype=np.int16).reshape(-1, num_channels)
-                data = np.mean(data, axis=1)
-            else:
-                data = np.frombuffer(data, dtype=np.int16)
-
-        return sample_rate, data
+        return sampling_rate, data
 
     def _write_audio(self, file_path: str, sampling_rate: int, data: np.ndarray) -> None:
-        with wave.open(file_path, 'wb') as wave_file:
-            wave_file.setnchannels(1)
-            wave_file.setsampwidth(2)
-            wave_file.setframerate(sampling_rate)
-            wave_file.writeframes(data.astype(np.int16).tobytes())
+        wavfile.write(file_path, sampling_rate, data.astype(np.int16))
 
     def _write_temp_audio(self, sampling_rate: int, data: np.ndarray) -> str:
         with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_file:
