@@ -98,6 +98,9 @@ def process_url(
         url_data = [url_data]
 
     for element in tqdm(url_data, desc='URL elements'):
+        if not element:
+            continue
+
         recognizer = Recognizer(verbose=verbose)
         segments = recognizer.recognize_whisper(
             os.path.join(output_dir, f"{element['id']}.m4a"),
