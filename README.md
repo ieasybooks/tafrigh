@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/7662492/229289746-89c5a4c7-afa6-4d46-a0e6-63dfdeb98285.jpg" style="width: 100%;"/>
+</p>
+
 <div dir="rtl">
   <a href="https://colab.research.google.com/github/ieasybooks/tafrigh/blob/main/colab_notebook.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="قم بتجربة تفريغ على Google Colab الآن"/></a>
 </div>
