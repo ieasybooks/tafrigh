@@ -1,18 +1,25 @@
 import json
 import logging
+import multiprocessing
 import os
 import requests
 import tempfile
+import time
 import warnings
 
-from typing import Dict, List, Union
+from itertools import repeat
+from requests.adapters import HTTPAdapter
+from typing import Dict, List, Tuple, Union
+from urllib3.util.retry import Retry
 
 import faster_whisper
 import whisper
 
 from tqdm import tqdm
+from tqdm.contrib import concurrent
 
 from tafrigh.audio_splitter import AudioSplitter
+from tafrigh.utils.decorators import minimum_execution_time
 
 
 class Recognizer:
@@ -26,7 +33,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> List[Dict[str, Union[str, float]]]:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
 
@@ -47,35 +54,30 @@ class Recognizer:
                     beam_size,
                 )
 
-    def recognize_wit(self, file_path: str, wit_client_access_token: str) -> List[Dict[str, Union[str, int]]]:
+    def recognize_wit(self, file_path: str, wit_client_access_token: str) -> List[Dict[str, Union[str, float]]]:
         segments = AudioSplitter().split(file_path, tempfile.gettempdir(), expand_segments_with_noise=True)
 
-        transcriptions = []
-        for segment_file_path, start, end in tqdm(segments):
-            with open(segment_file_path, 'rb') as wav_file:
-                audio_content = wav_file.read()
+        retry_strategy = Retry(
+            total=5,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=['POST'],
+            backoff_factor=1,
+        )
 
-            response = requests.post(
-                'https://api.wit.ai/speech',
-                headers={
-                    'Authorization': f'Bearer {wit_client_access_token}',
-                    'Content-Type': 'audio/wav',
-                },
-                data=audio_content,
-            )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
 
-            os.remove(segment_file_path)
+        session = requests.Session()
+        session.mount('https://', adapter)
 
-            if response.status_code == 200:
-                transcriptions.append({
-                    'start': start,
-                    'end': end,
-                    'text': json.loads(response.text.split('\r\n')[-1])['text'],
-                })
-            else:
-                logging.warn(f'Error in requesting wit.ai API: {response.status_code}.')
-
-        return transcriptions
+        return concurrent.process_map(
+            self._process_segment_wit,
+            segments,
+            repeat(file_path),
+            repeat(wit_client_access_token),
+            repeat(session),
+            max_workers=min(4, multiprocessing.cpu_count() - 1),
+            chunksize=1,
+        )
 
     def _recognize_stable_whisper(
         self,
@@ -84,7 +86,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> List[Dict[str, Union[str, float]]]:
         segments = model.transcribe(
             audio=audio_file_path,
             verbose=self.verbose,
@@ -109,7 +111,7 @@ class Recognizer:
         task: str,
         language: str,
         beam_size: int,
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> List[Dict[str, Union[str, float]]]:
         segments, info = model.transcribe(
             audio=audio_file_path,
             task=task,
@@ -137,3 +139,48 @@ class Recognizer:
                 last_end = segment.end
 
         return converted_segments
+
+    @minimum_execution_time(min(4, multiprocessing.cpu_count() - 1) + 1)
+    def _process_segment_wit(
+        self,
+        segment: Tuple[str, float, float],
+        file_path: str,
+        wit_client_access_token: str,
+        session: requests.Session,
+    ) -> Dict[str, Union[str, float]]:
+        segment_file_path, start, end = segment
+
+        with open(segment_file_path, 'rb') as wav_file:
+            audio_content = wav_file.read()
+
+        retries = 3
+
+        text = ''
+        while retries > 0:
+            response = session.post(
+                'https://api.wit.ai/speech',
+                headers={
+                    'Authorization': f'Bearer {wit_client_access_token}',
+                    'Content-Type': 'audio/wav',
+                },
+                data=audio_content,
+            )
+
+            if response.status_code == 200:
+                text = json.loads(response.text.split('\r\n')[-1])['text']
+                break
+            else:
+                retries -= 1
+                time.sleep(min(4, multiprocessing.cpu_count() - 1) + 1)
+
+        if retries == 0:
+            logging.warn(
+                f"The segment from `{file_path}` file that starts at {start} and ends at {end} didn't transcribed successfully.")
+
+        os.remove(segment_file_path)
+
+        return {
+            'start': start,
+            'end': end,
+            'text': text,
+        }
