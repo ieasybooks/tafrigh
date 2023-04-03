@@ -21,7 +21,7 @@ class AudioSplitter:
         expand_segments_with_noise: bool = False,
         noise_seconds: int = 1,
         noise_amplitude: int = 10,
-    ) -> List[Tuple[str, int, int]]:
+    ) -> List[Tuple[str, float, float]]:
         sampling_rate, data = self._read_audio(file_path)
         temp_file_name = self._write_temp_audio(sampling_rate, data)
         segments = self._split_audio(temp_file_name, min_dur, max_dur, max_silence, energy_threshold)
@@ -82,7 +82,7 @@ class AudioSplitter:
         noise_amplitude: int,
         sampling_rate: int,
         dtype: np.dtype,
-    ) -> List[Tuple[np.ndarray, int, int]]:
+    ) -> List[Tuple[np.ndarray, float, float]]:
         expanded_segments = []
 
         for segment in segments:
@@ -99,13 +99,13 @@ class AudioSplitter:
         self,
         output_dir: str,
         sampling_rate: int,
-        expanded_segments: List[Tuple[np.ndarray, int, int]],
-    ) -> List[Tuple[str, int, int]]:
-        output_files = []
+        expanded_segments: List[Tuple[np.ndarray, float, float]],
+    ) -> List[Tuple[str, float, float]]:
+        segments = []
 
         for i, (expanded_segment, start, end) in enumerate(expanded_segments):
             output_file = os.path.join(output_dir, f"segment_{i + 1}.wav")
             self._write_audio(output_file, sampling_rate, expanded_segment)
-            output_files.append((output_file, start, end))
+            segments.append((output_file, start, end))
 
-        return output_files
+        return segments
