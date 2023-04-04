@@ -8,15 +8,15 @@
 
 # تفريغ
 
-تحويل المواد المرئية أو المسموعة إلى نصوص.
+تفريغ المواد المرئية أو المسموعة إلى نصوص.
 
 يمكنك الاطلاع على أمثلة تم تفريغها باستخدام تفريغ من [هنا](https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing).
 
 ## مميزات تفريغ
 
 <ul dir="rtl">
-  <li>تحويل المواد المرئي والمسموع إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
-  <li>إمكانية تحويل المواد باستخدام تقنيات wit.ai المقدمة من شركة Facebook</li>
+  <li>تفريغ المواد المرئي والمسموع إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
+  <li>إمكانية تفريغ المواد باستخدام تقنيات wit.ai المقدمة من شركة Facebook</li>
   <li>تحميل المحتوى المرئي بشكل مباشر من منصة YouTube سواءً كان المستهدف مادة واحدة أو قائمة تشغيل كاملة</li>
   <li>توفير صيَغ مخرجات مختلفة كـ `txt` و `srt` و `vtt`</li>
 </ul>
@@ -95,7 +95,8 @@
   <li>
     خيارات تقنية Wit
     <ul dir="rtl">
-      <li>مفتاح <a href="wit.ai">wit.ai</a>: يمكنك استخدام تقنيات <a href="wit.ai">wit.ai</a> لتحويل المواد إلى نصوص من خلال تمرير المفتاح الخاص بك للاختيار <code dir="ltr">--wit_client_access_token</code>. إذا تم تمرير هذا الاختيار، سيتم استخدام <a href="wit.ai">wit.ai</a> لتحويل المواد إلى نصوص. غير ذلك، سيتم استخدام نماذج Whisper</li>
+      <li>مفتاح <a href="wit.ai">wit.ai</a>: يمكنك استخدام تقنيات <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص من خلال تمرير المفتاح الخاص بك للاختيار <code dir="ltr">--wit_client_access_token</code>. إذا تم تمرير هذا الاختيار، سيتم استخدام <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص. غير ذلك، سيتم استخدام نماذج Whisper</li>
+      <li>تحديد أقصى مدة للتقطيع: يمكنك تحديد أقصى مدة للتقطيع والتي ستؤثر على طول الجمل في ملفات SRT و VTT من خلال تمرير الاختيار <code dir="ltr">--max_cutting_duration</code>. القيمة الافتراضية هي <code>15</code></li>
     </ul>
   </li>
 
@@ -123,7 +124,7 @@
 ➜ tafrigh --help
 usage: tafrigh [-h] [--verbose | --no-verbose] [-m MODEL_NAME_OR_CT2_MODEL_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}]
-               [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKEN] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [-o OUTPUT_DIR]
+               [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [-o OUTPUT_DIR]
                urls [urls ...]
 
 options:
@@ -149,6 +150,8 @@ Whisper:
 Wit:
   -w WIT_CLIENT_ACCESS_TOKEN, --wit_client_access_token WIT_CLIENT_ACCESS_TOKEN
                         wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.
+  --max_cutting_duration [1-17]
+                        The maximum allowed cutting duration. It should be between 1 and 17.
 
 Output:
   --min_words_per_segment MIN_WORDS_PER_SEGMENT
@@ -162,7 +165,9 @@ Output:
                         Directory to save the outputs.
 ```
 
-### تحويل مقطع واحد
+### التفريغ باستخدام نماذج Whisper
+
+#### تفريغ مقطع واحد
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
@@ -173,7 +178,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
     --output_formats txt srt
 ```
 
-### تحويل قائمة تشغيل كاملة
+#### تفريغ قائمة تشغيل كاملة
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
@@ -184,7 +189,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
     --output_formats txt srt
 ```
 
-### تحويل أكثر من مقطع
+#### تفريغ أكثر من مقطع
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
@@ -195,7 +200,7 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
     --output_formats txt srt
 ```
 
-### تسريع عملية التفريغ
+#### تسريع عملية التفريغ
 
 يمكنك استخدام مكتبة [`faster_whisper`](https://github.com/guillaumekln/faster-whisper) التي توفّر سرعة أكبر في تفريغ المواد من خلال تحويل النماذج المقدمة من شركة OpenAI باستخدام أداة [`ct2-transformers-converter`](https://opennmt.net/CTranslate2/guides/transformers.html) كالتالي:
 
@@ -213,6 +218,41 @@ tafrigh "https://youtu.be/3K5Jh_-UYeA" \
     --output_dir . \
     --output_formats txt srt \
     --ct2_compute_type float16
+```
+
+### التفريغ باستخدام تقنية wit.ai
+
+#### تفريغ مقطع واحد
+
+```
+tafrigh "https://youtu.be/dDzxYcEJbgo" \
+    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+    --output_dir . \
+    --output_formats txt srt \
+    --min_words_per_segment 10 \
+    --max_cutting_duration 10
+```
+
+#### تفريغ قائمة تشغيل كاملة
+
+```
+tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
+    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+    --output_dir . \
+    --output_formats txt srt \
+    --min_words_per_segment 10 \
+    --max_cutting_duration 10
+```
+
+#### تفريغ أكثر من مقطع
+
+```
+tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
+    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+    --output_dir . \
+    --output_formats txt srt \
+    --min_words_per_segment 10 \
+    --max_cutting_duration 10
 ```
 
 ------------------
