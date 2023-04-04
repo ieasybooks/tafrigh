@@ -64,8 +64,11 @@ class Config:
             else:
                 output_formats = [TranscriptType(output_format) for output_format in output_formats]
 
-            output_formats.remove(TranscriptType.ALL)
-            output_formats.remove(TranscriptType.NONE)
+            if TranscriptType.ALL in output_formats:
+                output_formats.remove(TranscriptType.ALL)
+
+            if TranscriptType.NONE in output_formats:
+                output_formats.remove(TranscriptType.NONE)
 
             self.output_dir = output_dir
             self.min_words_per_segment = min_words_per_segment
