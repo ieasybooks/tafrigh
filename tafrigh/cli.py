@@ -9,11 +9,11 @@ import whisper
 from tqdm import tqdm
 
 from tafrigh.config import Config
+from tafrigh.downloader import Downloader
 from tafrigh.recognizer import Recognizer
-from tafrigh.transcript_writer import TranscriptWriter
 from tafrigh.utils import cli_utils
 from tafrigh.utils import whisper_utils
-from tafrigh.youtube_downloader import YoutubeDownloader
+from tafrigh.writer import Writer
 
 
 def main():
@@ -58,7 +58,7 @@ def process_url(
     model: Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str],
     config: Config,
 ) -> None:
-    url_data = YoutubeDownloader(output_dir=config.output.output_dir).download(
+    url_data = Downloader(output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
     )
@@ -80,12 +80,4 @@ def process_url(
         else:
             segments = recognizer.recognize_whisper(file_path, model, config.whisper)
 
-        transcript_writer = TranscriptWriter()
-
-        for output_format in config.output.output_formats:
-            transcript_writer.write(
-                output_format,
-                os.path.join(config.output.output_dir, f"{element['id']}.{output_format}"),
-                segments,
-                config.output.min_words_per_segment,
-            )
+        Writer().write_all(element['id'], segments, config.output)

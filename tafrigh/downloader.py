@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 import yt_dlp
 
 
-class YoutubeDownloader:
+class Downloader:
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
         self.youtube_dl = yt_dlp.YoutubeDL(self._config())

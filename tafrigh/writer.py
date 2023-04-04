@@ -1,9 +1,26 @@
+import os
+
 from typing import Dict, List, Union
 
+from tafrigh.config import Config
 from tafrigh.types.transcript_type import TranscriptType
 
 
-class TranscriptWriter:
+class Writer:
+    def write_all(
+        self,
+        file_name: str,
+        segments: List[Dict[str, Union[str, float]]],
+        output_config: Config.Output,
+    ) -> None:
+        for output_format in output_config.output_formats:
+            self.write(
+                output_format,
+                os.path.join(output_config.output_dir, f'{file_name}.{output_format}'),
+                segments,
+                output_config.min_words_per_segment,
+            )
+
     def write(
         self,
         format: TranscriptType,
