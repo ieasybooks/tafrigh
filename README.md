@@ -26,8 +26,8 @@
 <ul dir="rtl">
   <li>يُفضّل وجود معالج رسوميات قوي في حاسبك</li>
   <li>تثبيت لغة Python بإصدار 3.9 أو أعلى على حاسبك</li>
-  <li>تثبيت برمجية [FFmpeg](https://ffmpeg.org) على حاسبك</li>
-  <li>تثبيت برمجية [yt-dlp](https://github.com/yt-dlp/yt-dlp) على حاسبك</li>
+  <li>تثبيت برمجية <a href="https://ffmpeg.org">FFmpeg</a> على حاسبك</li>
+  <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
 </ul>
 
 ## تثبيت تفريغ
