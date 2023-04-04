@@ -19,6 +19,7 @@ from tqdm import tqdm
 from tqdm.contrib import concurrent
 
 from tafrigh.audio_splitter import AudioSplitter
+from tafrigh.config import Config
 from tafrigh.utils.decorators import minimum_execution_time
 
 
@@ -30,31 +31,17 @@ class Recognizer:
         self,
         file_path: str,
         model: Union[whisper.Whisper, faster_whisper.WhisperModel],
-        task: str,
-        language: str,
-        beam_size: int,
+        whisper_config: Config.Whisper,
     ) -> List[Dict[str, Union[str, float]]]:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
 
             if isinstance(model, whisper.Whisper):
-                return self._recognize_stable_whisper(
-                    file_path,
-                    model,
-                    task,
-                    language,
-                    beam_size,
-                )
+                return self._recognize_stable_whisper(file_path, model, whisper_config)
             elif isinstance(model, faster_whisper.WhisperModel):
-                return self._recognize_faster_whisper(
-                    file_path,
-                    model,
-                    task,
-                    language,
-                    beam_size,
-                )
+                return self._recognize_faster_whisper(file_path, model, whisper_config)
 
-    def recognize_wit(self, file_path: str, wit_client_access_token: str) -> List[Dict[str, Union[str, float]]]:
+    def recognize_wit(self, file_path: str, wit_config: Config.Wit) -> List[Dict[str, Union[str, float]]]:
         segments = AudioSplitter().split(file_path, tempfile.gettempdir(), expand_segments_with_noise=True)
 
         retry_strategy = Retry(
@@ -73,7 +60,7 @@ class Recognizer:
             self._process_segment_wit,
             segments,
             repeat(file_path),
-            repeat(wit_client_access_token),
+            repeat(wit_config),
             repeat(session),
             max_workers=min(4, multiprocessing.cpu_count() - 1),
             chunksize=1,
@@ -83,16 +70,14 @@ class Recognizer:
         self,
         audio_file_path: str,
         model: whisper.Whisper,
-        task: str,
-        language: str,
-        beam_size: int,
+        whisper_config: Config.Whisper,
     ) -> List[Dict[str, Union[str, float]]]:
         segments = model.transcribe(
             audio=audio_file_path,
             verbose=self.verbose,
-            task=task,
-            language=language,
-            beam_size=beam_size,
+            task=whisper_config.task,
+            language=whisper_config.language,
+            beam_size=whisper_config.beam_size,
         ).segments
 
         return [
@@ -108,15 +93,13 @@ class Recognizer:
         self,
         audio_file_path: str,
         model: faster_whisper.WhisperModel,
-        task: str,
-        language: str,
-        beam_size: int,
+        whisper_config: Config.Whisper,
     ) -> List[Dict[str, Union[str, float]]]:
         segments, info = model.transcribe(
             audio=audio_file_path,
-            task=task,
-            language=language,
-            beam_size=beam_size,
+            task=whisper_config.task,
+            language=whisper_config.language,
+            beam_size=whisper_config.beam_size,
         )
 
         converted_segments = []
@@ -145,7 +128,7 @@ class Recognizer:
         self,
         segment: Tuple[str, float, float],
         file_path: str,
-        wit_client_access_token: str,
+        wit_config: Config.Wit,
         session: requests.Session,
     ) -> Dict[str, Union[str, float]]:
         segment_file_path, start, end = segment
@@ -160,7 +143,7 @@ class Recognizer:
             response = session.post(
                 'https://api.wit.ai/speech',
                 headers={
-                    'Authorization': f'Bearer {wit_client_access_token}',
+                    'Authorization': f'Bearer {wit_config.wit_client_access_token}',
                     'Content-Type': 'audio/wav',
                 },
                 data=audio_content,

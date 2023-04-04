@@ -1,13 +1,14 @@
 import os
 import sys
 
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 
 import faster_whisper
 import whisper
 
 from tqdm import tqdm
 
+from tafrigh.config import Config
 from tafrigh.recognizer import Recognizer
 from tafrigh.transcript_writer import TranscriptWriter
 from tafrigh.types.transcript_type import TranscriptType
@@ -19,7 +20,7 @@ from tafrigh.youtube_downloader import YoutubeDownloader
 def main():
     args = cli_utils.parse_args(sys.argv[1:])
 
-    farrigh(
+    config = Config(
         urls=args.urls,
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
         wit_client_access_token=args.wit_client_access_token,
@@ -35,48 +36,19 @@ def main():
         verbose=args.verbose,
     )
 
+    farrigh(config)
 
-def farrigh(
-    urls: List[str],
-    model_name_or_ct2_model_path: str,
-    wit_client_access_token: str,
-    task: str,
-    language: str,
-    beam_size: int,
-    ct2_compute_type: str,
-    min_words_per_segment: int,
-    format: TranscriptType,
-    output_txt_file: bool,
-    save_yt_dlp_responses: bool,
-    output_dir: str,
-    verbose: bool,
-) -> None:
-    prepare_output_dir(output_dir)
+
+def farrigh(config: Config) -> None:
+    prepare_output_dir(config.output.output_dir)
 
     model = None
 
-    if not wit_client_access_token:
-        model, language = whisper_utils.load_model(
-            model_name_or_ct2_model_path,
-            language,
-            ct2_compute_type,
-        )
+    if not config.use_wit():
+        model, config.whisper.language = whisper_utils.load_model(config.whisper)
 
-    for url in tqdm(urls, desc='URLs'):
-        process_url(
-            url,
-            model,
-            wit_client_access_token,
-            task,
-            language,
-            beam_size,
-            min_words_per_segment,
-            format,
-            output_txt_file,
-            save_yt_dlp_responses,
-            output_dir,
-            verbose,
-        )
+    for url in tqdm(config.input.urls, desc='URLs'):
+        process_url(url, model, config)
 
 
 def prepare_output_dir(output_dir: str) -> None:
@@ -86,18 +58,12 @@ def prepare_output_dir(output_dir: str) -> None:
 def process_url(
     url: str,
     model: Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str],
-    wit_client_access_token: str,
-    task: str,
-    language: str,
-    beam_size: int,
-    min_words_per_segment: int,
-    format: TranscriptType,
-    output_txt_file: bool,
-    save_yt_dlp_responses: bool,
-    output_dir: str,
-    verbose: bool,
+    config: Config,
 ) -> None:
-    url_data = YoutubeDownloader(output_dir=output_dir).download(url, save_response=save_yt_dlp_responses)
+    url_data = YoutubeDownloader(output_dir=config.output.output_dir).download(
+        url,
+        save_response=config.output.save_yt_dlp_responses,
+    )
 
     if '_type' in url_data and url_data['_type'] == 'playlist':
         url_data = url_data['entries']
@@ -108,31 +74,27 @@ def process_url(
         if not element:
             continue
 
-        file_path = os.path.join(output_dir, f"{element['id']}.wav")
+        file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
 
-        recognizer = Recognizer(verbose=verbose)
-        if wit_client_access_token:
-            segments = recognizer.recognize_wit(file_path, wit_client_access_token)
+        recognizer = Recognizer(verbose=config.input.verbose)
+        if config.use_wit():
+            segments = recognizer.recognize_wit(file_path, config.wit)
         else:
-            segments = recognizer.recognize_whisper(file_path, model, task, language, beam_size)
+            segments = recognizer.recognize_whisper(file_path, model, config.whisper)
 
         transcript_writer = TranscriptWriter()
 
         transcript_writer.write(
-            format,
-            os.path.join(output_dir, f"{element['id']}.{format}"),
+            config.output.format,
+            os.path.join(config.output.output_dir, f"{element['id']}.{config.output.format}"),
             segments,
-            min_words_per_segment,
+            config.output.min_words_per_segment,
         )
 
-        if output_txt_file:
+        if config.output.output_txt_file:
             transcript_writer.write(
                 TranscriptType.TXT,
-                os.path.join(output_dir, f"{element['id']}.txt"),
+                os.path.join(config.output.output_dir, f"{element['id']}.txt"),
                 segments,
-                min_words_per_segment,
+                config.output.min_words_per_segment,
             )
-
-
-if __name__ == '__main__':
-    main()
