@@ -42,7 +42,12 @@ class Recognizer:
                 return self._recognize_faster_whisper(file_path, model, whisper_config)
 
     def recognize_wit(self, file_path: str, wit_config: Config.Wit) -> List[Dict[str, Union[str, float]]]:
-        segments = AudioSplitter().split(file_path, tempfile.gettempdir(), expand_segments_with_noise=True)
+        segments = AudioSplitter().split(
+            file_path,
+            tempfile.gettempdir(),
+            max_dur=wit_config.max_cutting_duration,
+            expand_segments_with_noise=True,
+        )
 
         retry_strategy = Retry(
             total=5,

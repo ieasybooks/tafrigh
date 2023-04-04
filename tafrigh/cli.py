@@ -21,17 +21,21 @@ def main():
 
     config = Config(
         urls=args.urls,
+        verbose=args.verbose,
+
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
-        wit_client_access_token=args.wit_client_access_token,
         task=args.task,
         language=args.language,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
+
+        wit_client_access_token=args.wit_client_access_token,
+        max_cutting_duration=args.max_cutting_duration,
+
         min_words_per_segment=args.min_words_per_segment,
         output_formats=args.output_formats,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
         output_dir=args.output_dir,
-        verbose=args.verbose,
     )
 
     farrigh(config)

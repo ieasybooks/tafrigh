@@ -7,21 +7,22 @@ class Config:
     def __init__(
         self,
         urls: List[str],
+        verbose: bool,
         model_name_or_ct2_model_path: str,
-        wit_client_access_token: str,
         task: str,
         language: str,
         beam_size: int,
         ct2_compute_type: str,
+        wit_client_access_token: str,
+        max_cutting_duration: int,
         min_words_per_segment: int,
         output_formats: List[str],
         save_yt_dlp_responses: bool,
         output_dir: str,
-        verbose: bool,
     ):
         self.input = self.Input(urls, verbose)
         self.whisper = self.Whisper(model_name_or_ct2_model_path, task, language, beam_size, ct2_compute_type)
-        self.wit = self.Wit(wit_client_access_token)
+        self.wit = self.Wit(wit_client_access_token, max_cutting_duration)
         self.output = self.Output(min_words_per_segment, output_formats, save_yt_dlp_responses, output_dir)
 
     def use_wit(self) -> bool:
@@ -48,8 +49,9 @@ class Config:
             self.ct2_compute_type = ct2_compute_type
 
     class Wit:
-        def __init__(self, wit_client_access_token: str):
+        def __init__(self, wit_client_access_token: str, max_cutting_duration: int):
             self.wit_client_access_token = wit_client_access_token
+            self.max_cutting_duration = max_cutting_duration
 
     class Output:
         def __init__(

@@ -78,6 +78,15 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help='wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
     )
 
+    wit_group.add_argument(
+        '--max_cutting_duration',
+        type=int,
+        default=15,
+        choices=range(1, 17),
+        metavar='[1-17]',
+        help='The maximum allowed cutting duration. It should be between 1 and 17.',
+    )
+
     output_group = parser.add_argument_group('Output')
 
     output_group.add_argument(
