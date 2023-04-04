@@ -14,7 +14,7 @@ class Config:
         beam_size: int,
         ct2_compute_type: str,
         min_words_per_segment: int,
-        output_formats: List[TranscriptType],
+        output_formats: List[str],
         save_yt_dlp_responses: bool,
         output_dir: str,
         verbose: bool,
@@ -55,7 +55,7 @@ class Config:
         def __init__(
             self,
             min_words_per_segment: int,
-            output_formats: List[TranscriptType],
+            output_formats: List[str],
             save_yt_dlp_responses: bool,
             output_dir: str,
         ):
