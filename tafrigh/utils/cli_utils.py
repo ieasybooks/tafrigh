@@ -10,23 +10,27 @@ from tafrigh.types.transcript_type import TranscriptType
 def parse_args(argv: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('urls', nargs='+', help='Video/Playlist URLs to transcribe.')
+    input_group = parser.add_argument_group('Input')
 
-    parser.add_argument(
+    input_group.add_argument('urls', nargs='+', help='Video/Playlist URLs to transcribe.')
+
+    input_group.add_argument(
+        '--verbose',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Whether to print out the progress and debug messages.',
+    )
+
+    whisper_group = parser.add_argument_group('Whisper')
+
+    whisper_group.add_argument(
         '-m',
         '--model_name_or_ct2_model_path',
         default='small',
         help='Name of the Whisper model to use or a path to CTranslate2 model converted using `ct2-transformers-converter` tool.',
     )
 
-    parser.add_argument(
-        '-w',
-        '--wit_client_access_token',
-        default='',
-        help='wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
-    )
-
-    parser.add_argument(
+    whisper_group.add_argument(
         '-t',
         '--task',
         default='transcribe',
@@ -37,7 +41,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help="Whether to perform X->X speech recognition ('transcribe') or X->English translation ('translate').",
     )
 
-    parser.add_argument(
+    whisper_group.add_argument(
         '-l',
         '--language',
         default=None,
@@ -45,14 +49,14 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help='Language spoken in the audio, skip to perform language detection.',
     )
 
-    parser.add_argument(
+    whisper_group.add_argument(
         '--beam_size',
         type=int,
         default=5,
         help='Number of beams in beam search, only applicable when temperature is zero.',
     )
 
-    parser.add_argument(
+    whisper_group.add_argument(
         '--ct2_compute_type',
         default='default',
         choices=[
@@ -65,14 +69,25 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help='Quantization type applied while converting the model to CTranslate2 format.',
     )
 
-    parser.add_argument(
+    wit_group = parser.add_argument_group('Wit')
+
+    wit_group.add_argument(
+        '-w',
+        '--wit_client_access_token',
+        default='',
+        help='wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
+    )
+
+    output_group = parser.add_argument_group('Output')
+
+    output_group.add_argument(
         '--min_words_per_segment',
         type=int,
-        default=30,
+        default=1,
         help='The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one. Pass 0 to disable this behavior.',
     )
 
-    parser.add_argument(
+    output_group.add_argument(
         '-f',
         '--output_formats',
         nargs='+',
@@ -81,20 +96,13 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help='Format of the output file; if not specified, all available formats will be produced.',
     )
 
-    parser.add_argument(
+    output_group.add_argument(
         '--save_yt_dlp_responses',
         action=argparse.BooleanOptionalAction,
         default=False,
         help='Whether to save the yt-dlp library JSON responses or not.',
     )
 
-    parser.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
-
-    parser.add_argument(
-        '--verbose',
-        action=argparse.BooleanOptionalAction,
-        default=False,
-        help='Whether to print out the progress and debug messages.',
-    )
+    output_group.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
 
     return parser.parse_args(argv)
