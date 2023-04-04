@@ -74,18 +74,11 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
 
     parser.add_argument(
         '-f',
-        '--format',
-        default=TranscriptType.SRT,
-        choices=[TranscriptType.VTT, TranscriptType.SRT],
-        type=TranscriptType,
-        help='Transcript format to output, pass none to skip writing transcripts.',
-    )
-
-    parser.add_argument(
-        '--output_txt_file',
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help='Whether to produce a text file or not.',
+        '--output_formats',
+        nargs='+',
+        default='all',
+        choices=[transcript_type.value for transcript_type in TranscriptType],
+        help='Format of the output file; if not specified, all available formats will be produced.',
     )
 
     parser.add_argument(

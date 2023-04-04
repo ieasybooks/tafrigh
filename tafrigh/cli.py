@@ -11,7 +11,6 @@ from tqdm import tqdm
 from tafrigh.config import Config
 from tafrigh.recognizer import Recognizer
 from tafrigh.transcript_writer import TranscriptWriter
-from tafrigh.types.transcript_type import TranscriptType
 from tafrigh.utils import cli_utils
 from tafrigh.utils import whisper_utils
 from tafrigh.youtube_downloader import YoutubeDownloader
@@ -29,8 +28,7 @@ def main():
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
         min_words_per_segment=args.min_words_per_segment,
-        format=args.format,
-        output_txt_file=args.output_txt_file,
+        output_formats=args.output_formats,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
         output_dir=args.output_dir,
         verbose=args.verbose,
@@ -84,17 +82,10 @@ def process_url(
 
         transcript_writer = TranscriptWriter()
 
-        transcript_writer.write(
-            config.output.format,
-            os.path.join(config.output.output_dir, f"{element['id']}.{config.output.format}"),
-            segments,
-            config.output.min_words_per_segment,
-        )
-
-        if config.output.output_txt_file:
+        for output_format in config.output.output_formats:
             transcript_writer.write(
-                TranscriptType.TXT,
-                os.path.join(config.output.output_dir, f"{element['id']}.txt"),
+                output_format,
+                os.path.join(config.output.output_dir, f"{element['id']}.{output_format}"),
                 segments,
                 config.output.min_words_per_segment,
             )
