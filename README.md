@@ -104,6 +104,9 @@
     المخرجات
     <ul dir="rtl">
       <li>ضغط الأجزاء: يمكنك استخدام الاختيار <code dir="ltr">--min_words_per_segment</code> للتحكم في أقل عدد من الكلمات التي يمكن أن تكون داخل جزء واحد من أجزاء التفريغ. القيمة الإفتراضية هي <code>1</code>، يمكنك تمرير <code>0</code> لتعطيل هذه الخاصية</li>
+      <li>يمكنك تمرير الاختيار <code dir="ltr">--save_files_before_compact</code> لحفظ الملفات الأصلية قبل أن يتم دمج أجزائها بناء على اختيار <code dir="ltr">--min_words_per_segment</code></li>
+      <li>يمكنك حفظ مخرجات مكتبة <code>yt-dlp</code> بصيغة <code>json</code> من خلال تمرير الاختيار <code dir="ltr">--save_yt_dlp_responses</code></li>
+      <li>إخراج عينة من التفريغ: يمكنك تمرير قيمة للاختيار <code dir="ltr">--output_sample</code> للحصول على عينة عشوائية من جميع الأجزاء التي تم تفريغها من كل المواد. القيمة الافتراضية هي <code>0</code>، أي أنه لن يتم إخراج أي عينات</li>
       <li>
         صيغة المخرجات: يمكنك تحديد صيغة المخرجات من خلال الاختيار <code dir="ltr">--output_formats</code>. الصيغ المتوفرة:
         <ul dir="rtl">
@@ -114,7 +117,6 @@
           <li><code dir="ltr">none</code> (لن يتم إنشاء ملف في حال تمرير هذه الصيغة)</li>
         </ul>
       </li>
-      <li>يمكنك حفظ مخرجات مكتبة <code>yt-dlp</code> بصيغة <code>json</code> من خلال تمرير الاختيار <code dir="ltr">--save_yt_dlp_responses</code></li>
       <li>مجلد المخرجات: يمكنك تحديد مجلد الاخراج من خلال الاختيار <code dir="ltr">--output_dir</code>. بشكل تلقائي سيكون المجلد الحالي هو مجلد الاخراج إذا لم يتم تحديده</li>
     </ul>
   </li>
@@ -124,7 +126,9 @@
 ➜ tafrigh --help
 usage: tafrigh [-h] [--verbose | --no-verbose] [-m MODEL_NAME_OR_CT2_MODEL_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}]
-               [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [-o OUTPUT_DIR]
+               [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]]
+               [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses]
+               [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
                urls [urls ...]
 
 options:
@@ -157,10 +161,14 @@ Output:
   --min_words_per_segment MIN_WORDS_PER_SEGMENT
                         The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one. Pass 0 to disable this
                         behavior.
-  -f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...], --output_formats {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]
-                        Format of the output file; if not specified, all available formats will be produced.
+  --save_files_before_compact, --no-save_files_before_compact
+                        Saves the output files before applying the compact logic that is based on --min_words_per_segment. (default: False)
   --save_yt_dlp_responses, --no-save_yt_dlp_responses
                         Whether to save the yt-dlp library JSON responses or not. (default: False)
+  --output_sample OUTPUT_SAMPLE
+                        Samples random segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.
+  -f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...], --output_formats {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]
+                        Format of the output file; if not specified, all available formats will be produced.
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         Directory to save the outputs.
 ```
