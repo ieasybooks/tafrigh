@@ -33,8 +33,9 @@ def main():
         max_cutting_duration=args.max_cutting_duration,
 
         min_words_per_segment=args.min_words_per_segment,
-        output_formats=args.output_formats,
+        save_files_before_compact=args.save_files_before_compact,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
+        output_formats=args.output_formats,
         output_dir=args.output_dir,
     )
 

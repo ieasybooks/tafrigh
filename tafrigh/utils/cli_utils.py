@@ -97,12 +97,10 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     )
 
     output_group.add_argument(
-        '-f',
-        '--output_formats',
-        nargs='+',
-        default='all',
-        choices=[transcript_type.value for transcript_type in TranscriptType],
-        help='Format of the output file; if not specified, all available formats will be produced.',
+        '--save_files_before_compact',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Saves the output files before applying the compact logic that is based on --min_words_per_segment.',
     )
 
     output_group.add_argument(
@@ -110,6 +108,15 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         action=argparse.BooleanOptionalAction,
         default=False,
         help='Whether to save the yt-dlp library JSON responses or not.',
+    )
+
+    output_group.add_argument(
+        '-f',
+        '--output_formats',
+        nargs='+',
+        default='all',
+        choices=[transcript_type.value for transcript_type in TranscriptType],
+        help='Format of the output file; if not specified, all available formats will be produced.',
     )
 
     output_group.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
