@@ -89,7 +89,7 @@ class Recognizer:
             {
                 'start': segment.start,
                 'end': segment.end,
-                'text': segment.text,
+                'text': segment.text.strip(),
             }
             for segment in segments
         ]
@@ -119,7 +119,7 @@ class Recognizer:
                 converted_segments.append({
                     'start': segment.start,
                     'end': segment.end,
-                    'text': segment.text,
+                    'text': segment.text.strip(),
                 })
 
                 pbar_update = min(segment.end - last_end, info.duration - pbar.n)
@@ -170,5 +170,5 @@ class Recognizer:
         return {
             'start': start,
             'end': end,
-            'text': text,
+            'text': text.strip(),
         }

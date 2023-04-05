@@ -18,6 +18,7 @@ class Config:
         min_words_per_segment: int,
         save_files_before_compact: bool,
         save_yt_dlp_responses: bool,
+        output_sample: int,
         output_formats: List[str],
         output_dir: str,
     ):
@@ -29,6 +30,7 @@ class Config:
             min_words_per_segment,
             save_files_before_compact,
             save_yt_dlp_responses,
+            output_sample,
             output_formats,
             output_dir,
         )
@@ -67,6 +69,7 @@ class Config:
             min_words_per_segment: int,
             save_files_before_compact: bool,
             save_yt_dlp_responses: bool,
+            output_sample: int,
             output_formats: List[str],
             output_dir: str,
         ):
@@ -84,5 +87,6 @@ class Config:
             self.min_words_per_segment = min_words_per_segment
             self.save_files_before_compact = save_files_before_compact
             self.save_yt_dlp_responses = save_yt_dlp_responses
+            self.output_sample = output_sample
             self.output_formats = output_formats
             self.output_dir = output_dir
