@@ -1,3 +1,5 @@
+import logging
+
 from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
@@ -52,6 +54,10 @@ class Config:
             beam_size: int,
             ct2_compute_type: str,
         ):
+            if model_name_or_ct2_model_path.endswith('.en'):
+                logging.warn(f'{model_name_or_ct2_model_path} is an English-only model, setting language to English.')
+                language = 'en'
+
             self.model_name_or_ct2_model_path = model_name_or_ct2_model_path
             self.task = task
             self.language = language

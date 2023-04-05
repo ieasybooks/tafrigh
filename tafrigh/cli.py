@@ -50,9 +50,8 @@ def farrigh(config: Config) -> None:
     prepare_output_dir(config.output.output_dir)
 
     model = None
-
     if not config.use_wit():
-        model, config.whisper.language = whisper_utils.load_model(config.whisper)
+        model = whisper_utils.load_model(config.whisper)
 
     segments = []
 

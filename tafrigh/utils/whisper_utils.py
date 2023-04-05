@@ -9,19 +9,11 @@ import whisper
 from tafrigh.config import Config
 
 
-def load_model(whisper_config: Config.Whisper) -> Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str]:
+def load_model(whisper_config: Config.Whisper) -> Union[whisper.Whisper, faster_whisper.WhisperModel]:
     if whisper_config.model_name_or_ct2_model_path in whisper.available_models():
-        if whisper_config.model_name_or_ct2_model_path.endswith('.en'):
-            logging.warn(
-                f'{whisper_config.model_name_or_ct2_model_path} is an English-only model, setting language to English.')
-            whisper_config.language = 'en'
-
-        return stable_whisper.load_model(whisper_config.model_name_or_ct2_model_path), whisper_config.language
+        return stable_whisper.load_model(whisper_config.model_name_or_ct2_model_path)
     else:
-        return (
-            faster_whisper.WhisperModel(
-                whisper_config.model_name_or_ct2_model_path,
-                compute_type=whisper_config.ct2_compute_type
-            ),
-            whisper_config.language,
+        return faster_whisper.WhisperModel(
+            whisper_config.model_name_or_ct2_model_path,
+            compute_type=whisper_config.ct2_compute_type
         )
