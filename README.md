@@ -6,13 +6,13 @@
   <a href="https://colab.research.google.com/github/ieasybooks/tafrigh/blob/main/colab_notebook.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="قم بتجربة تفريغ على Google Colab الآن"/></a>
 </div>
 
-# تفريغ
+<h1 dir="rtl">تفريغ</h1>
 
-تفريغ المواد المرئية أو المسموعة إلى نصوص.
+<p dir="rtl">تفريغ المواد المرئية أو المسموعة إلى نصوص.</p>
 
-يمكنك الاطلاع على أمثلة تم تفريغها باستخدام تفريغ من [هنا](https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing).
+<p dir="rtl">يمكنك الاطلاع على أمثلة تم تفريغها باستخدام تفريغ من <a href="https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing">هنا</a>.</p>
 
-## مميزات تفريغ
+<h2 dir="rtl">مميزات تفريغ</h2>
 
 <ul dir="rtl">
   <li>تفريغ المواد المرئي والمسموع إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
@@ -21,7 +21,7 @@
   <li>توفير صيَغ مخرجات مختلفة كـ `txt` و `srt` و `vtt`</li>
 </ul>
 
-## متطلبات الاستخدام
+<h2 dir="rtl">متطلبات الاستخدام</h2>
 
 <ul dir="rtl">
   <li>يُفضّل وجود معالج رسوميات قوي في حاسبك</li>
@@ -30,7 +30,7 @@
   <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
 </ul>
 
-## تثبيت تفريغ
+<h2 dir="rtl">تثبيت تفريغ</h2>
 
 <ul dir="rtl">
   <li>قم بتنزيل هذا المستودع من خلال الضغط على Code ثم Download ZIP أو من خلال تنفيذ الأمر التالي: <code>git clone git@github.com:ieasybooks/tafrigh.git</code></li>
@@ -38,9 +38,9 @@
   <li>قم بتنفيذ الأمر التالي لتثبيت تفريغ: <code dir="ltr">pip install .</code></li>
 </ul>
 
-## استخدام تفريغ
+<h2 dir="rtl">استخدام تفريغ</h2>
 
-### الخيارات المتوفرة
+<h3 dir="rtl">الخيارات المتوفرة</h3>
 
 <ul dir="rtl">
   <li>
@@ -122,7 +122,7 @@
   </li>
 </ul>
 
-```bash
+```
 ➜ tafrigh --help
 usage: tafrigh [-h] [--verbose | --no-verbose] [-m MODEL_NAME_OR_CT2_MODEL_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}]
@@ -173,96 +173,96 @@ Output:
                         Directory to save the outputs.
 ```
 
-### التفريغ باستخدام نماذج Whisper
+<h3 dir="rtl">التفريغ باستخدام نماذج Whisper</h3>
 
-#### تفريغ مقطع واحد
+<h4 dir="rtl">تفريغ مقطع واحد</h4>
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
-    --model_name_or_ct2_model_path small \
-    --task transcribe \
-    --language ar \
-    --output_dir . \
-    --output_formats txt srt
+  --model_name_or_ct2_model_path small \
+  --task transcribe \
+  --language ar \
+  --output_dir . \
+  --output_formats txt srt
 ```
 
-#### تفريغ قائمة تشغيل كاملة
+<h4 dir="rtl">تفريغ قائمة تشغيل كاملة</h4>
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
-    --model_name_or_ct2_model_path small \
-    --task transcribe \
-    --language ar \
-    --output_dir . \
-    --output_formats txt srt
+  --model_name_or_ct2_model_path small \
+  --task transcribe \
+  --language ar \
+  --output_dir . \
+  --output_formats txt srt
 ```
 
-#### تفريغ أكثر من مقطع
+<h4 dir="rtl">تفريغ أكثر من مقطع</h4>
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
-    --model_name_or_ct2_model_path small \
-    --task transcribe \
-    --language ar \
-    --output_dir . \
-    --output_formats txt srt
+  --model_name_or_ct2_model_path small \
+  --task transcribe \
+  --language ar \
+  --output_dir . \
+  --output_formats txt srt
 ```
 
-#### تسريع عملية التفريغ
+<h4 dir="rtl">تسريع عملية التفريغ</h4>
 
-يمكنك استخدام مكتبة [`faster_whisper`](https://github.com/guillaumekln/faster-whisper) التي توفّر سرعة أكبر في تفريغ المواد من خلال تحويل النماذج المقدمة من شركة OpenAI باستخدام أداة [`ct2-transformers-converter`](https://opennmt.net/CTranslate2/guides/transformers.html) كالتالي:
+<p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/guillaumekln/faster-whisper">faster_whisper</a></code> التي توفّر سرعة أكبر في تفريغ المواد من خلال تحويل النماذج المقدمة من شركة OpenAI باستخدام أداة <code><a href="https://opennmt.net/CTranslate2/guides/transformers.html">ct2-transformers-converter</a></code> كالتالي:</p>
 
 ```
-ct2-transformers-converter --model openai/whisper-large-v2 --output_dir whisper-large-v2-ct2 --quantization float16 
+ct2-transformers-converter --model openai/whisper-large-v2 --output_dir whisper-large-v2-ct2 --quantization float16
 ```
 
-ثم تمرير مسار مجلد النموذج المُحوّل إلى تفريغ كالتالي:
+<p dir="rtl">ثم تمرير مسار مجلد النموذج المُحوّل إلى تفريغ كالتالي:</p>
 
 ```
 tafrigh "https://youtu.be/3K5Jh_-UYeA" \
-    --model_name_or_ct2_model_path /path/to/whisper-large-v2-ct2 \
-    --task transcribe \
-    --language ar \
-    --output_dir . \
-    --output_formats txt srt \
-    --ct2_compute_type float16
+  --model_name_or_ct2_model_path /path/to/whisper-large-v2-ct2 \
+  --task transcribe \
+  --language ar \
+  --output_dir . \
+  --output_formats txt srt \
+  --ct2_compute_type float16
 ```
 
-### التفريغ باستخدام تقنية wit.ai
+<h3 dir="rtl">التفريغ باستخدام تقنية wit.ai</h3>
 
-#### تفريغ مقطع واحد
+<h4 dir="rtl">تفريغ مقطع واحد</h4>
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
-    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
-    --output_dir . \
-    --output_formats txt srt \
-    --min_words_per_segment 10 \
-    --max_cutting_duration 10
+  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --output_dir . \
+  --output_formats txt srt \
+  --min_words_per_segment 10 \
+  --max_cutting_duration 10
 ```
 
-#### تفريغ قائمة تشغيل كاملة
+<h4 dir="rtl">تفريغ قائمة تشغيل كاملة</h4>
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
-    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
-    --output_dir . \
-    --output_formats txt srt \
-    --min_words_per_segment 10 \
-    --max_cutting_duration 10
+  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --output_dir . \
+  --output_formats txt srt \
+  --min_words_per_segment 10 \
+  --max_cutting_duration 10
 ```
 
-#### تفريغ أكثر من مقطع
+<h4 dir="rtl">تفريغ أكثر من مقطع</h4>
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
-    --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
-    --output_dir . \
-    --output_formats txt srt \
-    --min_words_per_segment 10 \
-    --max_cutting_duration 10
+  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --output_dir . \
+  --output_formats txt srt \
+  --min_words_per_segment 10 \
+  --max_cutting_duration 10
 ```
 
-------------------
+<hr>
 
-تم الاعتماد بشكل كبير على مستودع [yt-whisper](https://github.com/m1guelpf/yt-whisper) لإنجاز تفريغ بشكل أسرع.
+<p dir="rtl">تم الاعتماد بشكل كبير على مستودع <a href="https://github.com/m1guelpf/yt-whisper">yt-whisper</a> لإنجاز تفريغ بشكل أسرع.</p>
