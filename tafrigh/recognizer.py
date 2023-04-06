@@ -155,8 +155,11 @@ class Recognizer:
             )
 
             if response.status_code == 200:
-                text = json.loads(response.text.split('\r\n')[-1])['text']
-                break
+                try:
+                    text = json.loads(response.text.split('\r\n')[-1])['text']
+                    break
+                except KeyError:
+                    retries -= 1
             else:
                 retries -= 1
                 time.sleep(min(4, multiprocessing.cpu_count() - 1) + 1)
