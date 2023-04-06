@@ -114,7 +114,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         '--output_sample',
         type=int,
         default=0,
-        help='Samples random segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.',
+        help='Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.',
     )
 
     output_group.add_argument(

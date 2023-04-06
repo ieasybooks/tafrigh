@@ -97,17 +97,19 @@ def process_url(
         else:
             segments = recognizer.recognize_whisper(file_path, model, config.whisper)
 
-        Writer().write_all(element['id'], segments, config.output)
+        writer = Writer()
+        writer.write_all(element['id'], segments, config.output)
 
         for segment in segments:
             segment['url'] = f"https://youtube.com/watch?v={element['id']}&t={int(segment['start'])}"
             segment['file_path'] = file_path
-            elements_segments.append(segments)
+
+        elements_segments.append(writer.compact_segments(segments, config.output.min_words_per_segment))
 
     return elements_segments
 
 
-def write_output_sample(segments: List[List[Dict[str, Union[str, float]]]], output: Config.Output) -> None:
+def write_output_sample(segments: List[Dict[str, Union[str, float]]], output: Config.Output) -> None:
     if output.output_sample == 0:
         return
 
