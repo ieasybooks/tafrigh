@@ -29,6 +29,7 @@ def main():
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
         task=args.task,
         language=args.language,
+        use_jax=args.use_jax,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
 

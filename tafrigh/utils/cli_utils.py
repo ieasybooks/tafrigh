@@ -50,6 +50,13 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     )
 
     whisper_group.add_argument(
+        '--use_jax',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Whether to use Whisper JAX implementation. Make sure to have JAX installed before using this option.',
+    )
+
+    whisper_group.add_argument(
         '--beam_size',
         type=int,
         default=5,

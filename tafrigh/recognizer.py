@@ -14,6 +14,7 @@ from urllib3.util.retry import Retry
 
 import faster_whisper
 import whisper
+import whisper_jax
 
 from tqdm import tqdm
 from tqdm.contrib import concurrent
@@ -30,7 +31,7 @@ class Recognizer:
     def recognize_whisper(
         self,
         file_path: str,
-        model: Union[whisper.Whisper, faster_whisper.WhisperModel],
+        model: Union[whisper.Whisper, faster_whisper.WhisperModel, whisper_jax.FlaxWhisperPipline],
         whisper_config: Config.Whisper,
     ) -> List[Dict[str, Union[str, float]]]:
         with warnings.catch_warnings():
@@ -40,6 +41,8 @@ class Recognizer:
                 return self._recognize_stable_whisper(file_path, model, whisper_config)
             elif isinstance(model, faster_whisper.WhisperModel):
                 return self._recognize_faster_whisper(file_path, model, whisper_config)
+            elif isinstance(model, whisper_jax.FlaxWhisperPipline):
+                return self._recognize_jax_whisper(file_path, model, whisper_config)
 
     def recognize_wit(self, file_path: str, wit_config: Config.Wit) -> List[Dict[str, Union[str, float]]]:
         segments = AudioSplitter().split(
@@ -127,6 +130,28 @@ class Recognizer:
                 last_end = segment.end
 
         return converted_segments
+
+    def _recognize_jax_whisper(
+        self,
+        audio_file_path: str,
+        model: whisper_jax.FlaxWhisperPipline,
+        whisper_config: Config.Whisper,
+    ) -> List[Dict[str, Union[str, float]]]:
+        segments = model(
+            audio_file_path,
+            task=whisper_config.task,
+            language=whisper_config.language,
+            return_timestamps=True,
+        )['chunks']
+
+        return [
+            {
+                'start': segment['timestamp'][0],
+                'end': segment['timestamp'][1],
+                'text': segment['text'].strip(),
+            }
+            for segment in segments
+        ]
 
     @minimum_execution_time(min(4, multiprocessing.cpu_count() - 1) + 1)
     def _process_segment_wit(

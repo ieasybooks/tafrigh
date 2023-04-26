@@ -13,6 +13,7 @@ class Config:
         model_name_or_ct2_model_path: str,
         task: str,
         language: str,
+        use_jax: bool,
         beam_size: int,
         ct2_compute_type: str,
         wit_client_access_token: str,
@@ -25,7 +26,7 @@ class Config:
         output_dir: str,
     ):
         self.input = self.Input(urls, verbose)
-        self.whisper = self.Whisper(model_name_or_ct2_model_path, task, language, beam_size, ct2_compute_type)
+        self.whisper = self.Whisper(model_name_or_ct2_model_path, task, language, use_jax, beam_size, ct2_compute_type)
         self.wit = self.Wit(wit_client_access_token, max_cutting_duration)
 
         self.output = self.Output(
@@ -51,6 +52,7 @@ class Config:
             model_name_or_ct2_model_path: str,
             task: str,
             language: str,
+            use_jax: bool,
             beam_size: int,
             ct2_compute_type: str,
         ):
@@ -61,6 +63,7 @@ class Config:
             self.model_name_or_ct2_model_path = model_name_or_ct2_model_path
             self.task = task
             self.language = language
+            self.use_jax = use_jax
             self.beam_size = beam_size
             self.ct2_compute_type = ct2_compute_type
 
