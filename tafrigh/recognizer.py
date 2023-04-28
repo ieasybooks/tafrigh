@@ -22,6 +22,7 @@ from tqdm.contrib import concurrent
 from tafrigh.audio_splitter import AudioSplitter
 from tafrigh.config import Config
 from tafrigh.utils.decorators import minimum_execution_time
+from tafrigh.utils.type_hints import WhisperModel
 
 
 class Recognizer:
@@ -31,7 +32,7 @@ class Recognizer:
     def recognize_whisper(
         self,
         file_path: str,
-        model: Union[whisper.Whisper, faster_whisper.WhisperModel, whisper_jax.FlaxWhisperPipline],
+        model: WhisperModel,
         whisper_config: Config.Whisper,
     ) -> List[Dict[str, Union[str, float]]]:
         with warnings.catch_warnings():

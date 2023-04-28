@@ -8,3 +8,4 @@ tqdm
 transformers
 whisper-jax @ git+https://github.com/sanchit-gandhi/whisper-jax.git
 yt-dlp
+pydub

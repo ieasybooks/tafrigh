@@ -1,12 +1,12 @@
 import csv
+import logging
 import os
 import random
+import re
 import sys
 
-from typing import Dict, List, Tuple, Union
-
-import faster_whisper
-import whisper
+from pathlib import Path
+from typing import Any, Dict, List, Union
 
 from tqdm import tqdm
 
@@ -14,7 +14,9 @@ from tafrigh.config import Config
 from tafrigh.downloader import Downloader
 from tafrigh.recognizer import Recognizer
 from tafrigh.utils import cli_utils
+from tafrigh.utils.files_utils import convert_to_wav, filter_media_files
 from tafrigh.utils import time_utils
+from tafrigh.utils.type_hints import WhisperModelTuple
 from tafrigh.utils import whisper_utils
 from tafrigh.writer import Writer
 
@@ -23,7 +25,7 @@ def main():
     args = cli_utils.parse_args(sys.argv[1:])
 
     config = Config(
-        urls=args.urls,
+        urls_or_paths=args.urls_or_paths,
         verbose=args.verbose,
 
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
@@ -56,11 +58,19 @@ def farrigh(config: Config) -> None:
 
     segments = []
 
-    for url in tqdm(config.input.urls, desc='URLs'):
-        url_elements_segments = process_url(url, model, config)
-
-        for url_element_segments in url_elements_segments:
-            segments.extend(url_element_segments)
+    for item in tqdm(config.input.urls_or_paths, desc='URLs or local paths'):
+        if re.match('(https?://)', item):
+            url_elements_segments = process_url(item, model, config)
+            for url_element_segments in url_elements_segments:
+                segments.extend(url_element_segments)
+        else:
+            file_or_folder = Path(item)
+            if not file_or_folder.exists():
+                logging.warn(f"Path {file_or_folder} does not exist.")
+                continue
+            local_elements_segments = process_local(file_or_folder, model, config)
+            for local_element_segments in local_elements_segments:
+                segments.extend(local_element_segments)
 
     write_output_sample(segments, config.output)
 
@@ -69,9 +79,42 @@ def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
+def process_local(
+    path: Path,
+    model: WhisperModelTuple,
+    config: Config
+    ) -> List[List[Dict[str, Union[str, float]]]]:
+    filtered_media_files: List[Path] = filter_media_files([path] if path.is_file() else path.iterdir())
+    files: List[Dict[str, Any]] = [{"id": file.name, "file_path": file} for file in filtered_media_files]
+    
+    elements_segments = []
+
+    for file in tqdm(files, desc='Local files'):
+
+        file_path = str(file['file_path'].absolute())
+        wav_file_path = str(convert_to_wav(file['file_path']).absolute())
+
+        recognizer = Recognizer(verbose=config.input.verbose)
+        if config.use_wit():
+            segments = recognizer.recognize_wit(wav_file_path, config.wit)
+        else:
+            segments = recognizer.recognize_whisper(wav_file_path, model, config.whisper)
+
+        writer = Writer()
+        writer.write_all(file['id'], segments, config.output)
+
+        for segment in segments:
+            segment['url'] = f"file://{file_path}&t={int(segment['start'])}"
+            segment['file_path'] = file_path
+
+        elements_segments.append(writer.compact_segments(segments, config.output.min_words_per_segment))
+
+    return elements_segments
+
+
 def process_url(
     url: str,
-    model: Tuple[Union[whisper.Whisper, faster_whisper.WhisperModel], str],
+    model: WhisperModelTuple,
     config: Config,
 ) -> List[List[Dict[str, Union[str, float]]]]:
     url_data = Downloader(output_dir=config.output.output_dir).download(
