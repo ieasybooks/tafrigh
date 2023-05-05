@@ -1,11 +1,11 @@
 auditok
 faster-whisper @ https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz
-openai-whisper
 numpy
+openai-whisper
+pydub
 scipy
 stable-ts
 tqdm
 transformers
 whisper-jax @ git+https://github.com/sanchit-gandhi/whisper-jax.git
 yt-dlp
-pydub
