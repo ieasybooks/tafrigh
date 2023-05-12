@@ -11,6 +11,7 @@ setup(
         'faster-whisper @ https://github.com/guillaumekln/faster-whisper/archive/refs/heads/master.tar.gz',
         'numpy',
         'openai-whisper',
+        'pydub',
         'scipy',
         'stable-ts',
         'tqdm',
