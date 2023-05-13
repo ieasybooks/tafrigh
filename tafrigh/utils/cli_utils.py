@@ -12,7 +12,11 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
 
     input_group = parser.add_argument_group('Input')
 
-    input_group.add_argument('urls_or_paths', nargs='+', help='Video/Playlist URLs or local folder/file(s) to transcribe.')
+    input_group.add_argument(
+        'urls_or_paths',
+        nargs='+',
+        help='Video/Playlist URLs or local folder/file(s) to transcribe.',
+    )
 
     input_group.add_argument(
         '--verbose',

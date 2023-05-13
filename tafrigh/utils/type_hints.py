@@ -6,7 +6,7 @@ import whisper_jax
 
 
 WhisperModel = TypeVar(
-    "WhisperModel",
+    'WhisperModel',
     whisper.Whisper,
     faster_whisper.WhisperModel,
     whisper_jax.FlaxWhisperPipline,
