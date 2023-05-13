@@ -174,7 +174,7 @@ class Recognizer:
             response = session.post(
                 'https://api.wit.ai/speech',
                 headers={
-                    'Accept': 'application/vnd.wit.20220513+json',
+                    'Accept': 'application/vnd.wit.20200513+json',
                     'Content-Type': 'audio/wav',
                     'Authorization': f'Bearer {wit_config.wit_client_access_token}',
                 },
