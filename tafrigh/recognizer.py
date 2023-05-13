@@ -3,6 +3,7 @@ import logging
 import multiprocessing
 import os
 import requests
+import shutil
 import tempfile
 import time
 import warnings
@@ -46,9 +47,11 @@ class Recognizer:
                 return self._recognize_jax_whisper(file_path, model, whisper_config)
 
     def recognize_wit(self, file_path: str, wit_config: Config.Wit) -> List[Dict[str, Union[str, float]]]:
+        temp_directory = tempfile.mkdtemp()
+
         segments = AudioSplitter().split(
             file_path,
-            tempfile.gettempdir(),
+            temp_directory,
             max_dur=wit_config.max_cutting_duration,
             expand_segments_with_noise=True,
         )
@@ -65,7 +68,7 @@ class Recognizer:
         session = requests.Session()
         session.mount('https://', adapter)
 
-        return concurrent.process_map(
+        transcriptions = concurrent.process_map(
             self._process_segment_wit,
             segments,
             repeat(file_path),
@@ -74,6 +77,10 @@ class Recognizer:
             max_workers=min(4, multiprocessing.cpu_count() - 1),
             chunksize=1,
         )
+
+        shutil.rmtree(temp_directory)
+
+        return transcriptions
 
     def _recognize_stable_whisper(
         self,
