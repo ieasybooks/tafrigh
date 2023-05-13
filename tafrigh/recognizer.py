@@ -174,15 +174,16 @@ class Recognizer:
             response = session.post(
                 'https://api.wit.ai/speech',
                 headers={
-                    'Authorization': f'Bearer {wit_config.wit_client_access_token}',
+                    'Accept': 'application/vnd.wit.20220513+json',
                     'Content-Type': 'audio/wav',
+                    'Authorization': f'Bearer {wit_config.wit_client_access_token}',
                 },
                 data=audio_content,
             )
 
             if response.status_code == 200:
                 try:
-                    text = json.loads(response.text.split('\r\n')[-1])['text']
+                    text = json.loads(response.text)['text']
                     break
                 except KeyError:
                     retries -= 1
