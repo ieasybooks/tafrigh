@@ -89,12 +89,14 @@ def process_local(path: Path, model: WhisperModel, config: Config) -> List[List[
         if config.use_wit():
             wav_file_path = str(file_utils.convert_to_wav(file['file_path']).absolute())
             segments = recognizer.recognize_wit(wav_file_path, config.wit)
-            Path(wav_file_path).unlink(missing_ok=True)
+
+            if file['file_path'].suffix != '.wav':
+                Path(wav_file_path).unlink(missing_ok=True)
         else:
             segments = recognizer.recognize_whisper(file_path, model, config.whisper)
 
         writer = Writer()
-        writer.write_all(file['file_name'], segments, config.output)
+        writer.write_all(Path(file['file_name']).stem, segments, config.output)
 
         for segment in segments:
             segment['url'] = f"file://{file_path}&t={int(segment['start'])}"
