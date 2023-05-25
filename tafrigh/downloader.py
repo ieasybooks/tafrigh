@@ -35,13 +35,13 @@ class Downloader:
         return url_data
 
     def _save_response(self, url: str) -> None:
-        url_data = self.youtube_dl.extract_info(url)
+        url_data = self.youtube_dl.extract_info(url, download=False)
 
         if '_type' in url_data and url_data['_type'] == 'playlist':
             for entry in url_data['entries']:
-                if entry:
+                if entry and 'requested_downloads' in entry:
                     self._remove_postprocessors(entry['requested_downloads'])
-        else:
+        elif 'requested_downloads' in url_data:
             self._remove_postprocessors(url_data['requested_downloads'])
 
         file_path = os.path.join(self.output_dir, f"{url_data['id']}.json")
