@@ -12,13 +12,23 @@ from tqdm import tqdm
 
 from tafrigh.config import Config
 from tafrigh.downloader import Downloader
-from tafrigh.recognizer import Recognizer
 from tafrigh.utils import cli_utils
 from tafrigh.utils import file_utils
 from tafrigh.utils import time_utils
-from tafrigh.utils import whisper_utils
-from tafrigh.utils.type_hints import WhisperModel
 from tafrigh.writer import Writer
+
+try:
+    from tafrigh.recognizers.wit_recognizer import WitRecognizer
+    from tafrigh.utils.wit import file_utils as wit_file_utils
+except ModuleNotFoundError:
+    pass
+
+try:
+    from tafrigh.recognizers.whisper_recognizer import WhisperRecognizer
+    from tafrigh.types.whisper.type_hints import WhisperModel
+    from tafrigh.utils.whisper import whisper_utils
+except ModuleNotFoundError:
+    pass
 
 
 def main():
@@ -76,7 +86,7 @@ def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
-def process_local(path: Path, model: WhisperModel, config: Config) -> List[List[Dict[str, Union[str, float]]]]:
+def process_local(path: Path, model: 'WhisperModel', config: Config) -> List[List[Dict[str, Union[str, float]]]]:
     filtered_media_files: List[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
     files: List[Dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
 
@@ -85,15 +95,14 @@ def process_local(path: Path, model: WhisperModel, config: Config) -> List[List[
     for file in tqdm(files, desc='Local files'):
         file_path = str(file['file_path'].absolute())
 
-        recognizer = Recognizer(verbose=config.input.verbose)
         if config.use_wit():
-            wav_file_path = str(file_utils.convert_to_wav(file['file_path']).absolute())
-            segments = recognizer.recognize_wit(wav_file_path, config.wit)
+            wav_file_path = str(wit_file_utils.convert_to_wav(file['file_path']).absolute())
+            segments = WitRecognizer(verbose=config.input.verbose).recognize(wav_file_path, config.wit)
 
             if file['file_path'].suffix != '.wav':
                 Path(wav_file_path).unlink(missing_ok=True)
         else:
-            segments = recognizer.recognize_whisper(file_path, model, config.whisper)
+            segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
 
         writer = Writer()
         writer.write_all(Path(file['file_name']).stem, segments, config.output)
@@ -107,7 +116,7 @@ def process_local(path: Path, model: WhisperModel, config: Config) -> List[List[
     return elements_segments
 
 
-def process_url(url: str, model: WhisperModel, config: Config) -> List[List[Dict[str, Union[str, float]]]]:
+def process_url(url: str, model: 'WhisperModel', config: Config) -> List[List[Dict[str, Union[str, float]]]]:
     url_data = Downloader(output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
@@ -126,11 +135,10 @@ def process_url(url: str, model: WhisperModel, config: Config) -> List[List[Dict
 
         file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
 
-        recognizer = Recognizer(verbose=config.input.verbose)
         if config.use_wit():
-            segments = recognizer.recognize_wit(file_path, config.wit)
+            segments = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
         else:
-            segments = recognizer.recognize_whisper(file_path, model, config.whisper)
+            segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
 
         writer = Writer()
         writer.write_all(element['id'], segments, config.output)
