@@ -4,7 +4,7 @@ import whisper
 import whisper_jax
 
 from tafrigh.config import Config
-from tafrigh.utils.type_hints import WhisperModel
+from tafrigh.types.whisper.type_hints import WhisperModel
 
 
 def load_model(whisper_config: Config.Whisper) -> WhisperModel:

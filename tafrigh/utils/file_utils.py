@@ -3,8 +3,6 @@ import mimetypes
 from pathlib import Path
 from typing import List
 
-from pydub import AudioSegment
-
 
 mimetypes.init()
 
@@ -21,10 +19,3 @@ def filter_media_files(paths: List[Path]) -> List[Path]:
             continue
         filtered_media_files.append(path)
     return filtered_media_files
-
-
-def convert_to_wav(file: Path) -> Path:
-    audio_file = AudioSegment.from_file(str(file))
-    converted_file_path = file.with_suffix('.wav')
-    audio_file.export(str(converted_file_path), format='wav')
-    return converted_file_path
