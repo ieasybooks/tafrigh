@@ -5,8 +5,9 @@ import random
 import re
 import sys
 
+from collections import deque
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, Generator, List, Tuple, Union
 
 from tqdm import tqdm
 
@@ -53,10 +54,10 @@ def main():
         output_dir=args.output_dir,
     )
 
-    farrigh(config)
+    deque(farrigh(config), maxlen=0)
 
 
-def farrigh(config: Config) -> None:
+def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:
     prepare_output_dir(config.output.output_dir)
 
     model = None
@@ -65,16 +66,18 @@ def farrigh(config: Config) -> None:
 
     segments = []
 
-    for item in tqdm(config.input.urls_or_paths, desc='URLs or local paths'):
+    for idx, item in enumerate(tqdm(config.input.urls_or_paths, desc='URLs or local paths')):
+        progress_info = {'outer_total': len(config.input.urls_or_paths), 'outer_current': idx + 1}
+
         if Path(item).exists():
             file_or_folder = Path(item)
-            local_elements_segments = process_local(file_or_folder, model, config)
-            for local_element_segments in local_elements_segments:
-                segments.extend(local_element_segments)
+            for progress_info, local_elements_segments in process_local(file_or_folder, model, config, progress_info):
+                segments.extend(local_elements_segments)
+                yield progress_info
         elif re.match('(https?://)', item):
-            url_elements_segments = process_url(item, model, config)
-            for url_element_segments in url_elements_segments:
-                segments.extend(url_element_segments)
+            for progress_info, url_elements_segments in process_url(item, model, config, progress_info):
+                segments.extend(url_elements_segments)
+                yield progress_info
         else:
             logging.error(f'Path {item} does not exist and is not a URL either.')
             continue
@@ -86,13 +89,20 @@ def prepare_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
 
-def process_local(path: Path, model: 'WhisperModel', config: Config) -> List[List[Dict[str, Union[str, float]]]]:
+def process_local(
+    path: Path,
+    model: 'WhisperModel',
+    config: Config,
+    progress_info: dict,
+) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
     filtered_media_files: List[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
     files: List[Dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
 
-    elements_segments = []
+    for idx, file in enumerate(tqdm(files, desc='Local files')):
+        new_progress_info = progress_info.copy()
+        new_progress_info.update({'inner_total': len(files), 'inner_current': idx + 1, 'status': 'processing'})
+        yield new_progress_info, []
 
-    for file in tqdm(files, desc='Local files'):
         file_path = str(file['file_path'].absolute())
 
         if config.use_wit():
@@ -111,12 +121,16 @@ def process_local(path: Path, model: 'WhisperModel', config: Config) -> List[Lis
             segment['url'] = f"file://{file_path}&t={int(segment['start'])}"
             segment['file_path'] = file_path
 
-        elements_segments.append(writer.compact_segments(segments, config.output.min_words_per_segment))
+        new_progress_info['status'] = 'completed'
+        yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
-    return elements_segments
 
-
-def process_url(url: str, model: 'WhisperModel', config: Config) -> List[List[Dict[str, Union[str, float]]]]:
+def process_url(
+    url: str,
+    model: 'WhisperModel',
+    config: Config,
+    progress_info: dict,
+) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
     url_data = Downloader(output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
@@ -127,11 +141,13 @@ def process_url(url: str, model: 'WhisperModel', config: Config) -> List[List[Di
     else:
         url_data = [url_data]
 
-    elements_segments = []
-
-    for element in tqdm(url_data, desc='URL elements'):
+    for idx, element in enumerate(tqdm(url_data, desc='URL elements')):
         if not element:
             continue
+
+        new_progress_info = progress_info.copy()
+        new_progress_info.update({'inner_total': len(url_data), 'inner_current': idx + 1, 'status': 'processing'})
+        yield new_progress_info, []
 
         file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
 
@@ -147,9 +163,8 @@ def process_url(url: str, model: 'WhisperModel', config: Config) -> List[List[Di
             segment['url'] = f"https://youtube.com/watch?v={element['id']}&t={int(segment['start'])}"
             segment['file_path'] = file_path
 
-        elements_segments.append(writer.compact_segments(segments, config.output.min_words_per_segment))
-
-    return elements_segments
+        new_progress_info['status'] = 'completed'
+        yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
 
 def write_output_sample(segments: List[Dict[str, Union[str, float]]], output: Config.Output) -> None:
