@@ -18,6 +18,7 @@ class Downloader:
             'format': 'wav/bestaudio/best',
             'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
             'ignoreerrors': True,
+            'download_archive': os.path.join(self.output_dir, 'archive.txt'),
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',
@@ -29,14 +30,37 @@ class Downloader:
     def download(self, url: str, save_response: bool = False) -> Dict[str, Any]:
         url_data = self.youtube_dl.extract_info(url, download=True)
 
+        if not url_data:
+            url_data = self._extract_url_data(url)
+
         if save_response:
-            self._save_response(url)
+            self._save_response(url_data)
 
         return url_data
 
-    def _save_response(self, url: str) -> None:
-        url_data = self.youtube_dl.extract_info(url, download=False)
+    def _extract_url_data(self, url: str) -> Dict[str, Any]:
+        extractor = None
 
+        for ie in yt_dlp.extractor.gen_extractor_classes():
+            if ie.suitable(url):
+                extractor = ie.ie_key()
+                break
+
+        if extractor is None:
+            raise ValueError(f"Could not find an extractor for the given URL: {url}.")
+
+        try:
+            return self.youtube_dl._YoutubeDL__extract_info(
+                url,
+                ie=self.youtube_dl.get_info_extractor(extractor),
+                download=False,
+                extra_info={},
+                process=True,
+            )
+        except yt_dlp.utils.YoutubeDLError:
+            raise RuntimeError('Failed to extract URL data.')
+
+    def _save_response(self, url_data: Dict[str, Any]) -> None:
         if '_type' in url_data and url_data['_type'] == 'playlist':
             for entry in url_data['entries']:
                 if entry and 'requested_downloads' in entry:
