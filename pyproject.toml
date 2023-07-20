@@ -16,6 +16,7 @@ dependencies = ["tqdm", "yt-dlp"]
 [project.optional-dependencies]
 wit = ["auditok", "numpy", "pydub", "scipy"]
 whisper = [
+    "cached_property",
     "faster-whisper",
     "openai-whisper",
     "stable-ts",
