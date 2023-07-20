@@ -37,6 +37,7 @@ def main():
 
     config = Config(
         urls_or_paths=args.urls_or_paths,
+        playlist_items=args.playlist_items,
         verbose=args.verbose,
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
         task=args.task,
@@ -131,7 +132,7 @@ def process_url(
     config: Config,
     progress_info: dict,
 ) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
-    url_data = Downloader(output_dir=config.output.output_dir).download(
+    url_data = Downloader(playlist_items=config.input.playlist_items, output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
     )

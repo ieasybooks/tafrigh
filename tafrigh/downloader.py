@@ -7,7 +7,8 @@ import yt_dlp
 
 
 class Downloader:
-    def __init__(self, output_dir: str):
+    def __init__(self, playlist_items: str, output_dir: str):
+        self.playlist_items = playlist_items
         self.output_dir = output_dir
         self.youtube_dl_with_archive = yt_dlp.YoutubeDL(self._config(os.path.join(self.output_dir, 'archive.txt')))
         self.youtube_dl_without_archive = yt_dlp.YoutubeDL(self._config(False))
@@ -20,6 +21,7 @@ class Downloader:
             'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
             'ignoreerrors': True,
             'download_archive': download_archive,
+            'playlist_items': self.playlist_items,
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',

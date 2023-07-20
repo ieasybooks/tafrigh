@@ -1,8 +1,17 @@
 import argparse
+import re
 
 from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
+
+
+PLAYLIST_ITEMS_RE = re.compile(r'''(?x)
+        (?P<start>[+-]?\d+)?
+        (?P<range>[:-]
+            (?P<end>[+-]?\d+|inf(?:inite)?)?
+            (?::(?P<step>[+-]?\d+))?
+        )?''')
 
 
 def parse_args(argv: List[str]) -> argparse.Namespace:
@@ -14,6 +23,13 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         'urls_or_paths',
         nargs='+',
         help='Video/Playlist URLs or local folder/file(s) to transcribe.',
+    )
+
+    input_group.add_argument(
+        '--playlist_items',
+        default='',
+        type=parse_playlist_items,
+        help='Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".',
     )
 
     input_group.add_argument(
@@ -139,3 +155,34 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     output_group.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
 
     return parser.parse_args(argv)
+
+
+def parse_playlist_items(string):
+    for segment in string.split(','):
+        if not segment:
+            raise ValueError('There is two or more consecutive commas.')
+        mobj = PLAYLIST_ITEMS_RE.fullmatch(segment)
+        if not mobj:
+            raise ValueError(f'{segment!r} is not a valid specification.')
+        start, end, step, has_range = mobj.group('start', 'end', 'step', 'range')
+        if int_or_none(step) == 0:
+            raise ValueError(f'Step in {segment!r} cannot be zero.')
+        yield slice(int_or_none(start), float_or_none(end), int_or_none(step)) if has_range else int(start)
+
+
+def int_or_none(v, scale=1, default=None, get_attr=None, invscale=1):
+    if get_attr and v is not None:
+        v = getattr(v, get_attr, None)
+    try:
+        return int(v) * invscale // scale
+    except (ValueError, TypeError, OverflowError):
+        return default
+
+
+def float_or_none(v, scale=1, invscale=1, default=None):
+    if v is None:
+        return default
+    try:
+        return float(v) * invscale / scale
+    except (ValueError, TypeError):
+        return default

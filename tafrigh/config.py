@@ -9,6 +9,7 @@ class Config:
     def __init__(
         self,
         urls_or_paths: List[str],
+        playlist_items: str,
         verbose: bool,
         model_name_or_ct2_model_path: str,
         task: str,
@@ -25,7 +26,7 @@ class Config:
         output_formats: List[str],
         output_dir: str,
     ):
-        self.input = self.Input(urls_or_paths, verbose)
+        self.input = self.Input(urls_or_paths, playlist_items, verbose)
         self.whisper = self.Whisper(model_name_or_ct2_model_path, task, language, use_jax, beam_size, ct2_compute_type)
         self.wit = self.Wit(wit_client_access_token, max_cutting_duration)
 
@@ -42,8 +43,9 @@ class Config:
         return self.wit.wit_client_access_token != ''
 
     class Input:
-        def __init__(self, urls_or_paths: List[str], verbose: bool):
+        def __init__(self, urls_or_paths: List[str], playlist_items: str, verbose: bool):
             self.urls_or_paths = urls_or_paths
+            self.playlist_items = playlist_items
             self.verbose = verbose
 
     class Whisper:
