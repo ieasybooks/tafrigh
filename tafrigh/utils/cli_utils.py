@@ -26,6 +26,13 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     )
 
     input_group.add_argument(
+        '--skip_if_output_exist',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Whether to skip generating the output if the output file already exists.',
+    )
+
+    input_group.add_argument(
         '--playlist_items',
         default='',
         type=parse_playlist_items,
