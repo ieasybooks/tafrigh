@@ -1,5 +1,6 @@
 import os
 
+from pathlib import Path
 from typing import Dict, List, Union
 
 from tafrigh.config import Config
@@ -113,6 +114,21 @@ class Writer:
             compacted_segments.append(tmp_segment)
 
         return compacted_segments
+
+    def is_output_exist(self, file_name: str, output_config: Config.Output):
+        if output_config.save_files_before_compact and not all(
+            Path(output_config.output_dir, f'{file_name}-original.{output_format}').is_file()
+            for output_format in output_config.output_formats
+        ):
+            return False
+
+        if (not output_config.save_files_before_compact or output_config.min_words_per_segment != 0) and not all(
+            Path(output_config.output_dir, f'{file_name}.{output_format}').is_file()
+            for output_format in output_config.output_formats
+        ):
+            return False
+
+        return True
 
     def _write_to_file(self, file_path: str, content: str) -> None:
         with open(file_path, 'w', encoding='utf-8') as fp:

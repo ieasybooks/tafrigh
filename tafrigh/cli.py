@@ -37,6 +37,7 @@ def main():
 
     config = Config(
         urls_or_paths=args.urls_or_paths,
+        skip_if_output_exist=args.skip_if_output_exist,
         playlist_items=args.playlist_items,
         verbose=args.verbose,
         model_name_or_ct2_model_path=args.model_name_or_ct2_model_path,
@@ -104,6 +105,12 @@ def process_local(
         new_progress_info.update({'inner_total': len(files), 'inner_current': idx + 1, 'status': 'processing'})
         yield new_progress_info, []
 
+        writer = Writer()
+        if config.input.skip_if_output_exist and writer.is_output_exist(Path(file['file_name']).stem, config.output):
+            new_progress_info['status'] = 'completed'
+            yield new_progress_info, []
+            continue
+
         file_path = str(file['file_path'].absolute())
 
         if config.use_wit():
@@ -115,7 +122,6 @@ def process_local(
         else:
             segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
 
-        writer = Writer()
         writer.write_all(Path(file['file_name']).stem, segments, config.output)
 
         for segment in segments:
@@ -150,6 +156,12 @@ def process_url(
         new_progress_info.update({'inner_total': len(url_data), 'inner_current': idx + 1, 'status': 'processing'})
         yield new_progress_info, []
 
+        writer = Writer()
+        if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], config.output):
+            new_progress_info['status'] = 'completed'
+            yield new_progress_info, []
+            continue
+
         file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
 
         if config.use_wit():
@@ -157,7 +169,6 @@ def process_url(
         else:
             segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
 
-        writer = Writer()
         writer.write_all(element['id'], segments, config.output)
 
         for segment in segments:
