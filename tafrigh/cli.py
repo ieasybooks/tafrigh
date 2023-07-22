@@ -40,6 +40,7 @@ def main():
         skip_if_output_exist=args.skip_if_output_exist,
         playlist_items=args.playlist_items,
         verbose=args.verbose,
+
         model_name_or_path=args.model_name_or_path,
         task=args.task,
         language=args.language,
@@ -47,9 +48,11 @@ def main():
         use_whisper_jax=args.use_whisper_jax,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
+
         wit_client_access_token=args.wit_client_access_token,
         max_cutting_duration=args.max_cutting_duration,
         min_words_per_segment=args.min_words_per_segment,
+
         save_files_before_compact=args.save_files_before_compact,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
         output_sample=args.output_sample,
@@ -70,7 +73,11 @@ def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:
     segments = []
 
     for idx, item in enumerate(tqdm(config.input.urls_or_paths, desc='URLs or local paths')):
-        progress_info = {'outer_total': len(config.input.urls_or_paths), 'outer_current': idx + 1}
+        progress_info = {
+            'outer_total': len(config.input.urls_or_paths),
+            'outer_current': idx + 1,
+            'outer_status': 'processing',
+        }
 
         if Path(item).exists():
             file_or_folder = Path(item)
@@ -83,7 +90,14 @@ def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:
                 yield progress_info
         else:
             logging.error(f'Path {item} does not exist and is not a URL either.')
+
+            progress_info['outer_status'] = 'completed'
+            yield progress_info
+
             continue
+
+        progress_info['outer_status'] = 'completed'
+        yield progress_info
 
     write_output_sample(segments, config.output)
 
@@ -103,25 +117,44 @@ def process_local(
 
     for idx, file in enumerate(tqdm(files, desc='Local files')):
         new_progress_info = progress_info.copy()
-        new_progress_info.update({'inner_total': len(files), 'inner_current': idx + 1, 'status': 'processing'})
+        new_progress_info.update({
+            'inner_total': len(files),
+            'inner_current': idx + 1,
+            'inner_status': 'processing',
+            'progress': 0.0,
+            'remaining_time': None,
+        })
         yield new_progress_info, []
 
         writer = Writer()
         if config.input.skip_if_output_exist and writer.is_output_exist(Path(file['file_name']).stem, config.output):
-            new_progress_info['status'] = 'completed'
+            new_progress_info['inner_status'] = 'completed'
             yield new_progress_info, []
+
             continue
 
         file_path = str(file['file_path'].absolute())
 
         if config.use_wit():
             wav_file_path = str(wit_file_utils.convert_to_wav(file['file_path']).absolute())
-            segments = WitRecognizer(verbose=config.input.verbose).recognize(wav_file_path, config.wit)
-
-            if file['file_path'].suffix != '.wav':
-                Path(wav_file_path).unlink(missing_ok=True)
+            recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(wav_file_path, config.wit)
         else:
-            segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
+            recognize_generator = WhisperRecognizer(verbose=config.input.verbose).recognize(
+                file_path,
+                model,
+                config.whisper,
+            )
+
+        while True:
+            try:
+                new_progress_info.update(next(recognize_generator))
+                yield new_progress_info, []
+            except StopIteration as exception:
+                segments = exception.value
+                break
+
+        if config.use_wit() and file['file_path'].suffix != '.wav':
+            Path(wav_file_path).unlink(missing_ok=True)
 
         writer.write_all(Path(file['file_name']).stem, segments, config.output)
 
@@ -129,7 +162,8 @@ def process_local(
             segment['url'] = f"file://{file_path}&t={int(segment['start'])}"
             segment['file_path'] = file_path
 
-        new_progress_info['status'] = 'completed'
+        new_progress_info['inner_status'] = 'completed'
+        new_progress_info['progress'] = 100.0
         yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
 
@@ -154,21 +188,40 @@ def process_url(
             continue
 
         new_progress_info = progress_info.copy()
-        new_progress_info.update({'inner_total': len(url_data), 'inner_current': idx + 1, 'status': 'processing'})
+        new_progress_info.update({
+            'inner_total': len(url_data),
+            'inner_current': idx + 1,
+            'inner_status': 'processing',
+            'progress': 0.0,
+            'remaining_time': None,
+        })
         yield new_progress_info, []
 
         writer = Writer()
         if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], config.output):
-            new_progress_info['status'] = 'completed'
+            new_progress_info['inner_status'] = 'completed'
             yield new_progress_info, []
+
             continue
 
         file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
 
         if config.use_wit():
-            segments = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
+            recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
         else:
-            segments = WhisperRecognizer(verbose=config.input.verbose).recognize(file_path, model, config.whisper)
+            recognize_generator = WhisperRecognizer(verbose=config.input.verbose).recognize(
+                file_path,
+                model,
+                config.whisper,
+            )
+
+        while True:
+            try:
+                new_progress_info.update(next(recognize_generator))
+                yield new_progress_info, []
+            except StopIteration as exception:
+                segments = exception.value
+                break
 
         writer.write_all(element['id'], segments, config.output)
 
@@ -176,7 +229,8 @@ def process_url(
             segment['url'] = f"https://youtube.com/watch?v={element['id']}&t={int(segment['start'])}"
             segment['file_path'] = file_path
 
-        new_progress_info['status'] = 'completed'
+        new_progress_info['inner_status'] = 'completed'
+        new_progress_info['progress'] = 100.0
         yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
 
