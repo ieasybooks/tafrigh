@@ -49,9 +49,9 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
 
     whisper_group.add_argument(
         '-m',
-        '--model_name_or_ct2_model_path',
+        '--model_name_or_path',
         default='small',
-        help='Name of the Whisper model to use or a path to CTranslate2 model converted using `ct2-transformers-converter` tool.',
+        help='Name or path of the Whisper model to use.',
     )
 
     whisper_group.add_argument(
@@ -75,7 +75,14 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     )
 
     whisper_group.add_argument(
-        '--use_jax',
+        '--use_faster_whisper',
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help='Whether to use Faster Whisper implementation.',
+    )
+
+    whisper_group.add_argument(
+        '--use_whisper_jax',
         action=argparse.BooleanOptionalAction,
         default=False,
         help='Whether to use Whisper JAX implementation. Make sure to have JAX installed before using this option.',
@@ -163,7 +170,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def parse_playlist_items(arg_value):
+def parse_playlist_items(arg_value: str) -> str:
     for segment in arg_value.split(','):
         if not segment:
             raise ValueError('There is two or more consecutive commas.')

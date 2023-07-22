@@ -24,7 +24,7 @@
 <h2 dir="rtl">متطلبات الاستخدام</h2>
 
 <ul dir="rtl">
-  <li>يُفضّل وجود معالج رسوميات قوي في حاسبك</li>
+  <li>يُفضّل وجود معالج رسوميات قوي في حاسبك في حال استخدام نماذج Whisper</li>
   <li>تثبيت لغة Python بإصدار 3.9 أو أعلى على حاسبك</li>
   <li>تثبيت برمجية <a href="https://ffmpeg.org">FFmpeg</a> على حاسبك</li>
   <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
@@ -64,7 +64,7 @@
     خيارات تقنية Whisper
     <ul dir="rtl">
       <li>
-        النموذج: يمكنك تحديد النموذج من خلال الاختيار <code dir="ltr">--model_name_or_ct2_model_path</code>. النماذج المتوفرة:
+        النموذج: يمكنك تحديد النموذج من خلال الاختيار <code dir="ltr">--model_name_or_path</code>. النماذج المتوفرة:
         <ul dir="rtl">
           <li><code dir="ltr">tiny.en</code> (لغة انجليزية فقط)</li>
           <li><code dir="ltr">tiny</code> (الأقل دقة)</li>
@@ -77,7 +77,9 @@
           <li><code dir="ltr">large-v1</code></li>
           <li><code dir="ltr">large-v2</code></li>
           <li><code dir="ltr">large</code> (الأعلى دقة)</li>
-          <li>مسار نموذج تم تحويله باستخدام أداة <a href="https://opennmt.net/CTranslate2/guides/transformers.html"><code>ct2-transformers-converter</code></a> لاستخدام المكتبة السريعة <a href="https://github.com/guillaumekln/faster-whisper"><code>faster-whisper</code></a></li>
+          <li>اسم نموذج Whisper موجود على HuggingFace Hub</li>
+          <li>مسار نموذج Whisper تم تحميلة مسبقًا</li>
+          <li>مسار نموذج Whisper تم تحويله باستخدام أداة <a href="https://opennmt.net/CTranslate2/guides/transformers.html"><code>ct2-transformers-converter</code></a> لاستخدام المكتبة السريعة <a href="https://github.com/guillaumekln/faster-whisper"><code>faster-whisper</code></a></li>
         </ul>
       </li>
       <li>
@@ -88,7 +90,8 @@
         </ul>
       </li>
       <li>اللغة: يمكنك تحديد لغة الصوت من خلال الاختيار <code dir="ltr">--language</code>. على سبيل المثال، لتحديد اللغة العربية قم بتمرير <code dir="ltr">ar</code>. إذا لم يتم تحديد اللغة، سيتم التعرف عليها تلقائيا</li>
-      <li>إطار عمل JAX: يمكنك استخدام النموذج المكتوب باستخدام إطار عمل JAX من خلال تمرير الاختيار <code dir="ltr">--use_jax</code>، لكنك ستحتاج لتثبيت إطار عمل JAX يدويا على حاسبك من خلال اتباع الخطوات الموجودة <a href="https://github.com/google/jax#installation">هنا</a></li>
+      <li>استخدام نسخة أسرع من نماذج Whisper: من خلال تمرير الاختيار <code dir="ltr">--use_faster_whisper</code> سيتم استخدام النسخة الأسرع من نماذج Whisper</li>
+      <li>إطار عمل JAX: يمكنك استخدام النموذج المكتوب باستخدام إطار عمل JAX من خلال تمرير الاختيار <code dir="ltr">--use_whisper_jax</code>، لكنك ستحتاج لتثبيت إطار عمل JAX يدويا على حاسبك من خلال اتباع الخطوات الموجودة <a href="https://github.com/google/jax#installation">هنا</a></li>
       <li>حجم نطاق البحث: يمكنك تحسين النتائج باستخدام اختيار <code dir="ltr">--beam_size</code> والذي يسمح لك بإجبار النموذج على البحث في نطاق أوسع من الكلمات أثناء إنشاء النص. القيمة الإفتراضية هي <code>5</code></li>
       <li>
         طريقة ضغط النموذج: يمكنك تحديد الطريقة التي تم بها ضغط النموذج أثناء تحويله باستخدام أداة <a href="https://opennmt.net/CTranslate2/guides/transformers.html"><code>ct2-transformers-converter</code></a> من خلال تمرير الاختيار <code dir="ltr">--ct2_compute_type</code>. الطرق المتوفرة:
@@ -135,27 +138,35 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--verbose | --no-verbose] [-m MODEL_NAME_OR_CT2_MODEL_PATH] [-t {transcribe,translate}]
+usage: tafrigh [-h] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
-               [--use_jax | --no-use_jax] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
-               urls [urls ...]
+               [--use_faster_whisper | --no-use_faster_whisper] [--use_whisper_jax | --no-use_whisper_jax] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
+               [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact]
+               [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
+               urls_or_paths [urls_or_paths ...]
 
 options:
   -h, --help            show this help message and exit
 
 Input:
-  urls                  Video/Playlist URLs to transcribe.
+  urls_or_paths         Video/Playlist URLs or local folder/file(s) to transcribe.
+  --skip_if_output_exist, --no-skip_if_output_exist
+                        Whether to skip generating the output if the output file already exists. (default: False)
+  --playlist_items PLAYLIST_ITEMS
+                        Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".
   --verbose, --no-verbose
                         Whether to print out the progress and debug messages. (default: False)
 
 Whisper:
-  -m MODEL_NAME_OR_CT2_MODEL_PATH, --model_name_or_ct2_model_path MODEL_NAME_OR_CT2_MODEL_PATH
-                        Name of the Whisper model to use or a path to CTranslate2 model converted using `ct2-transformers-converter` tool.
+  -m MODEL_NAME_OR_PATH, --model_name_or_path MODEL_NAME_OR_PATH
+                        Name or path of the Whisper model to use.
   -t {transcribe,translate}, --task {transcribe,translate}
                         Whether to perform X->X speech recognition ('transcribe') or X->English translation ('translate').
-  -l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}, --language {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh,Afrikaans,Albanian,Amharic,Arabic,Armenian,Assamese,Azerbaijani,Bashkir,Basque,Belarusian,Bengali,Bosnian,Breton,Bulgarian,Burmese,Castilian,Catalan,Chinese,Croatian,Czech,Danish,Dutch,English,Estonian,Faroese,Finnish,Flemish,French,Galician,Georgian,German,Greek,Gujarati,Haitian,Haitian Creole,Hausa,Hawaiian,Hebrew,Hindi,Hungarian,Icelandic,Indonesian,Italian,Japanese,Javanese,Kannada,Kazakh,Khmer,Korean,Lao,Latin,Latvian,Letzeburgesch,Lingala,Lithuanian,Luxembourgish,Macedonian,Malagasy,Malay,Malayalam,Maltese,Maori,Marathi,Moldavian,Moldovan,Mongolian,Myanmar,Nepali,Norwegian,Nynorsk,Occitan,Panjabi,Pashto,Persian,Polish,Portuguese,Punjabi,Pushto,Romanian,Russian,Sanskrit,Serbian,Shona,Sindhi,Sinhala,Sinhalese,Slovak,Slovenian,Somali,Spanish,Sundanese,Swahili,Swedish,Tagalog,Tajik,Tamil,Tatar,Telugu,Thai,Tibetan,Turkish,Turkmen,Ukrainian,Urdu,Uzbek,Valencian,Vietnamese,Welsh,Yiddish,Yoruba}
+  -l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}, --language {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}
                         Language spoken in the audio, skip to perform language detection.
-  --use_jax, --no-use_jax
+  --use_faster_whisper, --no-use_faster_whisper
+                        Whether to use Faster Whisper implementation. (default: False)
+  --use_whisper_jax, --no-use_whisper_jax
                         Whether to use Whisper JAX implementation. Make sure to have JAX installed before using this option. (default: False)
   --beam_size BEAM_SIZE
                         Number of beams in beam search, only applicable when temperature is zero.
@@ -189,7 +200,7 @@ Output:
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
-  --model_name_or_ct2_model_path small \
+  --model_name_or_path small \
   --task transcribe \
   --language ar \
   --output_dir . \
@@ -200,7 +211,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
-  --model_name_or_ct2_model_path small \
+  --model_name_or_path small \
   --task transcribe \
   --language ar \
   --output_dir . \
@@ -211,7 +222,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
-  --model_name_or_ct2_model_path small \
+  --model_name_or_path small \
   --task transcribe \
   --language ar \
   --output_dir . \
@@ -220,36 +231,30 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
 
 <h4 dir="rtl">تسريع عملية التفريغ</h4>
 
-<p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/guillaumekln/faster-whisper">faster_whisper</a></code> التي توفّر سرعة أكبر في تفريغ المواد من خلال تحويل النماذج المقدمة من شركة OpenAI باستخدام أداة <code><a href="https://opennmt.net/CTranslate2/guides/transformers.html">ct2-transformers-converter</a></code> كالتالي:</p>
-
-```
-ct2-transformers-converter --model openai/whisper-large-v2 --output_dir whisper-large-v2-ct2 --quantization float16
-```
-
-<p dir="rtl">ثم تمرير مسار مجلد النموذج المُحوّل إلى تفريغ كالتالي:</p>
+<p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/guillaumekln/faster-whisper">faster_whisper</a></code> التي توفّر سرعة أكبر في تفريغ المواد من خلال تمرير الاختيار <code dir="ltr">--use_faster_whisper</code> كالتالي:</p>
 
 ```
 tafrigh "https://youtu.be/3K5Jh_-UYeA" \
-  --model_name_or_ct2_model_path /path/to/whisper-large-v2-ct2 \
+  --model_name_or_path large \
   --task transcribe \
   --language ar \
+  --use_faster_whisper \
   --output_dir . \
-  --output_formats txt srt \
-  --ct2_compute_type float16
+  --output_formats txt srt
 ```
 
-<h4 dir="rtl">تسريع عملية التفريغ أكثر</h4>
+<h4 dir="rtl">تسريع عملية التفريغ أكثر (غير مختبر بشكل جيد)</h4>
 
 <p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/sanchit-gandhi/whisper-jax">whisper-jax</a></code> لتحصيل سرعة أكبر في تفريغ المواد من سرعة نماذج Whisper الأصلية من شركة OpenAI تصل إلى 70 ضعفًا، ولكن يجب أن يتم تثبيت إطار عمل JAX على حاسبك كما هو موضح <a href="https://github.com/google/jax#installation">هنا</a> لتتمكن من استخدام هذه المكتبة.</p>
 
-<p dir="rtl">لاستخدام المكتبة، تحتاج فقط لتمرير الاختيار <code dir="ltr">--use_jax</code> إلى أمر التفريغ كالتالي:</p>
+<p dir="rtl">لاستخدام المكتبة، تحتاج فقط لتمرير الاختيار <code dir="ltr">--use_whisper_jax</code> إلى أمر التفريغ كالتالي:</p>
 
 ```
 tafrigh "https://youtu.be/Di0vcmnxULs" \
-  --model_name_or_ct2_model_path small \
+  --model_name_or_path small \
   --task transcribe \
   --language ar \
-  --use_jax \
+  --use_whisper_jax \
   --output_dir . \
   --output_formats txt srt
 ```
