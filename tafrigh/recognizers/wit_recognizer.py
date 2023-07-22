@@ -9,10 +9,10 @@ import time
 
 from itertools import repeat
 from requests.adapters import HTTPAdapter
-from typing import Dict, List, Tuple, Union
+from typing import Dict, Generator, List, Tuple, Union
 from urllib3.util.retry import Retry
 
-from tqdm.contrib import concurrent
+from tqdm import tqdm
 
 from tafrigh.audio_splitter import AudioSplitter
 from tafrigh.config import Config
@@ -23,7 +23,12 @@ class WitRecognizer:
     def __init__(self, verbose: bool):
         self.verbose = verbose
 
-    def recognize(self, file_path: str, wit_config: Config.Wit) -> List[Dict[str, Union[str, float]]]:
+    def recognize(
+        self,
+        file_path: str,
+        wit_config: Config.Wit,
+    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+
         temp_directory = tempfile.mkdtemp()
 
         segments = AudioSplitter().split(
@@ -45,15 +50,26 @@ class WitRecognizer:
         session = requests.Session()
         session.mount('https://', adapter)
 
-        transcriptions = concurrent.process_map(
-            self._process_segment,
-            segments,
-            repeat(file_path),
-            repeat(wit_config),
-            repeat(session),
-            max_workers=min(4, multiprocessing.cpu_count() - 1),
-            chunksize=1,
-        )
+        with multiprocessing.Pool(processes=min(4, multiprocessing.cpu_count() - 1)) as pool:
+            async_results = [
+                pool.apply_async(self._process_segment, (segment, file_path, wit_config, session))
+                for segment in segments
+            ]
+
+            transcriptions = []
+
+            with tqdm(total=len(segments), disable=self.verbose is not False) as pbar:
+                while async_results:
+                    if async_results[0].ready():
+                        transcriptions.append(async_results.pop(0).get())
+                        pbar.update(1)
+
+                    yield {
+                        'progress': round(len(transcriptions) / len(segments) * 100, 2),
+                        'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                    }
+
+                    time.sleep(0.5)
 
         shutil.rmtree(temp_directory)
 
@@ -72,7 +88,7 @@ class WitRecognizer:
         with open(segment_file_path, 'rb') as wav_file:
             audio_content = wav_file.read()
 
-        retries = 3
+        retries = 5
 
         text = ''
         while retries > 0:

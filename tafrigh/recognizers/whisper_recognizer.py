@@ -1,6 +1,6 @@
 import warnings
 
-from typing import Dict, List, Union
+from typing import Dict, Generator, List, Union
 
 import faster_whisper
 import whisper
@@ -21,23 +21,32 @@ class WhisperRecognizer:
         file_path: str,
         model: WhisperModel,
         whisper_config: Config.Whisper,
-    ) -> List[Dict[str, Union[str, float]]]:
+    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
 
             if isinstance(model, whisper.Whisper):
-                return self._recognize_stable_whisper(file_path, model, whisper_config)
+                whisper_generator = self._recognize_stable_whisper(file_path, model, whisper_config)
             elif isinstance(model, faster_whisper.WhisperModel):
-                return self._recognize_faster_whisper(file_path, model, whisper_config)
+                whisper_generator = self._recognize_faster_whisper(file_path, model, whisper_config)
             elif isinstance(model, whisper_jax.FlaxWhisperPipline):
-                return self._recognize_jax_whisper(file_path, model, whisper_config)
+                whisper_generator = self._recognize_jax_whisper(file_path, model, whisper_config)
+
+            while True:
+                try:
+                    yield next(whisper_generator)
+                except StopIteration as e:
+                    return e.value
+                    break
 
     def _recognize_stable_whisper(
         self,
         audio_file_path: str,
         model: whisper.Whisper,
         whisper_config: Config.Whisper,
-    ) -> List[Dict[str, Union[str, float]]]:
+    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+        yield {'progress': 0.0, 'remaining_time': None}
+
         segments = model.transcribe(
             audio=audio_file_path,
             verbose=self.verbose,
@@ -60,7 +69,7 @@ class WhisperRecognizer:
         audio_file_path: str,
         model: faster_whisper.WhisperModel,
         whisper_config: Config.Whisper,
-    ) -> List[Dict[str, Union[str, float]]]:
+    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
         segments, info = model.transcribe(
             audio=audio_file_path,
             task=whisper_config.task,
@@ -87,6 +96,11 @@ class WhisperRecognizer:
                 pbar.update(pbar_update)
                 last_end = segment.end
 
+                yield {
+                    'progress': round(pbar.n / pbar.total * 100, 2),
+                    'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                }
+
         return converted_segments
 
     def _recognize_jax_whisper(
@@ -94,7 +108,9 @@ class WhisperRecognizer:
         audio_file_path: str,
         model: whisper_jax.FlaxWhisperPipline,
         whisper_config: Config.Whisper,
-    ) -> List[Dict[str, Union[str, float]]]:
+    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+        yield {'progress': 0.0, 'remaining_time': None}
+
         segments = model(
             audio_file_path,
             task=whisper_config.task,
