@@ -12,10 +12,11 @@ class Config:
         skip_if_output_exist: bool,
         playlist_items: str,
         verbose: bool,
-        model_name_or_ct2_model_path: str,
+        model_name_or_path: str,
         task: str,
         language: str,
-        use_jax: bool,
+        use_faster_whisper: bool,
+        use_whisper_jax: bool,
         beam_size: int,
         ct2_compute_type: str,
         wit_client_access_token: str,
@@ -28,7 +29,17 @@ class Config:
         output_dir: str,
     ):
         self.input = self.Input(urls_or_paths, skip_if_output_exist, playlist_items, verbose)
-        self.whisper = self.Whisper(model_name_or_ct2_model_path, task, language, use_jax, beam_size, ct2_compute_type)
+
+        self.whisper = self.Whisper(
+            model_name_or_path,
+            task,
+            language,
+            use_faster_whisper,
+            use_whisper_jax,
+            beam_size,
+            ct2_compute_type,
+        )
+
         self.wit = self.Wit(wit_client_access_token, max_cutting_duration)
 
         self.output = self.Output(
@@ -53,21 +64,23 @@ class Config:
     class Whisper:
         def __init__(
             self,
-            model_name_or_ct2_model_path: str,
+            model_name_or_path: str,
             task: str,
             language: str,
-            use_jax: bool,
+            use_faster_whisper: bool,
+            use_whisper_jax: bool,
             beam_size: int,
             ct2_compute_type: str,
         ):
-            if model_name_or_ct2_model_path.endswith('.en'):
-                logging.warn(f'{model_name_or_ct2_model_path} is an English-only model, setting language to English.')
+            if model_name_or_path.endswith('.en'):
+                logging.warn(f'{model_name_or_path} is an English-only model, setting language to English.')
                 language = 'en'
 
-            self.model_name_or_ct2_model_path = model_name_or_ct2_model_path
+            self.model_name_or_path = model_name_or_path
             self.task = task
             self.language = language
-            self.use_jax = use_jax
+            self.use_faster_whisper = use_faster_whisper
+            self.use_whisper_jax = use_whisper_jax
             self.beam_size = beam_size
             self.ct2_compute_type = ct2_compute_type
 
