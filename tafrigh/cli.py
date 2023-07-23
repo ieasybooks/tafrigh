@@ -19,6 +19,8 @@ from tafrigh.utils import time_utils
 from tafrigh.writer import Writer
 
 try:
+    import requests
+
     from tafrigh.recognizers.wit_recognizer import WitRecognizer
     from tafrigh.utils.wit import file_utils as wit_file_utils
 except ModuleNotFoundError:
@@ -60,7 +62,17 @@ def main():
         output_dir=args.output_dir,
     )
 
-    deque(farrigh(config), maxlen=0)
+    if config.use_wit() and config.input.skip_if_output_exist:
+        retries = 3
+
+        while retries > 0:
+            try:
+                deque(farrigh(config), maxlen=0)
+                break
+            except requests.exception.RetryError:
+                retries -= 1
+    else:
+        deque(farrigh(config), maxlen=0)
 
 
 def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:

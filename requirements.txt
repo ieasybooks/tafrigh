@@ -4,6 +4,7 @@ yt-dlp
 auditok
 numpy
 pydub
+requests
 scipy
 
 cached_property

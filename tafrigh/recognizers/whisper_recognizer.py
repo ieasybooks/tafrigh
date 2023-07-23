@@ -37,7 +37,6 @@ class WhisperRecognizer:
                     yield next(whisper_generator)
                 except StopIteration as e:
                     return e.value
-                    break
 
     def _recognize_stable_whisper(
         self,
