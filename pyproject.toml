@@ -14,7 +14,7 @@ keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
 dependencies = ["tqdm", "yt-dlp"]
 
 [project.optional-dependencies]
-wit = ["auditok", "numpy", "pydub", "scipy"]
+wit = ["auditok", "numpy", "pydub", "requests", "scipy"]
 whisper = [
     "cached_property",
     "faster-whisper",
