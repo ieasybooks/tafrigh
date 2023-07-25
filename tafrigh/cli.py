@@ -69,7 +69,7 @@ def main():
             try:
                 deque(farrigh(config), maxlen=0)
                 break
-            except requests.exception.RetryError:
+            except requests.exceptions.RetryError:
                 retries -= 1
     else:
         deque(farrigh(config), maxlen=0)
