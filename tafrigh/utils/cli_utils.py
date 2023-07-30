@@ -112,9 +112,9 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
 
     wit_group.add_argument(
         '-w',
-        '--wit_client_access_token',
-        default='',
-        help='wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
+        '--wit_client_access_tokens',
+        nargs='+',
+        help='List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
     )
 
     wit_group.add_argument(

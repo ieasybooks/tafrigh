@@ -109,7 +109,7 @@
   <li>
     خيارات تقنية Wit
     <ul dir="rtl">
-      <li>مفتاح <a href="wit.ai">wit.ai</a>: يمكنك استخدام تقنيات <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص من خلال تمرير المفتاح الخاص بك للاختيار <code dir="ltr">--wit_client_access_token</code>. إذا تم تمرير هذا الاختيار، سيتم استخدام <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص. غير ذلك، سيتم استخدام نماذج Whisper</li>
+      <li>مفاتيح <a href="wit.ai">wit.ai</a>: يمكنك استخدام تقنيات <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص من خلال تمرير المفتاح أو المفاتيح الخاصة بك للاختيار <code dir="ltr">--wit_client_access_tokens</code>. إذا تم تمرير هذا الاختيار، سيتم استخدام <a href="wit.ai">wit.ai</a> لتفريغ المواد إلى نصوص. غير ذلك، سيتم استخدام نماذج Whisper</li>
       <li>تحديد أقصى مدة للتقطيع: يمكنك تحديد أقصى مدة للتقطيع والتي ستؤثر على طول الجمل في ملفات SRT و VTT من خلال تمرير الاختيار <code dir="ltr">--max_cutting_duration</code>. القيمة الافتراضية هي <code>15</code></li>
     </ul>
   </li>
@@ -141,8 +141,9 @@
 usage: tafrigh [-h] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
                [--use_faster_whisper | --no-use_faster_whisper] [--use_whisper_jax | --no-use_whisper_jax] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
-               [-w WIT_CLIENT_ACCESS_TOKEN] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact]
-               [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
+               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT]
+               [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
+               [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
 options:
@@ -174,8 +175,8 @@ Whisper:
                         Quantization type applied while converting the model to CTranslate2 format.
 
 Wit:
-  -w WIT_CLIENT_ACCESS_TOKEN, --wit_client_access_token WIT_CLIENT_ACCESS_TOKEN
-                        wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.
+  -w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...], --wit_client_access_tokens WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]
+                        List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.
   --max_cutting_duration [1-17]
                         The maximum allowed cutting duration. It should be between 1 and 17.
 
@@ -265,7 +266,7 @@ tafrigh "https://youtu.be/Di0vcmnxULs" \
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
-  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
   --output_formats txt srt \
   --min_words_per_segment 10 \
@@ -276,7 +277,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
-  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
   --output_formats txt srt \
   --min_words_per_segment 10 \
@@ -287,7 +288,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
-  --wit_client_access_token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
   --output_formats txt srt \
   --min_words_per_segment 10 \

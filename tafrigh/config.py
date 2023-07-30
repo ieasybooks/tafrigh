@@ -19,7 +19,7 @@ class Config:
         use_whisper_jax: bool,
         beam_size: int,
         ct2_compute_type: str,
-        wit_client_access_token: str,
+        wit_client_access_tokens: List[str],
         max_cutting_duration: int,
         min_words_per_segment: int,
         save_files_before_compact: bool,
@@ -40,7 +40,7 @@ class Config:
             ct2_compute_type,
         )
 
-        self.wit = self.Wit(wit_client_access_token, max_cutting_duration)
+        self.wit = self.Wit(wit_client_access_tokens, max_cutting_duration)
 
         self.output = self.Output(
             min_words_per_segment,
@@ -52,7 +52,7 @@ class Config:
         )
 
     def use_wit(self) -> bool:
-        return self.wit.wit_client_access_token != ''
+        return self.wit.wit_client_access_tokens != []
 
     class Input:
         def __init__(self, urls_or_paths: List[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
@@ -85,8 +85,8 @@ class Config:
             self.ct2_compute_type = ct2_compute_type
 
     class Wit:
-        def __init__(self, wit_client_access_token: str, max_cutting_duration: int):
-            self.wit_client_access_token = wit_client_access_token
+        def __init__(self, wit_client_access_tokens: List[str], max_cutting_duration: int):
+            self.wit_client_access_tokens = wit_client_access_tokens
             self.max_cutting_duration = max_cutting_duration
 
     class Output:

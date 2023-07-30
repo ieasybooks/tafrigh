@@ -7,7 +7,6 @@ import shutil
 import tempfile
 import time
 
-from itertools import repeat
 from requests.adapters import HTTPAdapter
 from typing import Dict, Generator, List, Tuple, Union
 from urllib3.util.retry import Retry
@@ -16,19 +15,25 @@ from tqdm import tqdm
 
 from tafrigh.audio_splitter import AudioSplitter
 from tafrigh.config import Config
-from tafrigh.utils.decorators import minimum_execution_time
+from tafrigh.recognizers.wit_calling_throttle import WitCallingThrottle, WitCallingThrottleManager
+
+
+def init_pool(throttle: WitCallingThrottle) -> None:
+    global wit_calling_throttle
+
+    wit_calling_throttle = throttle
 
 
 class WitRecognizer:
     def __init__(self, verbose: bool):
         self.verbose = verbose
+        self.processes_per_wit_client_access_token = min(4, multiprocessing.cpu_count())
 
     def recognize(
         self,
         file_path: str,
         wit_config: Config.Wit,
     ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
-
         temp_directory = tempfile.mkdtemp()
 
         segments = AudioSplitter().split(
@@ -50,39 +55,59 @@ class WitRecognizer:
         session = requests.Session()
         session.mount('https://', adapter)
 
-        with multiprocessing.Pool(processes=min(4, multiprocessing.cpu_count() - 1)) as pool:
-            async_results = [
-                pool.apply_async(self._process_segment, (segment, file_path, wit_config, session))
-                for segment in segments
-            ]
+        pool_processes_count = min(
+            self.processes_per_wit_client_access_token * len(wit_config.wit_client_access_tokens),
+            multiprocessing.cpu_count(),
+        )
 
-            transcriptions = []
+        with WitCallingThrottleManager() as manager:
+            wit_calling_throttle = manager.WitCallingThrottle(len(wit_config.wit_client_access_tokens))
 
-            with tqdm(total=len(segments), disable=self.verbose is not False) as pbar:
-                while async_results:
-                    if async_results[0].ready():
-                        transcriptions.append(async_results.pop(0).get())
-                        pbar.update(1)
+            with multiprocessing.Pool(
+                processes=pool_processes_count,
+                initializer=init_pool,
+                initargs=(wit_calling_throttle,),
+            ) as pool:
+                async_results = [
+                    pool.apply_async(
+                        self._process_segment,
+                        (
+                            segment,
+                            file_path,
+                            wit_config,
+                            session,
+                            index % len(wit_config.wit_client_access_tokens),
+                        ),
+                    ) for index, segment in enumerate(segments)
+                ]
 
-                    yield {
-                        'progress': round(len(transcriptions) / len(segments) * 100, 2),
-                        'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
-                    }
+                transcriptions = []
 
-                    time.sleep(0.5)
+                with tqdm(total=len(segments), disable=self.verbose is not False) as pbar:
+                    while async_results:
+                        if async_results[0].ready():
+                            transcriptions.append(async_results.pop(0).get())
+                            pbar.update(1)
+
+                        yield {
+                            'progress': round(len(transcriptions) / len(segments) * 100, 2),
+                            'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                        }
 
         shutil.rmtree(temp_directory)
 
         return transcriptions
 
-    @minimum_execution_time(min(4, multiprocessing.cpu_count() - 1) + 1)
     def _process_segment(
         self,
         segment: Tuple[str, float, float],
         file_path: str,
         wit_config: Config.Wit,
         session: requests.Session,
+        wit_client_access_token_index: int
     ) -> Dict[str, Union[str, float]]:
+        wit_calling_throttle.throttle(wit_client_access_token_index)
+
         segment_file_path, start, end = segment
 
         with open(segment_file_path, 'rb') as wav_file:
@@ -92,25 +117,26 @@ class WitRecognizer:
 
         text = ''
         while retries > 0:
-            response = session.post(
-                'https://api.wit.ai/speech',
-                headers={
-                    'Accept': 'application/vnd.wit.20200513+json',
-                    'Content-Type': 'audio/wav',
-                    'Authorization': f'Bearer {wit_config.wit_client_access_token}',
-                },
-                data=audio_content,
-            )
+            try:
+                response = session.post(
+                    'https://api.wit.ai/speech',
+                    headers={
+                        'Accept': 'application/vnd.wit.20200513+json',
+                        'Content-Type': 'audio/wav',
+                        'Authorization': f'Bearer {wit_config.wit_client_access_tokens[wit_client_access_token_index]}',
+                    },
+                    data=audio_content,
+                )
 
-            if response.status_code == 200:
-                try:
+                if response.status_code == 200:
                     text = json.loads(response.text)['text']
                     break
-                except KeyError:
+                else:
                     retries -= 1
-            else:
+                    time.sleep(self.processes_per_wit_client_access_token + 1)
+            except:
                 retries -= 1
-                time.sleep(min(4, multiprocessing.cpu_count() - 1) + 1)
+                time.sleep(self.processes_per_wit_client_access_token + 1)
 
         if retries == 0:
             logging.warn(
