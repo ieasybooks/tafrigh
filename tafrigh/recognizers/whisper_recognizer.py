@@ -1,5 +1,5 @@
 import warnings
-from typing import Dict, Generator, List, Union
+from typing import Generator, Union
 
 import faster_whisper
 import whisper
@@ -19,7 +19,7 @@ class WhisperRecognizer:
         file_path: str,
         model: WhisperModel,
         whisper_config: Config.Whisper,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
 
@@ -41,7 +41,7 @@ class WhisperRecognizer:
         audio_file_path: str,
         model: whisper.Whisper,
         whisper_config: Config.Whisper,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
         yield {'progress': 0.0, 'remaining_time': None}
 
         segments = model.transcribe(
@@ -66,7 +66,7 @@ class WhisperRecognizer:
         audio_file_path: str,
         model: faster_whisper.WhisperModel,
         whisper_config: Config.Whisper,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
         segments, info = model.transcribe(
             audio=audio_file_path,
             task=whisper_config.task,
@@ -105,7 +105,7 @@ class WhisperRecognizer:
         audio_file_path: str,
         model: whisper_jax.FlaxWhisperPipline,
         whisper_config: Config.Whisper,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
         yield {'progress': 0.0, 'remaining_time': None}
 
         segments = model(

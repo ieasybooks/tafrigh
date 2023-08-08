@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Union
 
 from tafrigh.config import Config
 from tafrigh.types.transcript_type import TranscriptType
@@ -11,7 +11,7 @@ class Writer:
     def write_all(
         self,
         file_name: str,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
         output_config: Config.Output,
     ) -> None:
         if output_config.save_files_before_compact:
@@ -36,7 +36,7 @@ class Writer:
         self,
         format: TranscriptType,
         file_path: str,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
     ) -> None:
         if format == TranscriptType.TXT:
             self.write_txt(file_path, segments)
@@ -48,28 +48,28 @@ class Writer:
     def write_txt(
         self,
         file_path: str,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
     ) -> None:
         self._write_to_file(file_path, self.generate_txt(segments))
 
     def write_srt(
         self,
         file_path: str,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
     ) -> None:
         self._write_to_file(file_path, self.generate_srt(segments))
 
     def write_vtt(
         self,
         file_path: str,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
     ) -> None:
         self._write_to_file(file_path, self.generate_vtt(segments))
 
-    def generate_txt(self, segments: List[Dict[str, Union[str, float]]]) -> str:
+    def generate_txt(self, segments: list[dict[str, Union[str, float]]]) -> str:
         return '\n'.join(list(map(lambda segment: segment['text'].strip(), segments))) + '\n'
 
-    def generate_srt(self, segments: List[Dict[str, Union[str, float]]]) -> str:
+    def generate_srt(self, segments: list[dict[str, Union[str, float]]]) -> str:
         return ''.join(
             f"{i}\n"
             f"{time_utils.format_timestamp(segment['start'], include_hours=True, decimal_marker=',')} --> "
@@ -78,7 +78,7 @@ class Writer:
             for i, segment in enumerate(segments, start=1)
         )
 
-    def generate_vtt(self, segments: List[Dict[str, Union[str, float]]]) -> str:
+    def generate_vtt(self, segments: list[dict[str, Union[str, float]]]) -> str:
         return 'WEBVTT\n\n' + ''.join(
             f"{time_utils.format_timestamp(segment['start'])} --> {time_utils.format_timestamp(segment['end'])}\n"
             f"{segment['text'].strip()}\n\n"
@@ -87,9 +87,9 @@ class Writer:
 
     def compact_segments(
         self,
-        segments: List[Dict[str, Union[str, float]]],
+        segments: list[dict[str, Union[str, float]]],
         min_words_per_segment: int,
-    ) -> List[Dict[str, Union[str, float]]]:
+    ) -> list[dict[str, Union[str, float]]]:
         if min_words_per_segment == 0:
             return segments
 

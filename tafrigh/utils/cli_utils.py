@@ -1,6 +1,5 @@
 import argparse
 import re
-from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
 
@@ -12,7 +11,7 @@ PLAYLIST_ITEMS_RE = re.compile(r'''(?x)
         )?''')
 
 
-def parse_args(argv: List[str]) -> argparse.Namespace:
+def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
     input_group = parser.add_argument_group('Input')

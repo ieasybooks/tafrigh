@@ -1,13 +1,12 @@
 import mimetypes
 from pathlib import Path
-from typing import List
 
 mimetypes.init()
 
 
-def filter_media_files(paths: List[Path]) -> List[Path]:
+def filter_media_files(paths: list[Path]) -> list[Path]:
     # Filter out non audio or video files
-    filtered_media_files: List[str] = []
+    filtered_media_files: list[str] = []
     for path in paths:
         mime = mimetypes.guess_type(path)[0]
         if mime is None:
