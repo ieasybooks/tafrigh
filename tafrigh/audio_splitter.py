@@ -1,6 +1,5 @@
 import os
 import tempfile
-from typing import List, Tuple
 
 import numpy as np
 from auditok.core import split
@@ -19,7 +18,7 @@ class AudioSplitter:
         expand_segments_with_noise: bool = False,
         noise_seconds: int = 1,
         noise_amplitude: int = 10,
-    ) -> List[Tuple[str, float, float]]:
+    ) -> list[tuple[str, float, float]]:
         sampling_rate, data = self._read_audio(file_path)
         temp_file_name = self._write_temp_audio(sampling_rate, data)
         segments = self._split_audio(temp_file_name, min_dur, max_dur, max_silence, energy_threshold)
@@ -39,7 +38,7 @@ class AudioSplitter:
 
         return self._save_segments(output_dir, sampling_rate, expanded_segments)
 
-    def _read_audio(self, file_path: str) -> Tuple[int, np.ndarray]:
+    def _read_audio(self, file_path: str) -> tuple[int, np.ndarray]:
         sampling_rate, data = wavfile.read(file_path)
 
         if len(data.shape) > 1 and data.shape[1] > 1:
@@ -75,12 +74,12 @@ class AudioSplitter:
 
     def _expand_segments_with_noise(
         self,
-        segments: List,
+        segments: list,
         noise_seconds: int,
         noise_amplitude: int,
         sampling_rate: int,
         dtype: np.dtype,
-    ) -> List[Tuple[np.ndarray, float, float]]:
+    ) -> list[tuple[np.ndarray, float, float]]:
         expanded_segments = []
 
         for segment in segments:
@@ -97,8 +96,8 @@ class AudioSplitter:
         self,
         output_dir: str,
         sampling_rate: int,
-        expanded_segments: List[Tuple[np.ndarray, float, float]],
-    ) -> List[Tuple[str, float, float]]:
+        expanded_segments: list[tuple[np.ndarray, float, float]],
+    ) -> list[tuple[str, float, float]]:
         segments = []
 
         for i, (expanded_segment, start, end) in enumerate(expanded_segments):

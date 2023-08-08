@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
 
@@ -7,7 +6,7 @@ from tafrigh.types.transcript_type import TranscriptType
 class Config:
     def __init__(
         self,
-        urls_or_paths: List[str],
+        urls_or_paths: list[str],
         skip_if_output_exist: bool,
         playlist_items: str,
         verbose: bool,
@@ -24,7 +23,7 @@ class Config:
         save_files_before_compact: bool,
         save_yt_dlp_responses: bool,
         output_sample: int,
-        output_formats: List[str],
+        output_formats: list[str],
         output_dir: str,
     ):
         self.input = self.Input(urls_or_paths, skip_if_output_exist, playlist_items, verbose)
@@ -54,7 +53,7 @@ class Config:
         return self.wit.wit_client_access_token != ''
 
     class Input:
-        def __init__(self, urls_or_paths: List[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
+        def __init__(self, urls_or_paths: list[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
             self.urls_or_paths = urls_or_paths
             self.skip_if_output_exist = skip_if_output_exist
             self.playlist_items = playlist_items
@@ -95,7 +94,7 @@ class Config:
             save_files_before_compact: bool,
             save_yt_dlp_responses: bool,
             output_sample: int,
-            output_formats: List[str],
+            output_formats: list[str],
             output_dir: str,
         ):
             if 'all' in output_formats:

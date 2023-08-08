@@ -6,7 +6,7 @@ import re
 import sys
 from collections import deque
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Tuple, Union
+from typing import Any, Generator, Union
 
 from tqdm import tqdm
 
@@ -72,7 +72,7 @@ def main():
         deque(farrigh(config), maxlen=0)
 
 
-def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:
+def farrigh(config: Config) -> Generator[dict[str, int], None, None]:
     prepare_output_dir(config.output.output_dir)
 
     model = None
@@ -120,9 +120,9 @@ def process_local(
     model: 'WhisperModel',
     config: Config,
     progress_info: dict,
-) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
-    filtered_media_files: List[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
-    files: List[Dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
+) -> Generator[tuple[dict[str, int], list[list[dict[str, Union[str, float]]]]], None, None]:
+    filtered_media_files: list[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
+    files: list[dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
 
     for idx, file in enumerate(tqdm(files, desc='Local files')):
         new_progress_info = progress_info.copy()
@@ -181,7 +181,7 @@ def process_url(
     model: 'WhisperModel',
     config: Config,
     progress_info: dict,
-) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
+) -> Generator[tuple[dict[str, int], list[list[dict[str, Union[str, float]]]]], None, None]:
     url_data = Downloader(playlist_items=config.input.playlist_items, output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
@@ -243,7 +243,7 @@ def process_url(
         yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
 
-def write_output_sample(segments: List[Dict[str, Union[str, float]]], output: Config.Output) -> None:
+def write_output_sample(segments: list[dict[str, Union[str, float]]], output: Config.Output) -> None:
     if output.output_sample == 0:
         return
 

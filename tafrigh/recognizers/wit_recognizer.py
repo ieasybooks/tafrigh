@@ -5,7 +5,7 @@ import os
 import shutil
 import tempfile
 import time
-from typing import Dict, Generator, List, Tuple, Union
+from typing import Generator, Union
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -25,7 +25,7 @@ class WitRecognizer:
         self,
         file_path: str,
         wit_config: Config.Wit,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
 
         temp_directory = tempfile.mkdtemp()
 
@@ -76,11 +76,11 @@ class WitRecognizer:
     @minimum_execution_time(min(4, multiprocessing.cpu_count() - 1) + 1)
     def _process_segment(
         self,
-        segment: Tuple[str, float, float],
+        segment: tuple[str, float, float],
         file_path: str,
         wit_config: Config.Wit,
         session: requests.Session,
-    ) -> Dict[str, Union[str, float]]:
+    ) -> dict[str, Union[str, float]]:
         segment_file_path, start, end = segment
 
         with open(segment_file_path, 'rb') as wav_file:
