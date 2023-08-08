@@ -1,8 +1,6 @@
 import time
-
 from functools import wraps
 from typing import Callable, TypeVar
-
 
 T = TypeVar("T", bound=Callable)
 

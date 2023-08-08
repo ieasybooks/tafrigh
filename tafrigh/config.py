@@ -1,5 +1,4 @@
 import logging
-
 from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
