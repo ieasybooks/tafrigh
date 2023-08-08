@@ -1,0 +1,23 @@
+name: Formatter
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Run Formatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: black formatter
+        uses: rickstaa/action-black@v1
+        with:
+          black_args: ". --check --diff --skip-string-normalization --line-length 120"
+      - name: isort formatter
+        uses: isort/isort-action@v1
+        with:
+          configuration: "--profile black --check-only --diff --line-length 120"
