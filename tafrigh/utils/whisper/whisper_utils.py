@@ -12,7 +12,7 @@ def load_model(whisper_config: Config.Whisper) -> WhisperModel:
     elif whisper_config.use_faster_whisper:
         return faster_whisper.WhisperModel(
             whisper_config.model_name_or_path,
-            compute_type=whisper_config.ct2_compute_type
+            compute_type=whisper_config.ct2_compute_type,
         )
     else:
         return stable_whisper.load_model(whisper_config.model_name_or_path)

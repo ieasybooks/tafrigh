@@ -39,7 +39,7 @@ def main():
         skip_if_output_exist=args.skip_if_output_exist,
         playlist_items=args.playlist_items,
         verbose=args.verbose,
-
+        #
         model_name_or_path=args.model_name_or_path,
         task=args.task,
         language=args.language,
@@ -47,11 +47,11 @@ def main():
         use_whisper_jax=args.use_whisper_jax,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
-
+        #
         wit_client_access_token=args.wit_client_access_token,
         max_cutting_duration=args.max_cutting_duration,
         min_words_per_segment=args.min_words_per_segment,
-
+        #
         save_files_before_compact=args.save_files_before_compact,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
         output_sample=args.output_sample,
@@ -126,13 +126,15 @@ def process_local(
 
     for idx, file in enumerate(tqdm(files, desc='Local files')):
         new_progress_info = progress_info.copy()
-        new_progress_info.update({
-            'inner_total': len(files),
-            'inner_current': idx + 1,
-            'inner_status': 'processing',
-            'progress': 0.0,
-            'remaining_time': None,
-        })
+        new_progress_info.update(
+            {
+                'inner_total': len(files),
+                'inner_current': idx + 1,
+                'inner_status': 'processing',
+                'progress': 0.0,
+                'remaining_time': None,
+            }
+        )
         yield new_progress_info, []
 
         writer = Writer()
@@ -197,13 +199,15 @@ def process_url(
             continue
 
         new_progress_info = progress_info.copy()
-        new_progress_info.update({
-            'inner_total': len(url_data),
-            'inner_current': idx + 1,
-            'inner_status': 'processing',
-            'progress': 0.0,
-            'remaining_time': None,
-        })
+        new_progress_info.update(
+            {
+                'inner_total': len(url_data),
+                'inner_current': idx + 1,
+                'inner_status': 'processing',
+                'progress': 0.0,
+                'remaining_time': None,
+            }
+        )
         yield new_progress_info, []
 
         writer = Writer()
