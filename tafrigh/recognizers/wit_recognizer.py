@@ -26,7 +26,6 @@ class WitRecognizer:
         file_path: str,
         wit_config: Config.Wit,
     ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
-
         temp_directory = tempfile.mkdtemp()
 
         segments = AudioSplitter().split(
@@ -64,7 +63,9 @@ class WitRecognizer:
 
                     yield {
                         'progress': round(len(transcriptions) / len(segments) * 100, 2),
-                        'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                        'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate']
+                        if pbar.format_dict['rate'] and pbar.total
+                        else None,
                     }
 
                     time.sleep(0.5)
@@ -112,7 +113,9 @@ class WitRecognizer:
 
         if retries == 0:
             logging.warn(
-                f"The segment from `{file_path}` file that starts at {start} and ends at {end} didn't transcribed successfully.")
+                f"The segment from `{file_path}` file that starts at {start} and ends at {end}"
+                " didn't transcribed successfully."
+            )
 
         os.remove(segment_file_path)
 

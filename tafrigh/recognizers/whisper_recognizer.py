@@ -83,11 +83,13 @@ class WhisperRecognizer:
             disable=self.verbose is not False,
         ) as pbar:
             for segment in segments:
-                converted_segments.append({
-                    'start': segment.start,
-                    'end': segment.end,
-                    'text': segment.text.strip(),
-                })
+                converted_segments.append(
+                    {
+                        'start': segment.start,
+                        'end': segment.end,
+                        'text': segment.text.strip(),
+                    }
+                )
 
                 pbar_update = min(segment.end - last_end, info.duration - pbar.n)
                 pbar.update(pbar_update)
@@ -95,7 +97,9 @@ class WhisperRecognizer:
 
                 yield {
                     'progress': round(pbar.n / pbar.total * 100, 2),
-                    'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                    'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate']
+                    if pbar.format_dict['rate'] and pbar.total
+                    else None,
                 }
 
         return converted_segments
