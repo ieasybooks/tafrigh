@@ -5,7 +5,6 @@ import os
 import shutil
 import tempfile
 import time
-from itertools import repeat
 from typing import Dict, Generator, List, Tuple, Union
 
 import requests
