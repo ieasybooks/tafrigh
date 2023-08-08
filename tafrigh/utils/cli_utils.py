@@ -1,10 +1,8 @@
 import argparse
 import re
-
 from typing import List
 
 from tafrigh.types.transcript_type import TranscriptType
-
 
 PLAYLIST_ITEMS_RE = re.compile(r'''(?x)
         (?P<start>[+-]?\d+)?

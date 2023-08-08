@@ -4,7 +4,6 @@ import os
 import random
 import re
 import sys
-
 from collections import deque
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Tuple, Union
@@ -13,9 +12,7 @@ from tqdm import tqdm
 
 from tafrigh.config import Config
 from tafrigh.downloader import Downloader
-from tafrigh.utils import cli_utils
-from tafrigh.utils import file_utils
-from tafrigh.utils import time_utils
+from tafrigh.utils import cli_utils, file_utils, time_utils
 from tafrigh.writer import Writer
 
 try:

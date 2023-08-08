@@ -2,17 +2,16 @@ import json
 import logging
 import multiprocessing
 import os
-import requests
 import shutil
 import tempfile
 import time
-
 from itertools import repeat
-from requests.adapters import HTTPAdapter
 from typing import Dict, Generator, List, Tuple, Union
-from urllib3.util.retry import Retry
 
+import requests
+from requests.adapters import HTTPAdapter
 from tqdm import tqdm
+from urllib3.util.retry import Retry
 
 from tafrigh.audio_splitter import AudioSplitter
 from tafrigh.config import Config

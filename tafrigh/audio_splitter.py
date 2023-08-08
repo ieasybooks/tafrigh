@@ -1,10 +1,8 @@
 import os
 import tempfile
-
 from typing import List, Tuple
 
 import numpy as np
-
 from auditok.core import split
 from scipy.io import wavfile
 

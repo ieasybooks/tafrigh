@@ -1,5 +1,4 @@
 from tafrigh.cli import farrigh
-
 from tafrigh.config import Config
 from tafrigh.downloader import Downloader
 from tafrigh.types.transcript_type import TranscriptType

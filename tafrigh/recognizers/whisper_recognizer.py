@@ -1,11 +1,9 @@
 import warnings
-
 from typing import Dict, Generator, List, Union
 
 import faster_whisper
 import whisper
 import whisper_jax
-
 from tqdm import tqdm
 
 from tafrigh.config import Config
