@@ -1,6 +1,5 @@
 import faster_whisper
 import stable_whisper
-import whisper
 import whisper_jax
 
 from tafrigh.config import Config
