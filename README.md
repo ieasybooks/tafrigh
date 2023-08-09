@@ -2,8 +2,12 @@
   <img src="https://user-images.githubusercontent.com/7662492/229289746-89c5a4c7-afa6-4d46-a0e6-63dfdeb98285.jpg" style="width: 100%;"/>
 </p>
 
-<div dir="rtl">
-  <a href="https://tafrigh.ieasybooks.com" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="قم بتجربة تفريغ على Google Colab الآن"/></a>
+<div align="right">
+
+  [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://tafrigh.ieasybooks.com)
+  [![Formatter](https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml/badge.svg)](https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml)
+  [![PyPI](https://img.shields.io/pypi/v/tafrigh?label=PyPI%20Version&color=limegreen)](https://pypi.org/project/tafrigh/)
+
 </div>
 
 <h1 dir="rtl">تفريغ</h1>
