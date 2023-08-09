@@ -1,6 +1,8 @@
 name: Formatter
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
