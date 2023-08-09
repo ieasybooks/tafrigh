@@ -9,6 +9,13 @@ description = "تفريغ النصوص وإنشاء ملفات SRT و VTT بنا
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 authors = [{ name = "الكتب المٌيسّرة", email = "easybooksdev@gmail.com" }]
 keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
 dependencies = ["tqdm==4.65.1", "yt-dlp==2023.7.6"]
