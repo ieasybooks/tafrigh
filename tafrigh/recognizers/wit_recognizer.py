@@ -2,16 +2,17 @@ import json
 import logging
 import multiprocessing
 import os
-import requests
 import shutil
 import tempfile
 import time
 
-from requests.adapters import HTTPAdapter
-from typing import Dict, Generator, List, Tuple, Union
-from urllib3.util.retry import Retry
+from typing import Generator, Union
 
+import requests
+
+from requests.adapters import HTTPAdapter
 from tqdm import tqdm
+from urllib3.util.retry import Retry
 
 from tafrigh.audio_splitter import AudioSplitter
 from tafrigh.config import Config
@@ -33,7 +34,7 @@ class WitRecognizer:
         self,
         file_path: str,
         wit_config: Config.Wit,
-    ) -> Generator[Dict[str, float], None, List[Dict[str, Union[str, float]]]]:
+    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
         temp_directory = tempfile.mkdtemp()
 
         segments = AudioSplitter().split(
@@ -78,7 +79,8 @@ class WitRecognizer:
                             session,
                             index % len(wit_config.wit_client_access_tokens),
                         ),
-                    ) for index, segment in enumerate(segments)
+                    )
+                    for index, segment in enumerate(segments)
                 ]
 
                 transcriptions = []
@@ -91,7 +93,9 @@ class WitRecognizer:
 
                         yield {
                             'progress': round(len(transcriptions) / len(segments) * 100, 2),
-                            'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate'] if pbar.format_dict['rate'] and pbar.total else None,
+                            'remaining_time': (pbar.total - pbar.n) / pbar.format_dict['rate']
+                            if pbar.format_dict['rate'] and pbar.total
+                            else None,
                         }
 
         shutil.rmtree(temp_directory)
@@ -100,12 +104,12 @@ class WitRecognizer:
 
     def _process_segment(
         self,
-        segment: Tuple[str, float, float],
+        segment: tuple[str, float, float],
         file_path: str,
         wit_config: Config.Wit,
         session: requests.Session,
-        wit_client_access_token_index: int
-    ) -> Dict[str, Union[str, float]]:
+        wit_client_access_token_index: int,
+    ) -> dict[str, Union[str, float]]:
         wit_calling_throttle.throttle(wit_client_access_token_index)
 
         segment_file_path, start, end = segment
@@ -140,7 +144,9 @@ class WitRecognizer:
 
         if retries == 0:
             logging.warn(
-                f"The segment from `{file_path}` file that starts at {start} and ends at {end} didn't transcribed successfully.")
+                f"The segment from `{file_path}` file that starts at {start} and ends at {end}"
+                " didn't transcribed successfully."
+            )
 
         os.remove(segment_file_path)
 

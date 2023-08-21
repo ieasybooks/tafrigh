@@ -7,16 +7,15 @@ import sys
 
 from collections import deque
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Tuple, Union
+from typing import Any, Generator, Union
 
 from tqdm import tqdm
 
 from tafrigh.config import Config
 from tafrigh.downloader import Downloader
-from tafrigh.utils import cli_utils
-from tafrigh.utils import file_utils
-from tafrigh.utils import time_utils
+from tafrigh.utils import cli_utils, file_utils, time_utils
 from tafrigh.writer import Writer
+
 
 try:
     import requests
@@ -42,7 +41,7 @@ def main():
         skip_if_output_exist=args.skip_if_output_exist,
         playlist_items=args.playlist_items,
         verbose=args.verbose,
-
+        #
         model_name_or_path=args.model_name_or_path,
         task=args.task,
         language=args.language,
@@ -50,11 +49,11 @@ def main():
         use_whisper_jax=args.use_whisper_jax,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
-
+        #
         wit_client_access_tokens=args.wit_client_access_tokens,
         max_cutting_duration=args.max_cutting_duration,
         min_words_per_segment=args.min_words_per_segment,
-
+        #
         save_files_before_compact=args.save_files_before_compact,
         save_yt_dlp_responses=args.save_yt_dlp_responses,
         output_sample=args.output_sample,
@@ -75,7 +74,7 @@ def main():
         deque(farrigh(config), maxlen=0)
 
 
-def farrigh(config: Config) -> Generator[Dict[str, int], None, None]:
+def farrigh(config: Config) -> Generator[dict[str, int], None, None]:
     prepare_output_dir(config.output.output_dir)
 
     model = None
@@ -123,19 +122,21 @@ def process_local(
     model: 'WhisperModel',
     config: Config,
     progress_info: dict,
-) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
-    filtered_media_files: List[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
-    files: List[Dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
+) -> Generator[tuple[dict[str, int], list[list[dict[str, Union[str, float]]]]], None, None]:
+    filtered_media_files: list[Path] = file_utils.filter_media_files([path] if path.is_file() else path.iterdir())
+    files: list[dict[str, Any]] = [{'file_name': file.name, 'file_path': file} for file in filtered_media_files]
 
     for idx, file in enumerate(tqdm(files, desc='Local files')):
         new_progress_info = progress_info.copy()
-        new_progress_info.update({
-            'inner_total': len(files),
-            'inner_current': idx + 1,
-            'inner_status': 'processing',
-            'progress': 0.0,
-            'remaining_time': None,
-        })
+        new_progress_info.update(
+            {
+                'inner_total': len(files),
+                'inner_current': idx + 1,
+                'inner_status': 'processing',
+                'progress': 0.0,
+                'remaining_time': None,
+            }
+        )
         yield new_progress_info, []
 
         writer = Writer()
@@ -184,7 +185,7 @@ def process_url(
     model: 'WhisperModel',
     config: Config,
     progress_info: dict,
-) -> Generator[Tuple[Dict[str, int], List[List[Dict[str, Union[str, float]]]]], None, None]:
+) -> Generator[tuple[dict[str, int], list[list[dict[str, Union[str, float]]]]], None, None]:
     url_data = Downloader(playlist_items=config.input.playlist_items, output_dir=config.output.output_dir).download(
         url,
         save_response=config.output.save_yt_dlp_responses,
@@ -200,13 +201,15 @@ def process_url(
             continue
 
         new_progress_info = progress_info.copy()
-        new_progress_info.update({
-            'inner_total': len(url_data),
-            'inner_current': idx + 1,
-            'inner_status': 'processing',
-            'progress': 0.0,
-            'remaining_time': None,
-        })
+        new_progress_info.update(
+            {
+                'inner_total': len(url_data),
+                'inner_current': idx + 1,
+                'inner_status': 'processing',
+                'progress': 0.0,
+                'remaining_time': None,
+            }
+        )
         yield new_progress_info, []
 
         writer = Writer()
@@ -246,7 +249,7 @@ def process_url(
         yield new_progress_info, writer.compact_segments(segments, config.output.min_words_per_segment)
 
 
-def write_output_sample(segments: List[Dict[str, Union[str, float]]], output: Config.Output) -> None:
+def write_output_sample(segments: list[dict[str, Union[str, float]]], output: Config.Output) -> None:
     if output.output_sample == 0:
         return
 

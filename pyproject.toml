@@ -4,23 +4,36 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tafrigh"
-version = "1.0"
+version = "1.0.1"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT بناءً على نموذج Whisper من OpenAI."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 authors = [{ name = "الكتب المٌيسّرة", email = "easybooksdev@gmail.com" }]
 keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
-dependencies = ["tqdm", "yt-dlp"]
+dependencies = ["tqdm==4.65.1", "yt-dlp==2023.7.6"]
 
 [project.optional-dependencies]
-wit = ["auditok", "numpy", "pydub", "requests", "scipy"]
+wit = [
+    "auditok==0.2.0",
+    "numpy==1.24.4",
+    "pydub==0.25.1",
+    "requests==2.31.0",
+    "scipy==1.11.1",
+]
 whisper = [
-    "cached_property",
-    "faster-whisper",
-    "openai-whisper",
-    "stable-ts",
-    "transformers",
+    "cached-property==1.5.2",
+    "faster-whisper==0.7.1",
+    "openai-whisper==20230314",
+    "stable-ts==2.8.1",
+    "transformers==4.31.0",
     "whisper-jax@git+https://github.com/sanchit-gandhi/whisper-jax.git",
 ]
 
@@ -30,3 +43,16 @@ repository = "https://github.com/ieasybooks/tafrigh"
 
 [project.scripts]
 tafrigh = "tafrigh.cli:main"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+src_paths = "tafrigh"
+line_length = 120
+lines_between_types = 1
+lines_after_imports = 2
+case_sensitive = true
+include_trailing_comma = true

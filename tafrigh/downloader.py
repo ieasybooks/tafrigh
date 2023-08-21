@@ -1,7 +1,7 @@
 import json
 import os
 
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 import yt_dlp
 
@@ -13,7 +13,7 @@ class Downloader:
         self.youtube_dl_with_archive = yt_dlp.YoutubeDL(self._config(os.path.join(self.output_dir, 'archive.txt')))
         self.youtube_dl_without_archive = yt_dlp.YoutubeDL(self._config(False))
 
-    def _config(self, download_archive: Union[str, bool]) -> Dict[str, Any]:
+    def _config(self, download_archive: Union[str, bool]) -> dict[str, Any]:
         return {
             'quiet': True,
             'verbose': False,
@@ -30,7 +30,7 @@ class Downloader:
             ],
         }
 
-    def download(self, url: str, save_response: bool = False) -> Dict[str, Any]:
+    def download(self, url: str, save_response: bool = False) -> dict[str, Any]:
         self.youtube_dl_with_archive.download(url)
         url_data = self.youtube_dl_without_archive.extract_info(url, download=False)
 
@@ -39,7 +39,7 @@ class Downloader:
 
         return url_data
 
-    def _save_response(self, url_data: Dict[str, Any]) -> None:
+    def _save_response(self, url_data: dict[str, Any]) -> None:
         if '_type' in url_data and url_data['_type'] == 'playlist':
             for entry in url_data['entries']:
                 if entry and 'requested_downloads' in entry:
@@ -52,6 +52,6 @@ class Downloader:
         with open(file_path, 'w', encoding='utf-8') as fp:
             json.dump(url_data, fp, indent=2, ensure_ascii=False)
 
-    def _remove_postprocessors(self, requested_downloads: List[Dict[str, Any]]) -> None:
+    def _remove_postprocessors(self, requested_downloads: list[dict[str, Any]]) -> None:
         for requested_download in requested_downloads:
             requested_download.pop('__postprocessors')

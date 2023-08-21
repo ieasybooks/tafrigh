@@ -1,14 +1,12 @@
 import logging
 
-from typing import List
-
 from tafrigh.types.transcript_type import TranscriptType
 
 
 class Config:
     def __init__(
         self,
-        urls_or_paths: List[str],
+        urls_or_paths: list[str],
         skip_if_output_exist: bool,
         playlist_items: str,
         verbose: bool,
@@ -19,13 +17,13 @@ class Config:
         use_whisper_jax: bool,
         beam_size: int,
         ct2_compute_type: str,
-        wit_client_access_tokens: List[str],
+        wit_client_access_tokens: list[str],
         max_cutting_duration: int,
         min_words_per_segment: int,
         save_files_before_compact: bool,
         save_yt_dlp_responses: bool,
         output_sample: int,
-        output_formats: List[str],
+        output_formats: list[str],
         output_dir: str,
     ):
         self.input = self.Input(urls_or_paths, skip_if_output_exist, playlist_items, verbose)
@@ -55,7 +53,7 @@ class Config:
         return self.wit.wit_client_access_tokens != []
 
     class Input:
-        def __init__(self, urls_or_paths: List[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
+        def __init__(self, urls_or_paths: list[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
             self.urls_or_paths = urls_or_paths
             self.skip_if_output_exist = skip_if_output_exist
             self.playlist_items = playlist_items
@@ -85,7 +83,7 @@ class Config:
             self.ct2_compute_type = ct2_compute_type
 
     class Wit:
-        def __init__(self, wit_client_access_tokens: List[str], max_cutting_duration: int):
+        def __init__(self, wit_client_access_tokens: list[str], max_cutting_duration: int):
             self.wit_client_access_tokens = wit_client_access_tokens
             self.max_cutting_duration = max_cutting_duration
 
@@ -96,7 +94,7 @@ class Config:
             save_files_before_compact: bool,
             save_yt_dlp_responses: bool,
             output_sample: int,
-            output_formats: List[str],
+            output_formats: list[str],
             output_dir: str,
         ):
             if 'all' in output_formats:
