@@ -50,7 +50,7 @@ class Config:
         )
 
     def use_wit(self) -> bool:
-        return self.wit.wit_client_access_tokens != []
+        return self.wit.wit_client_access_tokens is not None and self.wit.wit_client_access_tokens != []
 
     class Input:
         def __init__(self, urls_or_paths: list[str], skip_if_output_exist: bool, playlist_items: str, verbose: bool):
@@ -84,7 +84,13 @@ class Config:
 
     class Wit:
         def __init__(self, wit_client_access_tokens: list[str], max_cutting_duration: int):
-            self.wit_client_access_tokens = wit_client_access_tokens
+            if wit_client_access_tokens is None:
+                self.wit_client_access_tokens = None
+            else:
+                self.wit_client_access_tokens = [
+                    key for key in wit_client_access_tokens if key is not None and key != ''
+                ]
+
             self.max_cutting_duration = max_cutting_duration
 
     class Output:
