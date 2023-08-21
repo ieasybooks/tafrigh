@@ -4,6 +4,7 @@ import os
 import random
 import re
 import sys
+
 from collections import deque
 from pathlib import Path
 from typing import Any, Generator, Union
@@ -14,6 +15,7 @@ from tafrigh.config import Config
 from tafrigh.downloader import Downloader
 from tafrigh.utils import cli_utils, file_utils, time_utils
 from tafrigh.writer import Writer
+
 
 try:
     import requests
@@ -48,7 +50,7 @@ def main():
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
         #
-        wit_client_access_token=args.wit_client_access_token,
+        wit_client_access_tokens=args.wit_client_access_tokens,
         max_cutting_duration=args.max_cutting_duration,
         min_words_per_segment=args.min_words_per_segment,
         #

@@ -2,6 +2,7 @@ import os
 import tempfile
 
 import numpy as np
+
 from auditok.core import split
 from scipy.io import wavfile
 

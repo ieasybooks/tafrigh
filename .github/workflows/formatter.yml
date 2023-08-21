@@ -22,4 +22,4 @@ jobs:
       - name: isort formatter
         uses: isort/isort-action@v1
         with:
-          configuration: "--profile black --check-only --diff --line-length 120"
+          configuration: "--profile black --src tafrigh --line-length 120 --lines-between-types 1 --lines-after-imports 2 --case-sensitive --trailing-comma --check-only --diff"

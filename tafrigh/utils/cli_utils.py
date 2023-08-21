@@ -3,6 +3,7 @@ import re
 
 from tafrigh.types.transcript_type import TranscriptType
 
+
 PLAYLIST_ITEMS_RE = re.compile(
     r'''(?x)
         (?P<start>[+-]?\d+)?
@@ -115,9 +116,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
     wit_group.add_argument(
         '-w',
-        '--wit_client_access_token',
-        default='',
-        help='wit.ai client access token. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
+        '--wit_client_access_tokens',
+        nargs='+',
+        help='List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.',
     )
 
     wit_group.add_argument(

@@ -4,6 +4,7 @@ import faster_whisper
 import whisper
 import whisper_jax
 
+
 WhisperModel = TypeVar(
     'WhisperModel',
     whisper.Whisper,

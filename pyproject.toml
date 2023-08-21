@@ -43,3 +43,16 @@ repository = "https://github.com/ieasybooks/tafrigh"
 
 [project.scripts]
 tafrigh = "tafrigh.cli:main"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+src_paths = "tafrigh"
+line_length = 120
+lines_between_types = 1
+lines_after_imports = 2
+case_sensitive = true
+include_trailing_comma = true
