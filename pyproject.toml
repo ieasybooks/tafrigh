@@ -29,12 +29,9 @@ wit = [
     "scipy==1.11.1",
 ]
 whisper = [
-    "cached-property==1.5.2",
     "faster-whisper==0.7.1",
     "openai-whisper==20230314",
     "stable-ts==2.8.1",
-    "transformers==4.31.0",
-    "whisper-jax@git+https://github.com/sanchit-gandhi/whisper-jax.git",
 ]
 
 [project.urls]

@@ -46,7 +46,6 @@ def main():
         task=args.task,
         language=args.language,
         use_faster_whisper=args.use_faster_whisper,
-        use_whisper_jax=args.use_whisper_jax,
         beam_size=args.beam_size,
         ct2_compute_type=args.ct2_compute_type,
         #
