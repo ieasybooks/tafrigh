@@ -14,7 +14,6 @@ class Config:
         task: str,
         language: str,
         use_faster_whisper: bool,
-        use_whisper_jax: bool,
         beam_size: int,
         ct2_compute_type: str,
         wit_client_access_tokens: list[str],
@@ -33,7 +32,6 @@ class Config:
             task,
             language,
             use_faster_whisper,
-            use_whisper_jax,
             beam_size,
             ct2_compute_type,
         )
@@ -66,7 +64,6 @@ class Config:
             task: str,
             language: str,
             use_faster_whisper: bool,
-            use_whisper_jax: bool,
             beam_size: int,
             ct2_compute_type: str,
         ):
@@ -78,7 +75,6 @@ class Config:
             self.task = task
             self.language = language
             self.use_faster_whisper = use_faster_whisper
-            self.use_whisper_jax = use_whisper_jax
             self.beam_size = beam_size
             self.ct2_compute_type = ct2_compute_type
 

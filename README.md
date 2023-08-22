@@ -95,7 +95,6 @@
       </li>
       <li>اللغة: يمكنك تحديد لغة الصوت من خلال الاختيار <code dir="ltr">--language</code>. على سبيل المثال، لتحديد اللغة العربية قم بتمرير <code dir="ltr">ar</code>. إذا لم يتم تحديد اللغة، سيتم التعرف عليها تلقائيا</li>
       <li>استخدام نسخة أسرع من نماذج Whisper: من خلال تمرير الاختيار <code dir="ltr">--use_faster_whisper</code> سيتم استخدام النسخة الأسرع من نماذج Whisper</li>
-      <li>إطار عمل JAX: يمكنك استخدام النموذج المكتوب باستخدام إطار عمل JAX من خلال تمرير الاختيار <code dir="ltr">--use_whisper_jax</code>، لكنك ستحتاج لتثبيت إطار عمل JAX يدويا على حاسبك من خلال اتباع الخطوات الموجودة <a href="https://github.com/google/jax#installation">هنا</a></li>
       <li>حجم نطاق البحث: يمكنك تحسين النتائج باستخدام اختيار <code dir="ltr">--beam_size</code> والذي يسمح لك بإجبار النموذج على البحث في نطاق أوسع من الكلمات أثناء إنشاء النص. القيمة الإفتراضية هي <code>5</code></li>
       <li>
         طريقة ضغط النموذج: يمكنك تحديد الطريقة التي تم بها ضغط النموذج أثناء تحويله باستخدام أداة <a href="https://opennmt.net/CTranslate2/guides/transformers.html"><code>ct2-transformers-converter</code></a> من خلال تمرير الاختيار <code dir="ltr">--ct2_compute_type</code>. الطرق المتوفرة:
@@ -144,10 +143,9 @@
 ➜ tafrigh --help
 usage: tafrigh [-h] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
-               [--use_faster_whisper | --no-use_faster_whisper] [--use_whisper_jax | --no-use_whisper_jax] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
-               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT]
-               [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
-               [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
+               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]]
+               [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses]
+               [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,none} [{all,txt,srt,vtt,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
 options:
@@ -171,8 +169,6 @@ Whisper:
                         Language spoken in the audio, skip to perform language detection.
   --use_faster_whisper, --no-use_faster_whisper
                         Whether to use Faster Whisper implementation. (default: False)
-  --use_whisper_jax, --no-use_whisper_jax
-                        Whether to use Whisper JAX implementation. Make sure to have JAX installed before using this option. (default: False)
   --beam_size BEAM_SIZE
                         Number of beams in beam search, only applicable when temperature is zero.
   --ct2_compute_type {default,int8,int8_float16,int16,float16}
@@ -244,22 +240,6 @@ tafrigh "https://youtu.be/3K5Jh_-UYeA" \
   --task transcribe \
   --language ar \
   --use_faster_whisper \
-  --output_dir . \
-  --output_formats txt srt
-```
-
-<h4 dir="rtl">تسريع عملية التفريغ أكثر (غير مختبر بشكل جيد)</h4>
-
-<p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/sanchit-gandhi/whisper-jax">whisper-jax</a></code> لتحصيل سرعة أكبر في تفريغ المواد من سرعة نماذج Whisper الأصلية من شركة OpenAI تصل إلى 70 ضعفًا، ولكن يجب أن يتم تثبيت إطار عمل JAX على حاسبك كما هو موضح <a href="https://github.com/google/jax#installation">هنا</a> لتتمكن من استخدام هذه المكتبة.</p>
-
-<p dir="rtl">لاستخدام المكتبة، تحتاج فقط لتمرير الاختيار <code dir="ltr">--use_whisper_jax</code> إلى أمر التفريغ كالتالي:</p>
-
-```
-tafrigh "https://youtu.be/Di0vcmnxULs" \
-  --model_name_or_path small \
-  --task transcribe \
-  --language ar \
-  --use_whisper_jax \
   --output_dir . \
   --output_formats txt srt
 ```

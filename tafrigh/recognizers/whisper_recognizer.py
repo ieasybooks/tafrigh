@@ -4,7 +4,6 @@ from typing import Generator, Union
 
 import faster_whisper
 import whisper
-import whisper_jax
 
 from tqdm import tqdm
 
@@ -29,8 +28,6 @@ class WhisperRecognizer:
                 whisper_generator = self._recognize_stable_whisper(file_path, model, whisper_config)
             elif isinstance(model, faster_whisper.WhisperModel):
                 whisper_generator = self._recognize_faster_whisper(file_path, model, whisper_config)
-            elif isinstance(model, whisper_jax.FlaxWhisperPipline):
-                whisper_generator = self._recognize_jax_whisper(file_path, model, whisper_config)
 
             while True:
                 try:
@@ -105,27 +102,3 @@ class WhisperRecognizer:
                 }
 
         return converted_segments
-
-    def _recognize_jax_whisper(
-        self,
-        audio_file_path: str,
-        model: whisper_jax.FlaxWhisperPipline,
-        whisper_config: Config.Whisper,
-    ) -> Generator[dict[str, float], None, list[dict[str, Union[str, float]]]]:
-        yield {'progress': 0.0, 'remaining_time': None}
-
-        segments = model(
-            audio_file_path,
-            task=whisper_config.task,
-            language=whisper_config.language,
-            return_timestamps=True,
-        )['chunks']
-
-        return [
-            {
-                'start': segment['timestamp'][0],
-                'end': segment['timestamp'][1],
-                'text': segment['text'].strip(),
-            }
-            for segment in segments
-        ]
