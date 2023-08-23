@@ -36,6 +36,10 @@
 
 <h2 dir="rtl">تثبيت تفريغ</h2>
 
+<h3 dir="rtl">من خلال <code>pip</code></h3>
+
+<p dir="rtl">يمكنك تثبيت تفريغ من خلال <code>pip</code> باستخدام الأمر: <code dir="ltr">pip install tafrigh[wit,whisper]</code></p>
+
 <h3 dir="rtl">من خلال الشيفرة المصدرية</h3>
 
 <ul dir="rtl">
@@ -195,9 +199,11 @@ Output:
                         Directory to save the outputs.
 ```
 
-<h3 dir="rtl">التفريغ باستخدام نماذج Whisper</h3>
+<h3 dir="rtl">التفريغ من خلال سطر الأوامر</h3>
 
-<h4 dir="rtl">تفريغ مقطع واحد</h4>
+<h4 dir="rtl">التفريغ باستخدام نماذج Whisper</h4>
+
+<h5 dir="rtl">تفريغ مقطع واحد</h5>
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
@@ -208,7 +214,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
   --output_formats txt srt
 ```
 
-<h4 dir="rtl">تفريغ قائمة تشغيل كاملة</h4>
+<h5 dir="rtl">تفريغ قائمة تشغيل كاملة</h5>
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
@@ -219,7 +225,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
   --output_formats txt srt
 ```
 
-<h4 dir="rtl">تفريغ أكثر من مقطع</h4>
+<h5 dir="rtl">تفريغ أكثر من مقطع</h5>
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
@@ -230,7 +236,7 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
   --output_formats txt srt
 ```
 
-<h4 dir="rtl">تسريع عملية التفريغ</h4>
+<h5 dir="rtl">تسريع عملية التفريغ</h5>
 
 <p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/guillaumekln/faster-whisper">faster_whisper</a></code> التي توفّر سرعة أكبر في تفريغ المواد من خلال تمرير الاختيار <code dir="ltr">--use_faster_whisper</code> كالتالي:</p>
 
@@ -244,9 +250,9 @@ tafrigh "https://youtu.be/3K5Jh_-UYeA" \
   --output_formats txt srt
 ```
 
-<h3 dir="rtl">التفريغ باستخدام تقنية wit.ai</h3>
+<h4 dir="rtl">التفريغ باستخدام تقنية wit.ai</h4>
 
-<h4 dir="rtl">تفريغ مقطع واحد</h4>
+<h5 dir="rtl">تفريغ مقطع واحد</h5>
 
 ```
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
@@ -257,7 +263,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
   --max_cutting_duration 10
 ```
 
-<h4 dir="rtl">تفريغ قائمة تشغيل كاملة</h4>
+<h5 dir="rtl">تفريغ قائمة تشغيل كاملة</h5>
 
 ```
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
@@ -268,7 +274,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
   --max_cutting_duration 10
 ```
 
-<h4 dir="rtl">تفريغ أكثر من مقطع</h4>
+<h5 dir="rtl">تفريغ أكثر من مقطع</h5>
 
 ```
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
@@ -277,6 +283,52 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
   --output_formats txt srt \
   --min_words_per_segment 10 \
   --max_cutting_duration 10
+```
+
+<h3 dir="rtl">التفريغ من خلال الشيفرة البرمجية</h3>
+
+<p dir="rtl">يمكنك استخدام تفريغ من خلال الشيفرة البرمجية كالتالي:</p>
+
+```python
+from tafrigh import farrigh, Config
+
+if __name__ == '__main__':
+  config = Config(
+    urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
+    skip_if_output_exist=False,
+    playlist_items='',
+    verbose=False,
+    model_name_or_path='tiny',
+    task='transcribe',
+    language='ar',
+    use_faster_whisper=True,
+    beam_size=5,
+    ct2_compute_type='default',
+    wit_client_access_tokens=[],
+    max_cutting_duration=10,
+    min_words_per_segment=10,
+    save_files_before_compact=False,
+    save_yt_dlp_responses=False,
+    output_sample=0,
+    output_formats=['txt', 'srt'],
+    output_dir='.',
+  )
+
+  for progress in farrigh(config):
+    print(progress)
+```
+
+<p dir="rtl">دالة "فَرِّغْ" <code>farrigh</code> هي عبارة عن مُوَلِّدْ (Generator) يقوم بتوليد الحالة الحالية للتفريغ وأين وصلت العملية. إذا لم تكن بحاجة إلى تتبع هذا الأمر، يمكنك الاستغناء عن حلقة الدوران من خلال استخدام <code>deque</code> كالتالي:</p>
+
+```python
+from collections import deque
+
+from tafrigh import farrigh, Config
+
+if __name__ == '__main__':
+  config = Config(...)
+
+  deque(farrigh(config), maxlen=0)
 ```
 
 <hr>

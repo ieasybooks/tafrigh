@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tafrigh"
 version = "1.0.1"
-description = "تفريغ النصوص وإنشاء ملفات SRT و VTT بناءً على نموذج Whisper من OpenAI."
+description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية OpenAI."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
