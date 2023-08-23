@@ -1,3 +1,4 @@
+import json
 import os
 
 from pathlib import Path
@@ -45,6 +46,8 @@ class Writer:
             self.write_srt(file_path, segments)
         elif format == TranscriptType.VTT:
             self.write_vtt(file_path, segments)
+        elif format == TranscriptType.JSON:
+            self.write_json(file_path, segments)
 
     def write_txt(
         self,
@@ -66,6 +69,14 @@ class Writer:
         segments: list[dict[str, Union[str, float]]],
     ) -> None:
         self._write_to_file(file_path, self.generate_vtt(segments))
+
+    def write_json(
+        self,
+        file_path: str,
+        segments: list[dict[str, Union[str, float]]],
+    ) -> None:
+        with open(file_path, 'w') as fp:
+            json.dump(segments, fp, ensure_ascii=False, indent=2)
 
     def generate_txt(self, segments: list[dict[str, Union[str, float]]]) -> str:
         return '\n'.join(list(map(lambda segment: segment['text'].strip(), segments))) + '\n'
