@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import re
 
 from tafrigh.types.transcript_type import TranscriptType
@@ -16,6 +17,12 @@ PLAYLIST_ITEMS_RE = re.compile(
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '--version',
+        action='version',
+        version=importlib.metadata.version('tafrigh'),
+    )
 
     input_group = parser.add_argument_group('Input')
 

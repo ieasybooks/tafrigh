@@ -6,6 +6,7 @@ class TranscriptType(Enum):
     TXT = 'txt'
     SRT = 'srt'
     VTT = 'vtt'
+    JSON = 'json'
     NONE = 'none'
 
     def __str__(self):
