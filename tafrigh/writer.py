@@ -82,11 +82,9 @@ class Writer:
         delimiter=',',
     ) -> None:
         with open(file_path, 'w', encoding='utf-8') as fp:
-            writer = csv.writer(fp, delimiter=delimiter)
-            writer.writerow(['text', 'start', 'end'])
-
-            for segment in segments:
-                writer.writerow([segment['text'], segment['start'], segment['end']])
+            writer = csv.DictWriter(fp, fieldnames=['text', 'start', 'end'], delimiter=delimiter)
+            writer.writeheader()
+            writer.writerows(segments)
 
     def write_json(
         self,
