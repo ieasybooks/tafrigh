@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 
@@ -46,6 +47,10 @@ class Writer:
             self.write_srt(file_path, segments)
         elif format == TranscriptType.VTT:
             self.write_vtt(file_path, segments)
+        elif format == TranscriptType.CSV:
+            self.write_csv(file_path, segments)
+        elif format == TranscriptType.TSV:
+            self.write_csv(file_path, segments, '\t')
         elif format == TranscriptType.JSON:
             self.write_json(file_path, segments)
 
@@ -70,12 +75,25 @@ class Writer:
     ) -> None:
         self._write_to_file(file_path, self.generate_vtt(segments))
 
+    def write_csv(
+        self,
+        file_path: str,
+        segments: list[dict[str, Union[str, float]]],
+        delimiter=',',
+    ) -> None:
+        with open(file_path, 'w', encoding='utf-8') as fp:
+            writer = csv.writer(fp, delimiter=delimiter)
+            writer.writerow(['text', 'start', 'end'])
+
+            for segment in segments:
+                writer.writerow([segment['text'], segment['start'], segment['end']])
+
     def write_json(
         self,
         file_path: str,
         segments: list[dict[str, Union[str, float]]],
     ) -> None:
-        with open(file_path, 'w') as fp:
+        with open(file_path, 'w', encoding='utf-8') as fp:
             json.dump(segments, fp, ensure_ascii=False, indent=2)
 
     def generate_txt(self, segments: list[dict[str, Union[str, float]]]) -> str:

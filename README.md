@@ -22,7 +22,7 @@
   <li>تفريغ المواد المرئي والمسموع إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
   <li>إمكانية تفريغ المواد باستخدام تقنيات wit.ai المقدمة من شركة Facebook</li>
   <li>تحميل المحتوى المرئي بشكل مباشر من منصة YouTube سواءً كان المستهدف مادة واحدة أو قائمة تشغيل كاملة</li>
-  <li>توفير صيَغ مخرجات مختلفة كـ <code>txt</code> و <code>srt</code> و <code>vtt</code> و <code>json</code></li>
+  <li>توفير صيَغ مخرجات مختلفة كـ <code>txt</code> و <code>srt</code> و <code>vtt</code> و <code>csv</code> و <code>tsv</code> و <code>json</code></li>
 </ul>
 
 <h2 dir="rtl">متطلبات الاستخدام</h2>
@@ -134,6 +134,8 @@
           <li><code dir="ltr">txt</code></li>
           <li><code dir="ltr">srt</code></li>
           <li><code dir="ltr">vtt</code></li>
+          <li><code dir="ltr">csv</code></li>
+          <li><code dir="ltr">tsv</code></li>
           <li><code dir="ltr">json</code></li>
           <li><code dir="ltr">all</code> <strong>(الاختيار الإفتراضي)</strong></li>
           <li><code dir="ltr">none</code> (لن يتم إنشاء ملف في حال تمرير هذه الصيغة)</li>
@@ -146,15 +148,16 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
+usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
                [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]]
                [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses]
-               [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,json,none} [{all,txt,srt,vtt,json,none} ...]] [-o OUTPUT_DIR]
+               [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
 options:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
 
 Input:
   urls_or_paths         Video/Playlist URLs or local folder/file(s) to transcribe.
@@ -194,7 +197,7 @@ Output:
                         Whether to save the yt-dlp library JSON responses or not. (default: False)
   --output_sample OUTPUT_SAMPLE
                         Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.
-  -f {all,txt,srt,vtt,json,none} [{all,txt,srt,vtt,json,none} ...], --output_formats {all,txt,srt,vtt,json,none} [{all,txt,srt,vtt,json,none} ...]
+  -f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...], --output_formats {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]
                         Format of the output file; if not specified, all available formats will be produced.
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         Directory to save the outputs.
