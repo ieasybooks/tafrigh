@@ -6,6 +6,8 @@ class TranscriptType(Enum):
     TXT = 'txt'
     SRT = 'srt'
     VTT = 'vtt'
+    CSV = 'csv'
+    TSV = 'tsv'
     JSON = 'json'
     NONE = 'none'
 
