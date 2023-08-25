@@ -98,6 +98,8 @@ class WitRecognizer:
                             else None,
                         }
 
+                        time.sleep(0.1)
+
         shutil.rmtree(temp_directory)
 
         return transcriptions
