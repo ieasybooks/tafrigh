@@ -86,10 +86,11 @@ class WitRecognizer:
                 transcriptions = []
 
                 with tqdm(total=len(segments), disable=self.verbose is not False) as pbar:
-                    while async_results:
-                        if async_results[0].ready():
-                            transcriptions.append(async_results.pop(0).get())
-                            pbar.update(1)
+                    for async_result in async_results:
+                        async_result.wait()
+                        pbar.update(1)
+
+                        transcriptions.append(async_result.get())
 
                         yield {
                             'progress': round(len(transcriptions) / len(segments) * 100, 2),
@@ -97,8 +98,6 @@ class WitRecognizer:
                             if pbar.format_dict['rate'] and pbar.total
                             else None,
                         }
-
-                        time.sleep(0.1)
 
         shutil.rmtree(temp_directory)
 
