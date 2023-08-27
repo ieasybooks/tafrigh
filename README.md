@@ -2,12 +2,15 @@
   <img src="https://user-images.githubusercontent.com/7662492/229289746-89c5a4c7-afa6-4d46-a0e6-63dfdeb98285.jpg" style="width: 100%;"/>
 </p>
 
-<div align="right">
+<div align="center">
+  <a href="https://pypi.org/project/tafrigh" target="_blank"><img src="https://img.shields.io/pypi/v/tafrigh?label=PyPI%20Version&color=limegreen" /></a>
+  <a href="https://pypi.org/project/tafrigh" target="_blank"><img src="https://img.shields.io/pypi/pyversions/tafrigh?color=limegreen" /></a>
+  <a href="https://github.com/ieasybooks/tafrigh/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/pypi/l/tafrigh?color=limegreen" /></a>
+  <a href="https://pepy.tech/project/tafrigh" target="_blank"><img src="https://static.pepy.tech/badge/tafrigh" /></a>
 
-  [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://tafrigh.ieasybooks.com)
-  [![Formatter](https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml/badge.svg)](https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml)
-  [![PyPI](https://img.shields.io/pypi/v/tafrigh?label=PyPI%20Version&color=limegreen)](https://pypi.org/project/tafrigh/)
-
+  <a href="https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml" target="_blank"><img src="https://github.com/ieasybooks/tafrigh/actions/workflows/formatter.yml/badge.svg" /></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=ieasybooks_tafrigh" target="_blank"><img src="https://sonarcloud.io/api/project_badges/measure?project=ieasybooks_tafrigh&metric=code_smells" /></a>
+  <a href="https://tafrigh.ieasybooks.com" target="_blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
 </div>
 
 <h1 dir="rtl">تفريغ</h1>
