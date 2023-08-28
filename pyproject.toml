@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tafrigh"
-version = "1.1.0"
+version = "1.1.1"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 readme = "README.md"
 license = { file = "LICENSE" }
