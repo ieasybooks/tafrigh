@@ -1,5 +1,5 @@
 import argparse
-import importlib
+import importlib.metadata
 import re
 
 from tafrigh.types.transcript_type import TranscriptType
