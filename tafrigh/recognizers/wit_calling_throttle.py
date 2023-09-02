@@ -19,7 +19,7 @@ class WitCallingThrottle:
 
                 self.call_timestamps[wit_client_access_token_index] = list(
                     filter(
-                        lambda x: now - x < self.expired_time,
+                        lambda call_timestamp, now=now: now - call_timestamp < self.expired_time,
                         self.call_timestamps[wit_client_access_token_index],
                     )
                 )
