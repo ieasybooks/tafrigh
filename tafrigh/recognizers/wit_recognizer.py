@@ -139,7 +139,7 @@ class WitRecognizer:
                 else:
                     retries -= 1
                     time.sleep(self.processes_per_wit_client_access_token + 1)
-            except:
+            except Exception:
                 retries -= 1
                 time.sleep(self.processes_per_wit_client_access_token + 1)
 
