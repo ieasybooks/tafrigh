@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tafrigh"
-version = "1.1.3"
+version = "1.1.4"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -20,24 +20,25 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 authors = [{ name = "الكتب المٌيسّرة", email = "easybooksdev@gmail.com" }]
 keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
-dependencies = ["tqdm==4.65.1", "yt-dlp==2023.7.6"]
+dependencies = ["tqdm>=4.66.4", "yt-dlp>=2024.4.9"]
 
 [project.optional-dependencies]
 wit = [
-    "auditok==0.2.0",
-    "numpy==1.23.5",
-    "pydub==0.25.1",
-    "requests==2.31.0",
-    "scipy==1.11.1",
+    "auditok>=0.2.0",
+    "numpy>=1.26.4",
+    "pydub>=0.25.1",
+    "requests>=2.32.0",
+    "scipy>=1.13.0",
 ]
 whisper = [
-    "faster-whisper==0.10.0",
-    "openai-whisper==20231117",
-    "stable-ts==2.13.4",
+    "faster-whisper>=1.0.2",
+    "openai-whisper>=20231117",
+    "stable-ts>=2.17.2",
 ]
 
 [project.urls]
