@@ -23,7 +23,7 @@ homepage = "https://tafrigh.ieasybooks.com"
 repository = "https://github.com/ieasybooks/tafrigh"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = "3.11"
 tqdm = ">=4.66.4"
 yt-dlp = ">=2024.4.9"
 auditok = {version = ">=0.2.0", extras = ["wit"]}

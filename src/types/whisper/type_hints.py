@@ -5,7 +5,7 @@ import whisper
 
 
 WhisperModel = TypeVar(
-    'WhisperModel',
-    whisper.Whisper,
-    faster_whisper.WhisperModel,
+  'WhisperModel',
+  whisper.Whisper,
+  faster_whisper.WhisperModel,
 )

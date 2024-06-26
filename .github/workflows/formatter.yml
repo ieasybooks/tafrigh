@@ -14,12 +14,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - name: black formatter
-        uses: rickstaa/action-black@v1
-        with:
-          black_args: ". --check --diff --skip-string-normalization --line-length 120"
+          python-version: 3.11
       - name: isort formatter
         uses: isort/isort-action@v1
         with:
-          configuration: "--profile black --src tafrigh --line-length 120 --lines-between-types 1 --lines-after-imports 2 --case-sensitive --trailing-comma --check-only --diff"
+          configuration: "--src src --line-length 120 --lines-between-types 1 --lines-after-imports 2 --check-only --diff"

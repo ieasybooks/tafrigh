@@ -1,12 +1,12 @@
 __all__ = [
-    "farrigh",
-    "Config",
-    "Downloader",
-    "TranscriptType",
-    "Writer",
-    "WhisperRecognizer",
-    "AudioSplitter",
-    "WitRecognizer",
+  'farrigh',
+  'Config',
+  'Downloader',
+  'TranscriptType',
+  'Writer',
+  'WhisperRecognizer',
+  'AudioSplitter',
+  'WitRecognizer',
 ]
 
 
@@ -18,12 +18,12 @@ from .writer import Writer
 
 
 try:
-    from .recognizers.whisper_recognizer import WhisperRecognizer
+  from .recognizers.whisper_recognizer import WhisperRecognizer
 except ModuleNotFoundError:
-    pass
+  pass
 
 try:
-    from .audio_splitter import AudioSplitter
-    from .recognizers.wit_recognizer import WitRecognizer
+  from .audio_splitter import AudioSplitter
+  from .recognizers.wit_recognizer import WitRecognizer
 except ModuleNotFoundError:
-    pass
+  pass
