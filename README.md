@@ -53,6 +53,8 @@
   <li>قم بتنفيذ الأمر التالي لتثبيت تفريغ: <code dir="ltr">poetry install</code></li>
 </ul>
 
+أضف <code dir="ltr">-E wit</code> أو <code dir="ltr">-E whisper</code> لتحديد الاعتماديات المراد تثبيتها.
+
 <h2 dir="rtl">استخدام تفريغ</h2>
 
 <h3 dir="rtl">الخيارات المتوفرة</h3>

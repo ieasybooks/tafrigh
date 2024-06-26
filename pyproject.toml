@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tafrigh"
-version = "1.2.0"
+version = "1.2.1"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 authors = ["EasyBooks <easybooksdev@gmail.com>"]
 license = "MIT"
@@ -25,12 +25,12 @@ repository = "https://github.com/ieasybooks/tafrigh"
 python = ">=3.11, <3.12"
 tqdm = ">=4.66.4"
 yt-dlp = ">=2024.4.9"
-auditok = {version = ">=0.2.0"}
-pydub = {version = ">=0.25.1"}
-requests = {version = ">=2.32.0"}
-faster-whisper = {version = ">=1.0.2"}
-openai-whisper = {git = "https://github.com/openai/whisper.git"}
-stable-ts = {version = ">=2.17.2"}
+auditok = ">=0.2.0"
+pydub = ">=0.25.1"
+requests = ">=2.32.0"
+faster-whisper = ">=1.0.2"
+stable-ts = ">=2.17.2"
+openai-whisper = ">=20231117"
 
 [tool.poetry.extras]
 wit = ["auditok", "pydub", "requests"]
