@@ -148,8 +148,8 @@ def process_local(
         file_path = str(file['file_path'].absolute())
 
         if config.use_wit():
-            wav_file_path = str(wit_file_utils.convert_to_wav(file['file_path']).absolute())
-            recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(wav_file_path, config.wit)
+            mp3_file_path = str(wit_file_utils.convert_to_mp3(file['file_path']).absolute())
+            recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(mp3_file_path, config.wit)
         else:
             recognize_generator = WhisperRecognizer(verbose=config.input.verbose).recognize(
                 file_path,
@@ -165,8 +165,8 @@ def process_local(
                 segments = exception.value
                 break
 
-        if config.use_wit() and file['file_path'].suffix != '.wav':
-            Path(wav_file_path).unlink(missing_ok=True)
+        if config.use_wit() and file['file_path'].suffix != '.mp3':
+            Path(mp3_file_path).unlink(missing_ok=True)
 
         writer.write_all(Path(file['file_name']).stem, segments, config.output)
 
@@ -218,7 +218,7 @@ def process_url(
 
             continue
 
-        file_path = os.path.join(config.output.output_dir, f"{element['id']}.wav")
+        file_path = os.path.join(config.output.output_dir, f"{element['id']}.mp3")
 
         if config.use_wit():
             recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)

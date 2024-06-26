@@ -33,7 +33,6 @@ wit = [
     "numpy>=1.26.4",
     "pydub>=0.25.1",
     "requests>=2.32.0",
-    "scipy>=1.13.0",
 ]
 whisper = [
     "faster-whisper>=1.0.2",

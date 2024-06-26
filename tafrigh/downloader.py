@@ -17,7 +17,8 @@ class Downloader:
         return {
             'quiet': True,
             'verbose': False,
-            'format': 'wav/bestaudio/best',
+            'format': 'bestaudio',
+            'extract_audio': True,
             'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
             'ignoreerrors': True,
             'download_archive': download_archive,
@@ -25,7 +26,7 @@ class Downloader:
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'wav',
+                    'preferredcodec': 'mp3',
                 },
             ],
         }

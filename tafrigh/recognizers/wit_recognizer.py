@@ -115,8 +115,8 @@ class WitRecognizer:
 
         segment_file_path, start, end = segment
 
-        with open(segment_file_path, 'rb') as wav_file:
-            audio_content = wav_file.read()
+        with open(segment_file_path, 'rb') as mp3_file:
+            audio_content = mp3_file.read()
 
         retries = 5
 
@@ -127,7 +127,7 @@ class WitRecognizer:
                     'https://api.wit.ai/speech',
                     headers={
                         'Accept': 'application/vnd.wit.20200513+json',
-                        'Content-Type': 'audio/wav',
+                        'Content-Type': 'audio/mpeg3',
                         'Authorization': f'Bearer {wit_config.wit_client_access_tokens[wit_client_access_token_index]}',
                     },
                     data=audio_content,

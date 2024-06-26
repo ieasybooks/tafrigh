@@ -3,8 +3,10 @@ import tempfile
 
 import numpy as np
 
+from auditok import AudioRegion
 from auditok.core import split
-from scipy.io import wavfile
+from pydub import AudioSegment
+from pydub.generators import WhiteNoise
 
 
 class AudioSplitter:
@@ -18,92 +20,61 @@ class AudioSplitter:
         energy_threshold: float = 50,
         expand_segments_with_noise: bool = False,
         noise_seconds: int = 1,
-        noise_amplitude: int = 10,
+        noise_amplitude: int = 0,
     ) -> list[tuple[str, float, float]]:
-        sampling_rate, data = self._read_audio(file_path)
-        temp_file_name = self._write_temp_audio(sampling_rate, data)
-        segments = self._split_audio(temp_file_name, min_dur, max_dur, max_silence, energy_threshold)
-
-        os.remove(temp_file_name)
-
-        if expand_segments_with_noise:
-            expanded_segments = self._expand_segments_with_noise(
-                segments,
-                noise_seconds,
-                noise_amplitude,
-                sampling_rate,
-                data.dtype,
-            )
-        else:
-            expanded_segments = [(segment, segment.meta.start, segment.meta.end) for segment in segments]
-
-        return self._save_segments(output_dir, sampling_rate, expanded_segments)
-
-    def _read_audio(self, file_path: str) -> tuple[int, np.ndarray]:
-        sampling_rate, data = wavfile.read(file_path)
-
-        if len(data.shape) > 1 and data.shape[1] > 1:
-            data = np.mean(data, axis=1)
-
-        return sampling_rate, data
-
-    def _write_audio(self, file_path: str, sampling_rate: int, data: np.ndarray) -> None:
-        wavfile.write(file_path, sampling_rate, data.astype(np.int16))
-
-    def _write_temp_audio(self, sampling_rate: int, data: np.ndarray) -> str:
-        with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_file:
-            temp_file_name = temp_file.name
-            self._write_audio(temp_file_name, sampling_rate, data)
-
-        return temp_file_name
-
-    def _split_audio(
-        self,
-        temp_file_name: str,
-        min_dur: float,
-        max_dur: float,
-        max_silence: float,
-        energy_threshold: float,
-    ):
-        return split(
-            temp_file_name,
+        segments = split(
+            file_path,
             min_dur=min_dur,
             max_dur=max_dur,
             max_silence=max_silence,
             energy_threshold=energy_threshold,
         )
 
-    def _expand_segments_with_noise(
+        if expand_segments_with_noise:
+            segments = [
+                (
+                    self._expand_segment_with_noise(segment, noise_seconds, noise_amplitude),
+                    segment.meta.start,
+                    segment.meta.end,
+                ) for segment in segments
+            ]
+
+        return self._save_segments(output_dir, segments)
+
+    def _expand_segment_with_noise(
         self,
-        segments: list,
+        segment: AudioRegion,
         noise_seconds: int,
         noise_amplitude: int,
-        sampling_rate: int,
-        dtype: np.dtype,
-    ) -> list[tuple[np.ndarray, float, float]]:
-        expanded_segments = []
+    ) -> AudioSegment:
 
-        for segment in segments:
-            # Have different noise in the beginning and the end gave us better results :).
-            prepend_noise = np.random.normal(0, noise_amplitude, int(noise_seconds * sampling_rate)).astype(dtype)
-            append_noise = np.random.normal(0, noise_amplitude, int(noise_seconds * sampling_rate)).astype(dtype)
+        audio_segment = AudioSegment(
+            segment._data, 
+            frame_rate=segment.sampling_rate, 
+            sample_width=segment.sample_width, 
+            channels=segment.channels,
+        )
 
-            expanded_segment = np.concatenate((prepend_noise, segment, append_noise))
-            expanded_segments.append((expanded_segment, segment.meta.start, segment.meta.end))
+        pre_noise = WhiteNoise().to_audio_segment(duration=noise_seconds * 1000, volume=noise_amplitude)
+        post_noise = WhiteNoise().to_audio_segment(duration=noise_seconds * 1000, volume=noise_amplitude)
 
-        return expanded_segments
+        return pre_noise + audio_segment + post_noise
 
     def _save_segments(
         self,
         output_dir: str,
-        sampling_rate: int,
-        expanded_segments: list[tuple[np.ndarray, float, float]],
+        segments: list[AudioSegment | tuple[AudioSegment, float, float]],
     ) -> list[tuple[str, float, float]]:
-        segments = []
+        segment_paths = []
 
-        for i, (expanded_segment, start, end) in enumerate(expanded_segments):
-            output_file = os.path.join(output_dir, f"segment_{i + 1}.wav")
-            self._write_audio(output_file, sampling_rate, expanded_segment)
-            segments.append((output_file, start, end))
+        for i, segment in enumerate(segments):
+            output_file = os.path.join(output_dir, f'segment_{i + 1}.mp3')
 
-        return segments
+            if isinstance(segment, tuple):
+                segment[0].export(output_file, format='mp3')
+                segment_paths.append((output_file, segment[1], segment[2]))
+            else:
+                segment.save(output_file)
+                segment_paths.append((output_file, segment.meta.start, segment.meta.end))
+            
+        return segment_paths
