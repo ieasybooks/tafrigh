@@ -32,7 +32,7 @@
 
 <ul dir="rtl">
   <li>يُفضّل وجود معالج رسوميات قوي في حاسبك في حال استخدام نماذج Whisper</li>
-  <li>تثبيت لغة Python بإصدار 3.9 أو أعلى على حاسبك</li>
+  <li>تثبيت لغة Python بإصدار 3.11 على حاسبك</li>
   <li>تثبيت برمجية <a href="https://ffmpeg.org">FFmpeg</a> على حاسبك</li>
   <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
 </ul>
@@ -43,19 +43,15 @@
 
 <p dir="rtl">يمكنك تثبيت تفريغ من خلال <code>pip</code> باستخدام الأمر: <code dir="ltr">pip install tafrigh[wit,whisper]</code></p>
 
+<p dir="rtl">يمكنك تحديد الاعتماديات التي تريد تثبيتها حسب نوع التقنية التي تريد استخدامها من خلال كتابة <code>wit</code> أو <code>whisper</code> بين قوسين مربعين كما هو موضّح في الأمر السابق.</p>
+
 <h3 dir="rtl">من خلال الشيفرة المصدرية</h3>
 
 <ul dir="rtl">
   <li>قم بتنزيل هذا المستودع من خلال الضغط على Code ثم Download ZIP أو من خلال تنفيذ الأمر التالي: <code>git clone git@github.com:ieasybooks/tafrigh.git</code></li>
   <li>قم بفك ضغط الملف إذا قمت بتنزيله بصيغة ZIP وتوجّه إلى مجلد المشروع</li>
-  <li>قم بتنفيذ الأمر التالي لتثبيت تفريغ: <code dir="ltr">pip install .[wit,whisper]</code></li>
+  <li>قم بتنفيذ الأمر التالي لتثبيت تفريغ: <code dir="ltr">poetry install</code></li>
 </ul>
-
-<h3 dir="rtl">من خلال مستودع GitHub</h3>
-
-<p dir="rtl">يمكن تثبيت تفريغ من خلال مستودع GitHub مباشرة عن طريق تنفيذ الأمر: <code dir="ltr">pip install "tafrigh[wit,whisper] @ git+https://github.com/ieasybooks/tafrigh"</code>.</p>
-
-<p dir="rtl">يمكنك تحديد الاعتماديات التي تريد تثبيتها حسب نوع التقنية التي تريد استخدامها من خلال كتابة <code>wit</code> أو <code>whisper</code> بين قوسين مربعين كما هو موضّح في الأوامر السابقة.</p>
 
 <h2 dir="rtl">استخدام تفريغ</h2>
 
