@@ -25,12 +25,12 @@ repository = "https://github.com/ieasybooks/tafrigh"
 python = ">=3.11, <3.12"
 tqdm = ">=4.66.4"
 yt-dlp = ">=2024.4.9"
-auditok = {version = ">=0.2.0", extras = ["wit"]}
-pydub = {version = ">=0.25.1", extras = ["wit"]}
-requests = {version = ">=2.32.0", extras = ["wit"]}
-faster-whisper = {version = ">=1.0.2", extras = ["whisper"]}
-openai-whisper = {git = "https://github.com/openai/whisper.git", extras = ["whisper"]}
-stable-ts = {version = ">=2.17.2", extras = ["whisper"]}
+auditok = {version = ">=0.2.0"}
+pydub = {version = ">=0.25.1"}
+requests = {version = ">=2.32.0"}
+faster-whisper = {version = ">=1.0.2"}
+openai-whisper = {git = "https://github.com/openai/whisper.git"}
+stable-ts = {version = ">=2.17.2"}
 
 [tool.poetry.extras]
 wit = ["auditok", "pydub", "requests"]
