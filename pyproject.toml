@@ -1,14 +1,12 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "tafrigh"
 version = "1.1.4"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
+authors = ["EasyBooks <easybooksdev@gmail.com>"]
+license = "MIT"
 readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.9"
+packages = [{include = "src"}]
+keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -17,45 +15,41 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-authors = [{ name = "الكتب المٌيسّرة", email = "easybooksdev@gmail.com" }]
-keywords = ["tafrigh", "speech-to-text", "wit.ai", "whisper"]
-dependencies = ["tqdm>=4.66.4", "yt-dlp>=2024.4.9"]
-
-[project.optional-dependencies]
-wit = [
-    "auditok>=0.2.0",
-    "numpy>=1.26.4",
-    "pydub>=0.25.1",
-    "requests>=2.32.0",
-]
-whisper = [
-    "faster-whisper>=1.0.2",
-    "openai-whisper>=20231117",
-    "stable-ts>=2.17.2",
-]
-
-[project.urls]
-homepage = "https://github.com/ieasybooks/tafrigh"
+homepage = "https://tafrigh.ieasybooks.com"
 repository = "https://github.com/ieasybooks/tafrigh"
 
-[project.scripts]
-tafrigh = "tafrigh.cli:main"
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+tqdm = ">=4.66.4"
+yt-dlp = ">=2024.4.9"
+auditok = {version = ">=0.2.0", extras = ["wit"]}
+pydub = {version = ">=0.25.1", extras = ["wit"]}
+requests = {version = ">=2.32.0", extras = ["wit"]}
+faster-whisper = {version = ">=1.0.2", extras = ["whisper"]}
+openai-whisper = {git = "https://github.com/openai/whisper.git", extras = ["whisper"]}
+stable-ts = {version = ">=2.17.2", extras = ["whisper"]}
 
-[tool.black]
-line-length = 120
-skip-string-normalization = true
+[tool.poetry.scripts]
+tafrigh = "src.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.7.1"
+
+[tool.autopep8]
+max-line-length = 120
+indent-size = 2
+ignore = ["E121"]
 
 [tool.isort]
-profile = "black"
-src_paths = "tafrigh"
 line_length = 120
+src_paths = ["src"]
 lines_between_types = 1
 lines_after_imports = 2
-case_sensitive = true
-include_trailing_comma = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
