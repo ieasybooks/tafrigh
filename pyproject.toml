@@ -32,6 +32,11 @@ faster-whisper = {version = ">=1.0.2", extras = ["whisper"]}
 openai-whisper = {git = "https://github.com/openai/whisper.git", extras = ["whisper"]}
 stable-ts = {version = ">=2.17.2", extras = ["whisper"]}
 
+[tool.poetry.extras]
+wit = ["auditok", "pydub", "requests"]
+whisper = ["faster-whisper", "openai-whisper", "stable-ts"]
+all = ["wit", "whisper"]
+
 [tool.poetry.scripts]
 tafrigh = "src.cli:main"
 

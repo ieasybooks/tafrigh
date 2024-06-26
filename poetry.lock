@@ -1965,7 +1965,12 @@ secretstorage = ["cffi", "secretstorage"]
 static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.4.4,<0.5.0)"]
 test = ["pytest (>=8.1,<9.0)"]
 
+[extras]
+all = []
+whisper = ["faster-whisper", "openai-whisper", "stable-ts"]
+wit = ["auditok", "pydub", "requests"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11, <3.12"
-content-hash = "15646545c6bdeb7c67da78fcf273903eff7f989e0a34777f98fc41c65498a5aa"
+content-hash = "f9579a55e4bb31ebd5601224a4fff117958a66dda8819a72aa03b2c0af0a7bdc"
