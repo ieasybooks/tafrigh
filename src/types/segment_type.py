@@ -1,4 +1,4 @@
-from typing import TypedDict, NotRequired
+from typing import NotRequired, TypedDict
 
 
 class SegmentType(TypedDict):
