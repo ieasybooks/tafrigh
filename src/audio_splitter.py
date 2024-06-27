@@ -5,11 +5,11 @@ import subprocess
 from auditok import AudioRegion
 from auditok.core import split
 from pydub import AudioSegment
-from pydub.exceptions import CouldntDecodeError
 from pydub.generators import WhiteNoise
 from pydub.utils import mediainfo
 
 
+MAX_FILE_SIZE = 4 * 1024 * 1024
 MAX_FILE_DURATION = 1 * 60 * 60
 
 
@@ -24,7 +24,20 @@ class AudioSplitter:
     noise_seconds: int = 1,
     noise_amplitude: int = 0,
   ) -> list[tuple[bytes, float, float]]:
-    try:
+    file_info = mediainfo(file_path)
+    file_size = float(file_info['duration']) * int(file_info['sampling_rate']) * int(file_info['channels']) * 16 / 8
+
+    if file_size > MAX_FILE_SIZE:
+      return self._split_large_file(
+        file_path,
+        min_dur,
+        max_dur,
+        max_silence,
+        energy_threshold,
+        noise_seconds,
+        noise_amplitude,
+      )
+    else:
       segments = [
         (
           self._expand_segment_with_noise(segment, noise_seconds, noise_amplitude),
@@ -40,16 +53,6 @@ class AudioSplitter:
       ]
 
       return self._segments_to_data(segments)
-    except CouldntDecodeError:
-      return self._split_large_file(
-        file_path,
-        min_dur,
-        max_dur,
-        max_silence,
-        energy_threshold,
-        noise_seconds,
-        noise_amplitude,
-      )
 
   def _split_large_file(
     self,
