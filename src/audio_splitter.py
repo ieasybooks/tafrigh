@@ -1,4 +1,4 @@
-import os
+import io
 
 from auditok import AudioRegion
 from auditok.core import split
@@ -10,7 +10,6 @@ class AudioSplitter:
   def split(
     self,
     file_path: str,
-    output_dir: str,
     min_dur: float = 0.5,
     max_dur: float = 15,
     max_silence: float = 0.5,
@@ -36,7 +35,7 @@ class AudioSplitter:
         ) for segment in segments
       ]
 
-    return self._save_segments(output_dir, segments)
+    return self._semgnets_to_data(segments)
 
   def _expand_segment_with_noise(
     self,
@@ -57,21 +56,20 @@ class AudioSplitter:
 
     return pre_noise + audio_segment + post_noise
 
-  def _save_segments(
+  def _semgnets_to_data(
     self,
-    output_dir: str,
     segments: list[AudioSegment | tuple[AudioSegment, float, float]],
-  ) -> list[tuple[str, float, float]]:
-    segment_paths = []
+  ) -> list[tuple[bytes, float, float]]:
+    segment_data = []
 
-    for i, segment in enumerate(segments):
-      output_file = os.path.join(output_dir, f'segment_{i + 1}.mp3')
+    for segment in segments:
+      output_buffer = io.BytesIO()
 
       if isinstance(segment, tuple):
-        segment[0].export(output_file, format='mp3')
-        segment_paths.append((output_file, segment[1], segment[2]))
+        segment[0].export(output_buffer, format='mp3')
+        segment_data.append((output_buffer.getvalue(), segment[1], segment[2]))
       else:
-        segment.save(output_file)
-        segment_paths.append((output_file, segment.meta.start, segment.meta.end))
+        segment.export(output_buffer, format='mp3')
+        segment_data.append((output_buffer.getvalue(), segment.meta.start, segment.meta.end))
 
-    return segment_paths
+    return segment_data

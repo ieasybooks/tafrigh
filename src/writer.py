@@ -11,12 +11,7 @@ from .utils import time_utils
 
 
 class Writer:
-  def write_all(
-    self,
-    file_name: str,
-    segments: list[SegmentType],
-    output_config: Config.Output,
-  ) -> None:
+  def write_all(self, file_name: str, segments: list[SegmentType], output_config: Config.Output) -> None:
     if output_config.save_files_before_compact:
       for output_format in output_config.output_formats:
         self.write(
@@ -35,12 +30,7 @@ class Writer:
           compacted_segments,
         )
 
-  def write(
-    self,
-    format: TranscriptType,
-    file_path: str,
-    segments: list[SegmentType],
-  ) -> None:
+  def write(self, format: TranscriptType, file_path: str, segments: list[SegmentType]) -> None:
     if format == TranscriptType.TXT:
       self.write_txt(file_path, segments)
     elif format == TranscriptType.SRT:
@@ -54,43 +44,22 @@ class Writer:
     elif format == TranscriptType.JSON:
       self.write_json(file_path, segments)
 
-  def write_txt(
-    self,
-    file_path: str,
-    segments: list[SegmentType],
-  ) -> None:
+  def write_txt(self, file_path: str, segments: list[SegmentType]) -> None:
     self._write_to_file(file_path, self.generate_txt(segments))
 
-  def write_srt(
-    self,
-    file_path: str,
-    segments: list[SegmentType],
-  ) -> None:
+  def write_srt(self, file_path: str, segments: list[SegmentType]) -> None:
     self._write_to_file(file_path, self.generate_srt(segments))
 
-  def write_vtt(
-    self,
-    file_path: str,
-    segments: list[SegmentType],
-  ) -> None:
+  def write_vtt(self, file_path: str, segments: list[SegmentType]) -> None:
     self._write_to_file(file_path, self.generate_vtt(segments))
 
-  def write_csv(
-    self,
-    file_path: str,
-    segments: list[SegmentType],
-    delimiter=',',
-  ) -> None:
+  def write_csv(self, file_path: str, segments: list[SegmentType], delimiter=',') -> None:
     with open(file_path, 'w', encoding='utf-8') as fp:
       writer = csv.DictWriter(fp, fieldnames=['text', 'start', 'end'], delimiter=delimiter)
       writer.writeheader()
       writer.writerows(segments)
 
-  def write_json(
-    self,
-    file_path: str,
-    segments: list[SegmentType],
-  ) -> None:
+  def write_json(self, file_path: str, segments: list[SegmentType]) -> None:
     with open(file_path, 'w', encoding='utf-8') as fp:
       json.dump(segments, fp, ensure_ascii=False, indent=2)
 
@@ -113,11 +82,7 @@ class Writer:
       for segment in segments
     )
 
-  def compact_segments(
-    self,
-    segments: list[SegmentType],
-    min_words_per_segment: int,
-  ) -> list[SegmentType]:
+  def compact_segments(self, segments: list[SegmentType], min_words_per_segment: int) -> list[SegmentType]:
     if min_words_per_segment == 0:
       return segments
 
@@ -133,9 +98,9 @@ class Writer:
           compacted_segments.append(tmp_segment)
           tmp_segment = None
       elif len(segment['text'].split()) < min_words_per_segment:
-        tmp_segment = SegmentType(text=segment['text'], start=segment['start'], end=segment['end'])
+        tmp_segment = segment.copy()
       elif len(segment['text'].split()) >= min_words_per_segment:
-        compacted_segments.append(SegmentType(text=segment['text'], start=segment['start'], end=segment['end']))
+        compacted_segments.append(segment.copy())
 
     if tmp_segment:
       compacted_segments.append(tmp_segment)

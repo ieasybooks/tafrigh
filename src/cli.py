@@ -202,15 +202,13 @@ def process_url(
       continue
 
     new_progress_info = progress_info.copy()
-    new_progress_info.update(
-      {
-        'inner_total': len(elements),
-        'inner_current': idx + 1,
-        'inner_status': 'processing',
-        'progress': 0.0,
-        'remaining_time': None,
-      }
-    )
+    new_progress_info.update({
+      'inner_total': len(elements),
+      'inner_current': idx + 1,
+      'inner_status': 'processing',
+      'progress': 0.0,
+      'remaining_time': None,
+    })
     yield new_progress_info, []
 
     writer = Writer()
@@ -226,9 +224,9 @@ def process_url(
       recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
     else:
       recognize_generator = WhisperRecognizer(verbose=config.input.verbose).recognize(
-          file_path,
-          model,
-          config.whisper,
+        file_path,
+        model,
+        config.whisper,
       )
 
     while True:

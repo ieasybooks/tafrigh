@@ -1,9 +1,6 @@
 import json
 import logging
 import multiprocessing
-import os
-import shutil
-import tempfile
 import time
 
 from typing import Generator, cast
@@ -36,11 +33,8 @@ class WitRecognizer:
     file_path: str,
     wit_config: Config.Wit,
   ) -> Generator[dict[str, float], None, list[SegmentType]]:
-    temp_directory = tempfile.mkdtemp()
-
     segments = AudioSplitter().split(
       file_path,
-      temp_directory,
       max_dur=wit_config.max_cutting_duration,
       expand_segments_with_noise=True,
     )
@@ -73,13 +67,13 @@ class WitRecognizer:
         async_results = [
           pool.apply_async(
             self._process_segment,
-              (
-                  segment,
-                  file_path,
-                  wit_config,
-                  session,
-                  index % len(wit_config.wit_client_access_tokens or []),
-              ),
+            (
+              segment,
+              file_path,
+              wit_config,
+              session,
+              index % len(wit_config.wit_client_access_tokens or []),
+            ),
           )
           for index, segment in enumerate(segments)
         ]
@@ -100,8 +94,6 @@ class WitRecognizer:
               else None,
             }
 
-    shutil.rmtree(temp_directory)
-
     return transcriptions
 
   def _process_segment(
@@ -114,10 +106,7 @@ class WitRecognizer:
   ) -> SegmentType:
     wit_calling_throttle.throttle(wit_client_access_token_index)  # type: ignore
 
-    segment_file_path, start, end = segment
-
-    with open(segment_file_path, 'rb') as mp3_file:
-      audio_content = mp3_file.read()
+    data, start, end = segment
 
     retries = 5
 
@@ -131,7 +120,7 @@ class WitRecognizer:
             'Content-Type': 'audio/mpeg3',
             'Authorization': f'Bearer {cast(list[str], wit_config.wit_client_access_tokens)[wit_client_access_token_index]}',
           },
-          data=audio_content,
+          data=data,
         )
 
         if response.status_code == 200:
@@ -149,10 +138,4 @@ class WitRecognizer:
         f"The segment from `{file_path}` file that starts at {start} and ends at {end} didn't transcribed successfully."
       )
 
-    os.remove(segment_file_path)
-
-    return SegmentType(
-      text=text.strip(),
-      start=start,
-      end=end,
-    )
+    return SegmentType(text=text.strip(), start=start, end=end)
