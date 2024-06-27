@@ -1,9 +1,15 @@
 import io
+import os
+import subprocess
 
 from auditok import AudioRegion
 from auditok.core import split
 from pydub import AudioSegment
 from pydub.generators import WhiteNoise
+from pydub.utils import mediainfo
+
+
+MAX_FILE_DURATION = 4 * 60 * 60
 
 
 class AudioSplitter:
@@ -17,21 +23,78 @@ class AudioSplitter:
     noise_seconds: int = 1,
     noise_amplitude: int = 0,
   ) -> list[tuple[bytes, float, float]]:
-    segments = [
-      (
-        self._expand_segment_with_noise(segment, noise_seconds, noise_amplitude),
-        segment.meta.start,
-        segment.meta.end,
-      ) for segment in split(
+    duration = float(mediainfo(file_path)['duration'])
+
+    if int(duration) > MAX_FILE_DURATION:
+      return self._split_large_file(
         file_path,
-        min_dur=min_dur,
-        max_dur=max_dur,
-        max_silence=max_silence,
-        energy_threshold=energy_threshold,
+        min_dur,
+        max_dur,
+        max_silence,
+        energy_threshold,
+        noise_seconds,
+        noise_amplitude,
+        duration,
       )
-    ]
+    else:
+      segments = [
+        (
+          self._expand_segment_with_noise(segment, noise_seconds, noise_amplitude),
+          segment.meta.start,
+          segment.meta.end,
+        ) for segment in split(
+          file_path,
+          min_dur=min_dur,
+          max_dur=max_dur,
+          max_silence=max_silence,
+          energy_threshold=energy_threshold,
+        )
+      ]
 
     return self._segments_to_data(segments)
+
+  def _split_large_file(
+    self,
+    file_path: str,
+    min_dur: float,
+    max_dur: float,
+    max_silence: float,
+    energy_threshold: float,
+    noise_seconds: int,
+    noise_amplitude: int,
+    duration: float,
+  ) -> list[tuple[bytes, float, float]]:
+    segments = []
+
+    base_name, ext = os.path.splitext(file_path)
+    output_file = f"{base_name}_part{ext}"
+
+    for i in range(0, int(duration), MAX_FILE_DURATION):
+      start_time = i
+      end_time = min(i + MAX_FILE_DURATION, duration)
+
+      with open(os.devnull, 'w') as devnull:
+        subprocess.run(
+          ['ffmpeg', '-y', '-i', file_path, '-ss', str(start_time), '-to', str(end_time), '-c', 'copy', output_file],
+          stdout=devnull,
+          stderr=devnull,
+        )
+
+      part_segments = self.split(
+        output_file,
+        min_dur,
+        max_dur,
+        max_silence,
+        energy_threshold,
+        noise_seconds,
+        noise_amplitude,
+      )
+
+      segments.extend([(segment[0], segment[1] + start_time, segment[2] + start_time) for segment in part_segments])
+
+      os.remove(output_file)
+
+    return segments
 
   def _expand_segment_with_noise(self, segment: AudioRegion, noise_seconds: int, noise_amplitude: int) -> AudioSegment:
     audio_segment = AudioSegment(
