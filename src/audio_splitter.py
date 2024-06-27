@@ -2,6 +2,8 @@ import io
 import os
 import subprocess
 
+from concurrent.futures import ThreadPoolExecutor
+
 from auditok import AudioRegion
 from auditok.core import split
 from pydub import AudioSegment
@@ -112,12 +114,13 @@ class AudioSplitter:
     return pre_noise + audio_segment + post_noise
 
   def _segments_to_data(self, segments: list[tuple[AudioSegment, float, float]]) -> list[tuple[bytes, float, float]]:
-    segments_data = []
-
-    for segment in segments:
+    def process_segment(segment: tuple[AudioSegment, float, float]) -> tuple[bytes, float, float]:
       output_buffer = io.BytesIO()
-
       segment[0].export(output_buffer, format='mp3')
-      segments_data.append((output_buffer.getvalue(), segment[1], segment[2]))
+
+      return (output_buffer.getvalue(), segment[1], segment[2])
+
+    with ThreadPoolExecutor() as executor:
+      segments_data = list(executor.map(process_segment, segments))
 
     return segments_data
