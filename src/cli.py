@@ -207,7 +207,7 @@ def process_url(
     yield new_progress_info, []
 
     writer = Writer()
-    if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], element['audio_ext']):
+    if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], config.output):
       new_progress_info['inner_status'] = 'completed'
       yield new_progress_info, []
 
