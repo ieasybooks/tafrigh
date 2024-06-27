@@ -33,11 +33,7 @@ class WitRecognizer:
     file_path: str,
     wit_config: Config.Wit,
   ) -> Generator[dict[str, float], None, list[SegmentType]]:
-    segments = AudioSplitter().split(
-      file_path,
-      max_dur=wit_config.max_cutting_duration,
-      expand_segments_with_noise=True,
-    )
+    segments = AudioSplitter().split(file_path, max_dur=wit_config.max_cutting_duration)
 
     retry_strategy = Retry(
       total=5,

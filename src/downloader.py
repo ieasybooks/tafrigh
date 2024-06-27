@@ -23,12 +23,6 @@ class Downloader:
       'ignoreerrors': True,
       'download_archive': download_archive,
       'playlist_items': self.playlist_items,
-      'postprocessors': [
-        {
-          'key': 'FFmpegExtractAudio',
-          'preferredcodec': 'mp3',
-        },
-      ],
     }
 
   def download(self, url: str, save_response: bool = False) -> dict[str, Any]:

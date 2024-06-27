@@ -22,7 +22,6 @@ try:
   import requests
 
   from .recognizers.wit_recognizer import WitRecognizer
-  from .utils.wit import file_utils as wit_file_utils
 except ModuleNotFoundError:
   pass
 
@@ -150,8 +149,7 @@ def process_local(
     file_path = str(file['file_path'].absolute())
 
     if config.use_wit():
-      mp3_file_path = str(wit_file_utils.convert_to_mp3(file['file_path']).absolute())
-      recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(mp3_file_path, config.wit)
+      recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
     else:
       recognize_generator = WhisperRecognizer(verbose=config.input.verbose).recognize(
           file_path,
@@ -166,9 +164,6 @@ def process_local(
       except StopIteration as exception:
         segments: list[SegmentType] = exception.value
         break
-
-    if config.use_wit() and file['file_path'].suffix != '.mp3':
-      Path(mp3_file_path).unlink(missing_ok=True)
 
     writer.write_all(Path(file['file_name']).stem, segments, config.output)
 
@@ -212,13 +207,13 @@ def process_url(
     yield new_progress_info, []
 
     writer = Writer()
-    if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], config.output):
+    if config.input.skip_if_output_exist and writer.is_output_exist(element['id'], element['audio_ext']):
       new_progress_info['inner_status'] = 'completed'
       yield new_progress_info, []
 
       continue
 
-    file_path = os.path.join(config.output.output_dir, f"{element['id']}.mp3")
+    file_path = os.path.join(config.output.output_dir, f"{element['id']}.{element['audio_ext']}")
 
     if config.use_wit():
       recognize_generator = WitRecognizer(verbose=config.input.verbose).recognize(file_path, config.wit)
