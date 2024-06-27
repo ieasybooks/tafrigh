@@ -9,7 +9,7 @@ from pydub.generators import WhiteNoise
 from pydub.utils import mediainfo
 
 
-MAX_FILE_SIZE = 4 * 1024 * 1024
+MAX_FILE_SIZE = 4 * 1024 * 1024 * 1024
 MAX_FILE_DURATION = 1 * 60 * 60
 
 
