@@ -25,7 +25,7 @@ class AudioSplitter:
     noise_amplitude: int = 0,
   ) -> list[tuple[bytes, float, float]]:
     file_info = mediainfo(file_path)
-    file_size = float(file_info['duration']) * int(file_info['sampling_rate']) * int(file_info['channels']) * 16 / 8
+    file_size = float(file_info['duration']) * int(file_info['sample_rate']) * int(file_info['channels']) * 16 / 8
 
     if file_size > MAX_FILE_SIZE:
       return self._split_large_file(
