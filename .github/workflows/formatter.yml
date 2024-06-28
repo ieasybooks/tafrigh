@@ -18,4 +18,4 @@ jobs:
       - name: isort formatter
         uses: isort/isort-action@v1
         with:
-          configuration: "--src src --line-length 120 --lines-between-types 1 --lines-after-imports 2 --check-only --diff"
+          configuration: "--src tafrigh --line-length 120 --lines-between-types 1 --lines-after-imports 2 --check-only --diff"
