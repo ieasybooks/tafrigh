@@ -53,7 +53,7 @@
   <li>قم بتنفيذ الأمر التالي لتثبيت تفريغ: <code dir="ltr">poetry install</code></li>
 </ul>
 
-أضف <code dir="ltr">-E wit</code> أو <code dir="ltr">-E whisper</code> لتحديد الاعتماديات المراد تثبيتها.
+<p dir="rtl">أضف <code dir="ltr">-E wit</code> أو <code dir="ltr">-E whisper</code> لتحديد الاعتماديات المراد تثبيتها.</p>
 
 <h2 dir="rtl">استخدام تفريغ</h2>
 
@@ -358,7 +358,7 @@ docker run -it --rm -v "$PWD:/tafrigh" ghcr.io/ieasybooks/tafrigh \
   -f txt srt
 ```
 
-يمكنك تمرير أي خيار من خيارات مكتبة تفريغ المُوضّحة في الأعلى.
+<p dir="rtl">يمكنك تمرير أي خيار من خيارات مكتبة تفريغ المُوضّحة في الأعلى.</p>
 
 <p dir="rtl">يوجد أكثر من Docker image يمكنك استخدامها لتفريغ حسب الاعتماديات التي تريد استخدامها:</p>
 <ul dir="rtl">
