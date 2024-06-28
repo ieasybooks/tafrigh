@@ -4,48 +4,11 @@ from .types.transcript_type import TranscriptType
 
 
 class Config:
-  def __init__(
-    self,
-    urls_or_paths: list[str],
-    skip_if_output_exist: bool,
-    playlist_items: str,
-    verbose: bool,
-    model_name_or_path: str,
-    task: str,
-    language: str,
-    use_faster_whisper: bool,
-    beam_size: int,
-    ct2_compute_type: str,
-    wit_client_access_tokens: list[str],
-    max_cutting_duration: int,
-    min_words_per_segment: int,
-    save_files_before_compact: bool,
-    save_yt_dlp_responses: bool,
-    output_sample: int,
-    output_formats: list[str],
-    output_dir: str,
-  ):
-    self.input = self.Input(urls_or_paths, skip_if_output_exist, playlist_items, verbose)
-
-    self.whisper = self.Whisper(
-        model_name_or_path,
-        task,
-        language,
-        use_faster_whisper,
-        beam_size,
-        ct2_compute_type,
-    )
-
-    self.wit = self.Wit(wit_client_access_tokens, max_cutting_duration)
-
-    self.output = self.Output(
-        min_words_per_segment,
-        save_files_before_compact,
-        save_yt_dlp_responses,
-        output_sample,
-        output_formats,
-        output_dir,
-    )
+  def __init__(self, input: 'Config.Input', whisper: 'Config.Whisper', wit: 'Config.Wit', output: 'Config.Output'):
+    self.input = input
+    self.whisper = whisper
+    self.wit = wit
+    self.output = output
 
   def use_wit(self) -> bool:
     return self.wit.wit_client_access_tokens is not None and self.wit.wit_client_access_tokens != []

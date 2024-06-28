@@ -38,27 +38,32 @@ def main():
   args = cli_utils.parse_args(sys.argv[1:])
 
   config = Config(
-    urls_or_paths=args.urls_or_paths,
-    skip_if_output_exist=args.skip_if_output_exist,
-    playlist_items=args.playlist_items,
-    verbose=args.verbose,
-    #
-    model_name_or_path=args.model_name_or_path,
-    task=args.task,
-    language=args.language,
-    use_faster_whisper=args.use_faster_whisper,
-    beam_size=args.beam_size,
-    ct2_compute_type=args.ct2_compute_type,
-    #
-    wit_client_access_tokens=args.wit_client_access_tokens,
-    max_cutting_duration=args.max_cutting_duration,
-    min_words_per_segment=args.min_words_per_segment,
-    #
-    save_files_before_compact=args.save_files_before_compact,
-    save_yt_dlp_responses=args.save_yt_dlp_responses,
-    output_sample=args.output_sample,
-    output_formats=args.output_formats,
-    output_dir=args.output_dir,
+    input=Config.Input(
+      urls_or_paths=args.urls_or_paths,
+      skip_if_output_exist=args.skip_if_output_exist,
+      playlist_items=args.playlist_items,
+      verbose=args.verbose,
+    ),
+    whisper=Config.Whisper(
+      model_name_or_path=args.model_name_or_path,
+      task=args.task,
+      language=args.language,
+      use_faster_whisper=args.use_faster_whisper,
+      beam_size=args.beam_size,
+      ct2_compute_type=args.ct2_compute_type,
+    ),
+    wit=Config.Wit(
+      wit_client_access_tokens=args.wit_client_access_tokens,
+      max_cutting_duration=args.max_cutting_duration,
+    ),
+    output=Config.Output(
+      min_words_per_segment=args.min_words_per_segment,
+      save_files_before_compact=args.save_files_before_compact,
+      save_yt_dlp_responses=args.save_yt_dlp_responses,
+      output_sample=args.output_sample,
+      output_formats=args.output_formats,
+      output_dir=args.output_dir,
+    ),
   )
 
   if config.use_wit() and config.input.skip_if_output_exist:
