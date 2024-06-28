@@ -61,7 +61,7 @@ class Config:
       output_dir: str,
     ):
       if 'all' in output_formats:
-        output_formats = list(TranscriptType)
+        output_formats = [transcript_type.value for transcript_type in TranscriptType]
 
       if TranscriptType.ALL in output_formats:
         output_formats.remove(str(TranscriptType.ALL))
