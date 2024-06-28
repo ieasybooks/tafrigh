@@ -7,9 +7,9 @@ import whisper
 
 from tqdm import tqdm
 
-from src.config import Config
-from src.types.segment_type import SegmentType
-from src.types.whisper.type_hints import WhisperModel
+from tafrigh.config import Config
+from tafrigh.types.segment_type import SegmentType
+from tafrigh.types.whisper.type_hints import WhisperModel
 
 
 class WhisperRecognizer:

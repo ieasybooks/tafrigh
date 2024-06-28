@@ -2,7 +2,7 @@ import argparse
 import importlib.metadata
 import re
 
-from src.types.transcript_type import TranscriptType
+from tafrigh.types.transcript_type import TranscriptType
 
 
 PLAYLIST_ITEMS_RE = re.compile(

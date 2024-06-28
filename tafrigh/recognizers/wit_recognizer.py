@@ -11,10 +11,10 @@ from requests.adapters import HTTPAdapter
 from tqdm import tqdm
 from urllib3.util.retry import Retry
 
-from src.audio_splitter import AudioSplitter
-from src.config import Config
-from src.recognizers.wit_calling_throttle import WitCallingThrottle, WitCallingThrottleManager
-from src.types.segment_type import SegmentType
+from tafrigh.audio_splitter import AudioSplitter
+from tafrigh.config import Config
+from tafrigh.recognizers.wit_calling_throttle import WitCallingThrottle, WitCallingThrottleManager
+from tafrigh.types.segment_type import SegmentType
 
 
 def init_pool(throttle: WitCallingThrottle) -> None:
