@@ -213,7 +213,7 @@ Output:
 
 <h5 dir="rtl">تفريغ مقطع واحد</h5>
 
-```
+```bash
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
   --model_name_or_path small \
   --task transcribe \
@@ -224,7 +224,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
 
 <h5 dir="rtl">تفريغ قائمة تشغيل كاملة</h5>
 
-```
+```bash
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
   --model_name_or_path small \
   --task transcribe \
@@ -235,7 +235,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
 
 <h5 dir="rtl">تفريغ أكثر من مقطع</h5>
 
-```
+```bash
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
   --model_name_or_path small \
   --task transcribe \
@@ -248,7 +248,7 @@ tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
 
 <p dir="rtl">يمكنك استخدام مكتبة <code><a href="https://github.com/guillaumekln/faster-whisper">faster_whisper</a></code> التي توفّر سرعة أكبر في تفريغ المواد من خلال تمرير الاختيار <code dir="ltr">--use_faster_whisper</code> كالتالي:</p>
 
-```
+```bash
 tafrigh "https://youtu.be/3K5Jh_-UYeA" \
   --model_name_or_path large \
   --task transcribe \
@@ -262,7 +262,7 @@ tafrigh "https://youtu.be/3K5Jh_-UYeA" \
 
 <h5 dir="rtl">تفريغ مقطع واحد</h5>
 
-```
+```bash
 tafrigh "https://youtu.be/dDzxYcEJbgo" \
   --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
@@ -273,7 +273,7 @@ tafrigh "https://youtu.be/dDzxYcEJbgo" \
 
 <h5 dir="rtl">تفريغ قائمة تشغيل كاملة</h5>
 
-```
+```bash
 tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
   --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
@@ -284,7 +284,7 @@ tafrigh "https://youtube.com/playlist?list=PLyS-PHSxRDxsLnVsPrIwnsHMO5KgLz7T5" \
 
 <h5 dir="rtl">تفريغ أكثر من مقطع</h5>
 
-```
+```bash
 tafrigh "https://youtu.be/4h5P7jXvW98" "https://youtu.be/jpfndVSROpw" \
   --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
   --output_dir . \
