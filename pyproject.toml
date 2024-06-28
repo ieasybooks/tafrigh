@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tafrigh"
-version = "1.3.0"
+version = "1.4.0"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 authors = ["EasyBooks <easybooksdev@gmail.com>"]
 license = "MIT"
