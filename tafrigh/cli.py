@@ -192,15 +192,12 @@ def process_url(
     save_response=config.output.save_yt_dlp_responses,
   )
 
-  if '_type' in url_data and url_data['_type'] == 'playlist':
-    elements = url_data['entries']
-  else:
-    elements = [url_data]
+  elements = [url_data]
+
+  if url_data.get('_type', '') == 'playlist':
+    elements = list(filter(lambda entry: entry, url_data['entries']))
 
   for idx, element in enumerate(tqdm(elements, desc='URL elements')):
-    if not element:
-      continue
-
     new_progress_info = progress_info.copy()
     new_progress_info.update({
       'inner_total': len(elements),
