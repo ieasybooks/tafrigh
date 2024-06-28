@@ -8,8 +8,7 @@ on:
         required: true
 
   workflow_run:
-    workflows: ["Release Package to PyPI.org"]
-    branches: [main]
+    workflows: [Release Package to PyPI.org]
     types: 
       - completed
 
