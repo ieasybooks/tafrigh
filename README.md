@@ -24,7 +24,7 @@
 <ul dir="rtl">
   <li>تفريغ المواد المرئية والمسموعة إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
   <li>إمكانية تفريغ المواد باستخدام تقنيات wit.ai المقدمة من شركة Facebook</li>
-  <li>تحميل المحتوى المرئي بشكل مباشر من منصة YouTube سواءً كان المستهدف مادة واحدة أو قائمة تشغيل كاملة</li>
+  <li>تنزيل المحتوى المرئي بشكل مباشر من منصة YouTube سواءً كان المستهدف مادة واحدة أو قائمة تشغيل كاملة</li>
   <li>توفير صيَغ مخرجات مختلفة كـ <code>txt</code> و <code>srt</code> و <code>vtt</code> و <code>csv</code> و <code>tsv</code> و <code>json</code></li>
 </ul>
 
@@ -65,7 +65,7 @@
     <ul dir="rtl">
       <li>الروابط أو مسارات الملفات: يجب تمرير الروابط أو مسارات الملفات للمواد المُراد تفريغها بعد اسم أداة تفريغ بشكل مباشر. على سبيل المثال: <code dir="ltr">tafrigh "https://yout..." "https://yout..." "C:\Users\ieasybooks\leactue.wav"</code></li>
       <li>تخطي عملية التفريغ في حال وجود المخرجات مسبقًا: يمكن تمرير الاختيار <code dir="ltr">--skip_if_output_exist</code> لتخطي عملية التفريغ إذا كانت المخرجات المطلوبة موجودة بالفعل في مجلد الإخراج المحدد</li>
-      <li>المواد المُراد تفريفها من قائمة التشغيل: يمكن تحديد نطاق معين من المواد ليتم تفريغه من قائمة التشغيل من خلال الاختيار <code dir="ltr">--playlist_items</code> من خلال تمرير قيمة على صيغة <code dir="ltr">"[START]:[STOP][:STEP]"</code>. على سبيل المثال، عند تمرير <code dir="ltr">2:5</code> سيتم تحميل المواد من <code>2</code> إلى <code>5</code> من قائمة التشغيل. هذا الاختيار يُؤثّر على كل قوائم التشغيل التي يتم تمريرها كمدخلات لتفريغ</li>
+      <li>المواد المُراد تفريفها من قائمة التشغيل: يمكن تحديد نطاق معين من المواد ليتم تفريغه من قائمة التشغيل من خلال الاختيار <code dir="ltr">--playlist_items</code> من خلال تمرير قيمة على صيغة <code dir="ltr">"[START]:[STOP][:STEP]"</code>. على سبيل المثال، عند تمرير <code dir="ltr">2:5</code> سيتم تنزيل المواد من <code>2</code> إلى <code>5</code> من قائمة التشغيل. هذا الاختيار يُؤثّر على كل قوائم التشغيل التي يتم تمريرها كمدخلات لتفريغ</li>
     </ul>
   </li>
 
@@ -87,7 +87,7 @@
           <li><code dir="ltr">large-v2</code></li>
           <li><code dir="ltr">large</code> (الأعلى دقة)</li>
           <li>اسم نموذج Whisper موجود على HuggingFace Hub</li>
-          <li>مسار نموذج Whisper تم تحميلة مسبقًا</li>
+          <li>مسار نموذج Whisper تم تنزيله مسبقًا</li>
           <li>مسار نموذج Whisper تم تحويله باستخدام أداة <a href="https://opennmt.net/CTranslate2/guides/transformers.html"><code>ct2-transformers-converter</code></a> لاستخدام المكتبة السريعة <a href="https://github.com/guillaumekln/faster-whisper"><code>faster-whisper</code></a></li>
         </ul>
       </li>
@@ -149,11 +149,13 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
+usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH]
+               [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
-               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]]
-               [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses]
-               [--output_sample OUTPUT_SAMPLE] [-f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]] [-o OUTPUT_DIR]
+               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
+               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT]
+               [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
+               [-f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
 options:
@@ -163,11 +165,11 @@ options:
 Input:
   urls_or_paths         Video/Playlist URLs or local folder/file(s) to transcribe.
   --skip_if_output_exist, --no-skip_if_output_exist
-                        Whether to skip generating the output if the output file already exists. (default: False)
+                        Whether to skip generating the output if the output file already exists.
   --playlist_items PLAYLIST_ITEMS
                         Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".
   --verbose, --no-verbose
-                        Whether to print out the progress and debug messages. (default: False)
+                        Whether to print out the progress and debug messages.
 
 Whisper:
   -m MODEL_NAME_OR_PATH, --model_name_or_path MODEL_NAME_OR_PATH
@@ -177,7 +179,7 @@ Whisper:
   -l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}, --language {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}
                         Language spoken in the audio, skip to perform language detection.
   --use_faster_whisper, --no-use_faster_whisper
-                        Whether to use Faster Whisper implementation. (default: False)
+                        Whether to use Faster Whisper implementation.
   --beam_size BEAM_SIZE
                         Number of beams in beam search, only applicable when temperature is zero.
   --ct2_compute_type {default,int8,int8_float16,int16,float16}
@@ -191,11 +193,12 @@ Wit:
 
 Output:
   --min_words_per_segment MIN_WORDS_PER_SEGMENT
-                        The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one. Pass 0 to disable this behavior.
+                        The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one.
+                        Pass 0 to disable this behavior.
   --save_files_before_compact, --no-save_files_before_compact
-                        Saves the output files before applying the compact logic that is based on --min_words_per_segment. (default: False)
+                        Saves the output files before applying the compact logic that is based on --min_words_per_segment.
   --save_yt_dlp_responses, --no-save_yt_dlp_responses
-                        Whether to save the yt-dlp library JSON responses or not. (default: False)
+                        Whether to save the yt-dlp library JSON responses or not.
   --output_sample OUTPUT_SAMPLE
                         Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.
   -f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...], --output_formats {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]
@@ -343,6 +346,28 @@ if __name__ == '__main__':
 
   deque(farrigh(config), maxlen=0)
 ```
+
+<h3 dir="rtl">التفريغ باستخدام Docker</h3>
+
+إذا كان لديك Docker على حاسبك، فالطريقة الأسهل لاستخدام تفريغ هي من خلاله. الأمر التالي يقوم بتنزيل Docker image الخاصة بتفريغ وتفريغ مقطع من YouTube باستخدام تقنيات wit.ai وإخراج النتائج في المجلد الحالي:
+
+```bash
+docker run -it --rm -v "$PWD:/tafrigh" ghcr.io/ieasybooks/tafrigh \
+  "https://www.youtube.com/watch?v=qFsUwp5iomU" \
+  --wit_client_access_tokens XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  -f txt srt
+```
+
+يمكنك تمرير أي خيار من خيارات مكتبة تفريغ المُوضّحة في الأعلى.
+
+يوجد أكثر من Docker image يمكنك استخدامها لتفريغ حسب الاعتماديات التي تريد استخدامها:
+<ul dir="rtl">
+  <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh</code>: تحتوي على اعتماديات تقنيات wit.ai ونماذج Whisper معا</li>
+  <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh-whisper</code>: تحتوي على اعتماديات نماذج Whisper فقط</li>
+  <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh-wit</code>: تحتوي على اعتماديات تقنيات wit.ai فقط</li>
+</ul>
+
+من السلبيات أن نماذج Whisper لن تستطيع استخدام معالج الرسوميات الخاص بحاسبك في حال استخدامك لها من خلال Docker، وهذا أمر نعمل على حله في المستقبل.
 
 <hr>
 
