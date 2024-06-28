@@ -349,7 +349,7 @@ if __name__ == '__main__':
 
 <h3 dir="rtl">التفريغ باستخدام Docker</h3>
 
-إذا كان لديك Docker على حاسبك، فالطريقة الأسهل لاستخدام تفريغ هي من خلاله. الأمر التالي يقوم بتنزيل Docker image الخاصة بتفريغ وتفريغ مقطع من YouTube باستخدام تقنيات wit.ai وإخراج النتائج في المجلد الحالي:
+<p dir="rtl">إذا كان لديك Docker على حاسبك، فالطريقة الأسهل لاستخدام تفريغ هي من خلاله. الأمر التالي يقوم بتنزيل Docker image الخاصة بتفريغ وتفريغ مقطع من YouTube باستخدام تقنيات wit.ai وإخراج النتائج في المجلد الحالي:</p>
 
 ```bash
 docker run -it --rm -v "$PWD:/tafrigh" ghcr.io/ieasybooks/tafrigh \
@@ -360,14 +360,14 @@ docker run -it --rm -v "$PWD:/tafrigh" ghcr.io/ieasybooks/tafrigh \
 
 يمكنك تمرير أي خيار من خيارات مكتبة تفريغ المُوضّحة في الأعلى.
 
-يوجد أكثر من Docker image يمكنك استخدامها لتفريغ حسب الاعتماديات التي تريد استخدامها:
+<p dir="rtl">يوجد أكثر من Docker image يمكنك استخدامها لتفريغ حسب الاعتماديات التي تريد استخدامها:</p>
 <ul dir="rtl">
   <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh</code>: تحتوي على اعتماديات تقنيات wit.ai ونماذج Whisper معا</li>
   <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh-whisper</code>: تحتوي على اعتماديات نماذج Whisper فقط</li>
   <li><code dir="ltr">ghcr.io/ieasybooks/tafrigh-wit</code>: تحتوي على اعتماديات تقنيات wit.ai فقط</li>
 </ul>
 
-من السلبيات أن نماذج Whisper لن تستطيع استخدام معالج الرسوميات الخاص بحاسبك في حال استخدامك لها من خلال Docker، وهذا أمر نعمل على حله في المستقبل.
+<p dir="rtl">من السلبيات أن نماذج Whisper لن تستطيع استخدام معالج الرسوميات الخاص بحاسبك في حال استخدامك لها من خلال Docker، وهذا أمر نعمل على حله في المستقبل.</p>
 
 <hr>
 
