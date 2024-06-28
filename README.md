@@ -299,24 +299,32 @@ from tafrigh import farrigh, Config
 
 if __name__ == '__main__':
   config = Config(
-    urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
-    skip_if_output_exist=False,
-    playlist_items='',
-    verbose=False,
-    model_name_or_path='tiny',
-    task='transcribe',
-    language='ar',
-    use_faster_whisper=True,
-    beam_size=5,
-    ct2_compute_type='default',
-    wit_client_access_tokens=[],
-    max_cutting_duration=10,
-    min_words_per_segment=10,
-    save_files_before_compact=False,
-    save_yt_dlp_responses=False,
-    output_sample=0,
-    output_formats=['txt', 'srt'],
-    output_dir='.',
+    input=Config.Input(
+      urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
+      skip_if_output_exist=False,
+      playlist_items='',
+      verbose=False,
+    ),
+    whisper=Config.Whisper(
+      model_name_or_path='tiny',
+      task='transcribe',
+      language='ar',
+      use_faster_whisper=True,
+      beam_size=5,
+      ct2_compute_type='default',
+    ),
+    wit=Config.Wit(
+      wit_client_access_tokens=[],
+      max_cutting_duration=10,
+    ),
+    output=Config.Output(
+      min_words_per_segment=10,
+      save_files_before_compact=False,
+      save_yt_dlp_responses=False,
+      output_sample=0,
+      output_formats=['txt', 'srt'],
+      output_dir='.',
+    ),
   )
 
   for progress in farrigh(config):
