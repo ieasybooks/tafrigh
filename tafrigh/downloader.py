@@ -31,12 +31,12 @@ class Downloader:
       ],
     }
 
-  def download(self, url: str, save_response: bool = False, retries: int = 3) -> dict[str, Any]:
-    while retries > 0:
+  def download(self, url: str, retries: int = 3, save_response: bool = False) -> dict[str, Any]:
+    while True:
       self.youtube_dl_with_archive.download(url)
       url_data = self.youtube_dl_without_archive.extract_info(url, download=False)
 
-      if not self._should_retry(url_data):
+      if retries <= 0 or not self._should_retry(url_data):
         break
 
       self._initialize_youtube_dl_with_archive()

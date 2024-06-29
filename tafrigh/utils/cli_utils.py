@@ -46,6 +46,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
   )
 
   input_group.add_argument(
+    '--download_retries',
+    type=int,
+    default=3,
+    help="Number of retries for yt-dlp downloads that fail.",
+  )
+
+  input_group.add_argument(
     '--verbose',
     action=argparse.BooleanOptionalAction,
     default=False,
