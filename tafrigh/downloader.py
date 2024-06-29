@@ -56,10 +56,10 @@ class Downloader:
   def _should_retry(self, url_data: dict[str, Any]) -> bool:
     if '_type' in url_data and url_data['_type'] == 'playlist':
       for entry in url_data['entries']:
-        if entry and not os.path.exists(os.path.join(self.output_dir, f"{entry['id']}.{entry['ext']}")):
+        if entry and not os.path.exists(os.path.join(self.output_dir, f"{entry['id']}.mp3")):
           return True
     else:
-      if not os.path.exists(os.path.join(self.output_dir, f"{url_data['id']}.{url_data['ext']}")):
+      if not os.path.exists(os.path.join(self.output_dir, f"{url_data['id']}.mp3")):
         return True
 
     return False
