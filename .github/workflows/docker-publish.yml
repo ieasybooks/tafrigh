@@ -7,10 +7,11 @@ on:
         description: 'Tag'
         required: true
 
-  workflow_run:
-    workflows: [Release Package to PyPI.org]
-    types: 
-      - completed
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 
 jobs:
   build-and-push-image:
@@ -30,15 +31,15 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Determine version tag
         id: version-tag
         run: |
-          INPUT_VALUE="${{ github.event.inputs.tagInput }}"
-          if [ -z "$INPUT_VALUE" ]; then
-            INPUT_VALUE="${{ github.ref_name }}"
+          if [ -n "${{ github.event.inputs.tagInput }}" ]; then
+            echo "tag=${{ github.event.inputs.tagInput }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
           fi
-          echo "::set-output name=value::$INPUT_VALUE"
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
@@ -47,7 +48,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/ieasybooks/tafrigh:latest
-            ghcr.io/ieasybooks/tafrigh:${{ steps.version-tag.outputs.value }}
+            ghcr.io/ieasybooks/tafrigh:${{ steps.version-tag.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Build and push Wit image
@@ -60,7 +61,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/ieasybooks/tafrigh-wit:latest
-            ghcr.io/ieasybooks/tafrigh-wit:${{ steps.version-tag.outputs.value }}
+            ghcr.io/ieasybooks/tafrigh-wit:${{ steps.version-tag.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Build and push Whisper image
@@ -73,6 +74,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/ieasybooks/tafrigh-whisper:latest
-            ghcr.io/ieasybooks/tafrigh-whisper:${{ steps.version-tag.outputs.value }}
+            ghcr.io/ieasybooks/tafrigh-whisper:${{ steps.version-tag.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

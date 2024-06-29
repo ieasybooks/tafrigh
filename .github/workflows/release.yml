@@ -17,3 +17,11 @@ jobs:
           python-version: 3.12
       - run: python -m pip install build twine && python -m build
       - uses: pypa/gh-action-pypi-publish@release/v1
+  call-docker-publish-workflow:
+    needs: build-and-publish
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker-publish.yml
+    with:
+      tag: ${{ github.ref_name }}
