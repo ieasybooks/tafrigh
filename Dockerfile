@@ -1,5 +1,5 @@
-# Use the official Python 3.11 Slim image as the base image
-FROM python:3.11-slim
+# Use the official Python 3.12 Slim image as the base image
+FROM python:3.12-slim
 
 # Set the working directory to /tafrigh
 WORKDIR /tafrigh

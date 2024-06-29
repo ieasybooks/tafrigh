@@ -14,7 +14,7 @@
     "ghcr.io/devcontainers/features/git:latest": {},
     "ghcr.io/jungaretti/features/vim:latest": {},
 		"ghcr.io/devcontainers/features/python:1": {
-			"version": "3.11"
+			"version": "3.12"
 		},
     "ghcr.io/devcontainers/features/common-utils:latest": {
       "username": "vscode",
