@@ -54,6 +54,7 @@ class AudioSplitter:
           max_dur=max_dur,
           max_silence=max_silence,
           energy_threshold=energy_threshold,
+          audio_format='mp3',
         )
       ])
 
