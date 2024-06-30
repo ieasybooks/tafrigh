@@ -13,6 +13,13 @@
   <a href="https://tafrigh.ieasybooks.com" target="_blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
 </div>
 
+<div align="center">
+
+  [![ar](https://img.shields.io/badge/lang-ar-brightgreen.svg)](README.md)
+  [![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md)
+
+</div>
+
 <h1 dir="rtl">تفريغ</h1>
 
 <p dir="rtl">تفريغ المواد المرئية أو المسموعة إلى نصوص.</p>
@@ -86,6 +93,7 @@
           <li><code dir="ltr">medium</code></li>
           <li><code dir="ltr">large-v1</code></li>
           <li><code dir="ltr">large-v2</code></li>
+          <li><code dir="ltr">large-v3</code></li>
           <li><code dir="ltr">large</code> (الأعلى دقة)</li>
           <li>اسم نموذج Whisper موجود على HuggingFace Hub</li>
           <li>مسار نموذج Whisper تم تنزيله مسبقًا</li>
@@ -150,12 +158,14 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH]
-               [-t {transcribe,translate}]
+usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS]
+               [--download_retries DOWNLOAD_RETRIES] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
-               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
-               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]] [--min_words_per_segment MIN_WORDS_PER_SEGMENT]
-               [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
+               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE]
+               [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
+               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]]
+               [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact]
+               [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
                [-f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
@@ -169,6 +179,8 @@ Input:
                         Whether to skip generating the output if the output file already exists.
   --playlist_items PLAYLIST_ITEMS
                         Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".
+  --download_retries DOWNLOAD_RETRIES
+                        Number of retries for yt-dlp downloads that fail.
   --verbose, --no-verbose
                         Whether to print out the progress and debug messages.
 
@@ -188,20 +200,22 @@ Whisper:
 
 Wit:
   -w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...], --wit_client_access_tokens WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]
-                        List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.
+                        List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise
+                        whisper will be used.
   --max_cutting_duration [1-17]
                         The maximum allowed cutting duration. It should be between 1 and 17.
 
 Output:
   --min_words_per_segment MIN_WORDS_PER_SEGMENT
-                        The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one.
-                        Pass 0 to disable this behavior.
+                        The minimum number of words should appear in each transcript segment. Any segment have words count less than
+                        this threshold will be merged with the next one. Pass 0 to disable this behavior.
   --save_files_before_compact, --no-save_files_before_compact
                         Saves the output files before applying the compact logic that is based on --min_words_per_segment.
   --save_yt_dlp_responses, --no-save_yt_dlp_responses
                         Whether to save the yt-dlp library JSON responses or not.
   --output_sample OUTPUT_SAMPLE
-                        Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.
+                        Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to
+                        disable this behavior.
   -f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...], --output_formats {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]
                         Format of the output file; if not specified, all available formats will be produced.
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
