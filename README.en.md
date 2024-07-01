@@ -31,6 +31,7 @@
 <ul>
   <li>Transcribing visual and audio materials into text using the latest AI technologies provided by OpenAI</li>
   <li>Ability to transcribe materials using wit.ai technologies provided by Facebook</li>
+  <li>Download materials directly from YouTube, Facebook, Twitter, SoundCloud, and <a href="https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md">other sites</a></li>
   <li>Download visual content directly from YouTube, whether a single video or a complete playlist</li>
   <li>Provide various output formats like <code>txt</code>, <code>srt</code>, <code>vtt</code>, <code>csv</code>, <code>tsv</code>, and <code>json</code></li>
 </ul>

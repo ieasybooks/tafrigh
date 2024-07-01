@@ -31,7 +31,7 @@
 <ul dir="rtl">
   <li>تفريغ المواد المرئية والمسموعة إلى نصوص باستخدام أحدث تقنيات الذكاء الاصطناعي المقدمة من شركة OpenAI</li>
   <li>إمكانية تفريغ المواد باستخدام تقنيات wit.ai المقدمة من شركة Facebook</li>
-  <li>تنزيل المحتوى المرئي بشكل مباشر من منصة YouTube سواءً كان المستهدف مادة واحدة أو قائمة تشغيل كاملة</li>
+  <li>تنزيل المواد بشكل مباشر من YouTube و Facebook و Twitter و SoundCloud و<a href="https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md">غيرها</a></li>
   <li>توفير صيَغ مخرجات مختلفة كـ <code>txt</code> و <code>srt</code> و <code>vtt</code> و <code>csv</code> و <code>tsv</code> و <code>json</code></li>
 </ul>
 
