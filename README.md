@@ -39,7 +39,7 @@
 
 <ul dir="rtl">
   <li>يُفضّل وجود معالج رسوميات قوي في حاسبك في حال استخدام نماذج Whisper</li>
-  <li>تثبيت لغة Python بإصدار 3.11 أو أعلى على حاسبك</li>
+  <li>تثبيت لغة Python بإصدار 3.10 أو أعلى على حاسبك</li>
   <li>تثبيت برمجية <a href="https://ffmpeg.org">FFmpeg</a> على حاسبك</li>
   <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
 </ul>

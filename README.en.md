@@ -40,7 +40,7 @@
 
 <ul>
   <li>A strong GPU in your computer is recommended if using Whisper models</li>
-  <li>Python version 3.11 or higher installed on your computer</li>
+  <li>Python version 3.10 or higher installed on your computer</li>
   <li><a href="https://ffmpeg.org">FFmpeg</a> installed on your computer</li>
   <li><a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> installed on your computer</li>
 </ul>
