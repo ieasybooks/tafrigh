@@ -1,5 +1,7 @@
 import logging
 
+import requests
+
 from .types.transcript_type import TranscriptType
 
 
@@ -11,7 +13,7 @@ class Config:
     self.output = output
 
   def use_wit(self) -> bool:
-    return self.wit.wit_client_access_tokens is not None and self.wit.wit_client_access_tokens != []
+    return self.wit.wit_client_access_tokens != []
 
   class Input:
     def __init__(
@@ -52,11 +54,31 @@ class Config:
   class Wit:
     def __init__(self, wit_client_access_tokens: list[str] | None, max_cutting_duration: int):
       if wit_client_access_tokens is None:
-        self.wit_client_access_tokens = None
+        self.wit_client_access_tokens = []
+        self.language = ''
       else:
         self.wit_client_access_tokens = [key for key in wit_client_access_tokens if key is not None and key != '']
+        self.language = self._get_language()
 
       self.max_cutting_duration = max_cutting_duration
+
+    def _get_language(self) -> str:
+      languages = set()
+
+      for wit_client_access_token in self.wit_client_access_tokens:
+        applications = requests.get(
+          'https://api.wit.ai/apps?limit=10000',
+          headers={
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {wit_client_access_token}',
+          },
+        ).json()
+
+        languages.add(next(filter(lambda app: 'is_app_for_token' in app, applications))['lang'])
+
+      assert len(languages) == 1, 'All Wit.ai client access tokens must be for the same language.'
+
+      return list(languages)[0]
 
   class Output:
     def __init__(

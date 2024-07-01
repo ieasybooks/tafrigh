@@ -48,7 +48,7 @@ class WitRecognizer:
     session.mount('https://', adapter)
 
     pool_processes_count = min(
-      self.processes_per_wit_client_access_token * len(wit_config.wit_client_access_tokens or []),
+      self.processes_per_wit_client_access_token * len(wit_config.wit_client_access_tokens),
       multiprocessing.cpu_count(),
     )
 
@@ -68,7 +68,7 @@ class WitRecognizer:
               file_path,
               wit_config,
               session,
-              index % len(wit_config.wit_client_access_tokens or []),
+              index % len(wit_config.wit_client_access_tokens),
             ),
           )
           for index, segment in enumerate(segments)
@@ -114,13 +114,17 @@ class WitRecognizer:
           headers={
             'Accept': 'application/vnd.wit.20200513+json',
             'Content-Type': 'audio/mpeg3',
-            'Authorization': f'Bearer {cast(list[str], wit_config.wit_client_access_tokens)[wit_client_access_token_index]}',
+            'Authorization': f'Bearer {wit_config.wit_client_access_tokens[wit_client_access_token_index]}',
           },
           data=data,
         )
 
         if response.status_code == 200:
           text = json.loads(response.text)['text']
+
+          if wit_config.language == 'ar':
+            text = text.replace('?', '؟')
+
           break
         else:
           retries -= 1
