@@ -1931,13 +1931,13 @@ files = [
 
 [[package]]
 name = "yt-dlp"
-version = "2024.5.27"
+version = "2024.7.7"
 description = "A feature-rich command-line audio/video downloader"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "yt_dlp-2024.5.27-py3-none-any.whl", hash = "sha256:5dbedb7610ae9440cc44e744f528e078828142bbe09af950cf7e99ce69c866d9"},
-    {file = "yt_dlp-2024.5.27.tar.gz", hash = "sha256:3566c0de240d0cd3d1c2285ce655f72ca38dfc618d634d46818b00d89d5288be"},
+    {file = "yt_dlp-2024.7.7-py3-none-any.whl", hash = "sha256:2e90abeadc0199c787b1b4a3e0a1c8ed9d7c9f824f58da88467a1b30ed745e07"},
+    {file = "yt_dlp-2024.7.7.tar.gz", hash = "sha256:2a0f89423d25d47db949925db5bd2c6f651960ae93dbbf5b3ed61cf3a4078ce5"},
 ]
 
 [package.dependencies]
@@ -1946,18 +1946,18 @@ brotlicffi = {version = "*", markers = "implementation_name != \"cpython\""}
 certifi = "*"
 mutagen = "*"
 pycryptodomex = "*"
-requests = ">=2.31.0,<3"
+requests = ">=2.32.2,<3"
 urllib3 = ">=1.26.17,<3"
 websockets = ">=12.0"
 
 [package.extras]
-build = ["build", "hatchling", "pip", "setuptools (>=66.1.0,<70)", "wheel"]
+build = ["build", "hatchling", "pip", "setuptools", "wheel"]
 curl-cffi = ["curl-cffi (==0.5.10)"]
-dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.4.4,<0.5.0)"]
-py2exe = ["py2exe (>=0.12)", "requests (==2.31.*)"]
-pyinstaller = ["pyinstaller (==5.13.2)", "pyinstaller (>=6.3)"]
+dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.5.0,<0.6.0)"]
+py2exe = ["py2exe (>=0.12)"]
+pyinstaller = ["pyinstaller (>=6.7.0)"]
 secretstorage = ["cffi", "secretstorage"]
-static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.4.4,<0.5.0)"]
+static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.5.0,<0.6.0)"]
 test = ["pytest (>=8.1,<9.0)"]
 
 [extras]
