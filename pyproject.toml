@@ -26,7 +26,7 @@ repository = "https://github.com/ieasybooks/tafrigh"
 [tool.poetry.dependencies]
 python = ">=3.10"
 tqdm = ">=4.66.4"
-yt-dlp = ">=2024.4.9"
+yt-dlp = ">=2024.7.9"
 auditok = ">=0.2.0"
 pydub = ">=0.25.1"
 requests = ">=2.32.0"
