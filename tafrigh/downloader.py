@@ -54,12 +54,16 @@ class Downloader:
     self.youtube_dl_without_archive = yt_dlp.YoutubeDL(self._config(False))
 
   def _should_retry(self, url_data: dict[str, Any]) -> bool:
+    def file_exists(file_name: str) -> bool:
+      extensions = ['mp3', 'wav', 'm4a', 'webm']
+      return any(os.path.exists(os.path.join(self.output_dir, f"{file_name}.{ext}")) for ext in extensions)
+
     if '_type' in url_data and url_data['_type'] == 'playlist':
       for entry in url_data['entries']:
-        if entry and not os.path.exists(os.path.join(self.output_dir, f"{entry['id']}.mp3")):
+        if entry and not file_exists(entry['id']):
           return True
     else:
-      if not os.path.exists(os.path.join(self.output_dir, f"{url_data['id']}.mp3")):
+      if not file_exists(url_data['id']):
         return True
 
     return False
