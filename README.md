@@ -22,9 +22,9 @@
 
 <h1 dir="rtl">تفريغ</h1>
 
-<p dir="rtl">تفريغ المواد المرئية أو المسموعة إلى نصوص.</p>
+<p dir="rtl">أداة لتفريغ المواد المرئية أو المسموعة إلى نصوص. يمكنك الاطلاع على أمثلة تم تفريغها باستخدام تفريغ من <a href="https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing">هنا</a> أو من خلال <a href="https://baheth.ieasybooks.com">منصة باحث</a>، فكل المحتوى المُفرّغ الموجود عليها تم تفريغه باستخدام تفريغ.</p>
 
-<p dir="rtl">يمكنك الاطلاع على أمثلة تم تفريغها باستخدام تفريغ من <a href="https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing">هنا</a>.</p>
+<p dir="rtl"><em>ملاحظة: إذا كنت تريد استخدام تفريغ من خلال لغة JavaScript، فألقي نظرة على <a href="https://github.com/ragaeeb/tafrigh">هذا</a> المستودع.</em></p>
 
 <h2 dir="rtl">مميزات تفريغ</h2>
 

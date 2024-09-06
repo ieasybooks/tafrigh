@@ -22,9 +22,9 @@
 
 <h1>Tafrigh</h1>
 
-<p>Transcribing visual or audio materials into text.</p>
+<p>A tool to transcribe visual or audio materials into text. You can view examples transcribed using Tafrigh from <a href="https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing">here</a> or from <a href="https://baheth.ieasybooks.com">Baheth</a> platform, all the transcribed content on it is transcribed using Tafrigh.</p>
 
-<p>You can view examples transcribed using Tafrigh from <a href="https://drive.google.com/drive/folders/1mwdJ9t4tiu8jFGosvNsq8SL54HoQMB8G?usp=sharing">here</a>.</p>
+<p><em>Note: If you want to use Tafrigh through JavaScript, take a look at <a href="https://github.com/ragaeeb/tafrigh">this</a> repository.</em></p>
 
 <h2>Features of Tafrigh</h2>
 
