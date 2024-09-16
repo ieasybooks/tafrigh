@@ -1481,12 +1481,12 @@ type = ["importlib-metadata (>=7.0.2)", "jaraco.develop (>=7.21)", "mypy (==1.11
 
 [[package]]
 name = "stable-ts"
-version = "2.17.3"
+version = "2.17.4"
 description = "Modifies OpenAI's Whisper to produce more reliable timestamps."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "stable-ts-2.17.3.tar.gz", hash = "sha256:db175437142a04dd43d1fccefb1f4a5767c88d6a7715497e7775933643344f80"},
+    {file = "stable-ts-2.17.4.tar.gz", hash = "sha256:19dd4b247ab9245d8bb6619776b277cdb270306a68e7b7803ad279427960f236"},
 ]
 
 [package.dependencies]
@@ -1495,6 +1495,10 @@ openai-whisper = "20231117"
 torch = "*"
 torchaudio = "*"
 tqdm = "*"
+
+[package.extras]
+fw = ["faster-whisper"]
+hf = ["accelerate", "optimum", "transformers (>=4.23.0)"]
 
 [[package]]
 name = "sympy"
