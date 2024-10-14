@@ -43,7 +43,7 @@ all = ["wit", "whisper"]
 tafrigh = "tafrigh.cli:main"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.8.0"
+pre-commit = ">=3.8,<5.0"
 
 [tool.autopep8]
 max-line-length = 120
