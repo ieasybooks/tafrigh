@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tafrigh"
-version = "1.6.1"
+version = "1.6.2"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 authors = ["EasyBooks <easybooksdev@gmail.com>"]
 license = "MIT"
@@ -26,13 +26,14 @@ repository = "https://github.com/ieasybooks/tafrigh"
 [tool.poetry.dependencies]
 python = ">=3.10"
 tqdm = ">=4.66.5"
-yt-dlp = ">=2024.8.6"
+yt-dlp = ">=2024.10.22"
 auditok = ">=0.2.0"
 pydub = ">=0.25.1"
 requests = ">=2.32.0"
 faster-whisper = ">=1.0.2"
-stable-ts = ">=2.17.2"
-openai-whisper = ">=20231117"
+stable-ts = ">=2.17.5"
+openai-whisper = ">=20240930"
+numba = ">=0.60.0" # This is required to be able to install llvmlite.
 
 [tool.poetry.extras]
 wit = ["auditok", "pydub", "requests"]
@@ -43,7 +44,7 @@ all = ["wit", "whisper"]
 tafrigh = "tafrigh.cli:main"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.8.0"
+pre-commit = "^4.0.1"
 
 [tool.autopep8]
 max-line-length = 120
