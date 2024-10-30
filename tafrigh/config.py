@@ -20,14 +20,10 @@ class Config:
       self,
       urls_or_paths: list[str],
       skip_if_output_exist: bool,
-      playlist_items: str,
-      download_retries: int,
       verbose: bool,
     ):
       self.urls_or_paths = urls_or_paths
       self.skip_if_output_exist = skip_if_output_exist
-      self.playlist_items = playlist_items
-      self.download_retries = download_retries
       self.verbose = verbose
 
   class Whisper:
