@@ -15,13 +15,12 @@ class Downloader:
 
   def _config(self, download_archive: str | bool) -> dict[str, Any]:
     return {
-      'quiet': True,
-      'verbose': False,
-      'format': 'bestaudio',
-      'extract_audio': True,
-      'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
-      'ignoreerrors': True,
       'download_archive': download_archive,
+      'extract_audio': True,
+      'extract_flat': True,
+      'format': 'bestaudio',
+      'ignoreerrors': True,
+      'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
       'playlist_items': self.playlist_items,
       'postprocessors': [
         {
@@ -29,6 +28,8 @@ class Downloader:
           'preferredcodec': 'mp3',
         },
       ],
+      'quiet': True,
+      'verbose': False,
     }
 
   def download(self, url: str, retries: int = 3, save_response: bool = False) -> dict[str, Any]:
