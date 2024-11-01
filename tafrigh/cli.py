@@ -42,7 +42,6 @@ def main():
     input=Config.Input(
       urls_or_paths=args.urls_or_paths,
       skip_if_output_exist=args.skip_if_output_exist,
-      playlist_items=args.playlist_items,
       download_retries=args.download_retries,
       verbose=args.verbose,
     ),
@@ -193,7 +192,7 @@ def process_url(
   config: Config,
   progress_info: dict,
 ) -> Generator[tuple[dict[str, Any], list[SegmentType]], None, None]:
-  url_data = Downloader(playlist_items=config.input.playlist_items, output_dir=config.output.output_dir).download(
+  url_data = Downloader(output_dir=config.output.output_dir).download(
     url,
     retries=config.input.download_retries,
     save_response=config.output.save_yt_dlp_responses,

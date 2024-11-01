@@ -72,7 +72,6 @@
     <ul dir="rtl">
       <li>الروابط أو مسارات الملفات: يجب تمرير الروابط أو مسارات الملفات للمواد المُراد تفريغها بعد اسم أداة تفريغ بشكل مباشر. على سبيل المثال: <code dir="ltr">tafrigh "https://yout..." "https://yout..." "C:\Users\ieasybooks\leactue.wav"</code></li>
       <li>تخطي عملية التفريغ في حال وجود المخرجات مسبقًا: يمكن تمرير الاختيار <code dir="ltr">--skip_if_output_exist</code> لتخطي عملية التفريغ إذا كانت المخرجات المطلوبة موجودة بالفعل في مجلد الإخراج المحدد</li>
-      <li>المواد المُراد تفريفها من قائمة التشغيل: يمكن تحديد نطاق معين من المواد ليتم تفريغه من قائمة التشغيل من خلال الاختيار <code dir="ltr">--playlist_items</code> من خلال تمرير قيمة على صيغة <code dir="ltr">"[START]:[STOP][:STEP]"</code>. على سبيل المثال، عند تمرير <code dir="ltr">2:5</code> سيتم تنزيل المواد من <code>2</code> إلى <code>5</code> من قائمة التشغيل. هذا الاختيار يُؤثّر على كل قوائم التشغيل التي يتم تمريرها كمدخلات لتفريغ</li>
       <li>عدد مرات محاولة إعادة تحميل المواد: قد يفشل تحميل بعض المواد عند تحميل قائمة تشغيل كاملة باستخدام مكتبة <code dir="ltr">yt-dlp</code>، يمكن من خلال الاختيار <code dir="ltr">--download_retries</code> تحديد عدد مرات محاولة إعادة التحميل في حال فشل تحميل إحدى المواد. القيمة الافتراضية هي <code dir="ltr">3</code></li>
     </ul>
   </li>
@@ -158,14 +157,10 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--playlist_items PLAYLIST_ITEMS]
-               [--download_retries DOWNLOAD_RETRIES] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
+usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--download_retries DOWNLOAD_RETRIES] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
-               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE]
-               [--ct2_compute_type {default,int8,int8_float16,int16,float16}]
-               [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]]
-               [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact]
-               [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
+               [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]]
+               [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
                [-f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]] [-o OUTPUT_DIR]
                urls_or_paths [urls_or_paths ...]
 
@@ -177,8 +172,6 @@ Input:
   urls_or_paths         Video/Playlist URLs or local folder/file(s) to transcribe.
   --skip_if_output_exist, --no-skip_if_output_exist
                         Whether to skip generating the output if the output file already exists.
-  --playlist_items PLAYLIST_ITEMS
-                        Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".
   --download_retries DOWNLOAD_RETRIES
                         Number of retries for yt-dlp downloads that fail.
   --verbose, --no-verbose
@@ -200,22 +193,19 @@ Whisper:
 
 Wit:
   -w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...], --wit_client_access_tokens WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]
-                        List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise
-                        whisper will be used.
+                        List of wit.ai client access tokens. If provided, wit.ai APIs will be used to do the transcription, otherwise whisper will be used.
   --max_cutting_duration [1-17]
                         The maximum allowed cutting duration. It should be between 1 and 17.
 
 Output:
   --min_words_per_segment MIN_WORDS_PER_SEGMENT
-                        The minimum number of words should appear in each transcript segment. Any segment have words count less than
-                        this threshold will be merged with the next one. Pass 0 to disable this behavior.
+                        The minimum number of words should appear in each transcript segment. Any segment have words count less than this threshold will be merged with the next one. Pass 0 to disable this behavior.
   --save_files_before_compact, --no-save_files_before_compact
                         Saves the output files before applying the compact logic that is based on --min_words_per_segment.
   --save_yt_dlp_responses, --no-save_yt_dlp_responses
                         Whether to save the yt-dlp library JSON responses or not.
   --output_sample OUTPUT_SAMPLE
-                        Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to
-                        disable this behavior.
+                        Samples random compacted segments from the output and generates a CSV file contains the sampled data. Pass 0 to disable this behavior.
   -f {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...], --output_formats {all,txt,srt,vtt,csv,tsv,json,none} [{all,txt,srt,vtt,csv,tsv,json,none} ...]
                         Format of the output file; if not specified, all available formats will be produced.
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
@@ -320,7 +310,6 @@ if __name__ == '__main__':
     input=Config.Input(
       urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
       skip_if_output_exist=False,
-      playlist_items='',
       download_retries=3,
       verbose=False,
     ),
