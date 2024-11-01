@@ -10,27 +10,9 @@ class Downloader:
   def __init__(self, playlist_items: str, output_dir: str):
     self.playlist_items = playlist_items
     self.output_dir = output_dir
+
     self._initialize_youtube_dl_with_archive()
     self._initialize_youtube_dl_without_archive()
-
-  def _config(self, download_archive: str | bool) -> dict[str, Any]:
-    return {
-      'download_archive': download_archive,
-      'extract_audio': True,
-      'extract_flat': True,
-      'format': 'bestaudio',
-      'ignoreerrors': True,
-      'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
-      'playlist_items': self.playlist_items,
-      'postprocessors': [
-        {
-          'key': 'FFmpegExtractAudio',
-          'preferredcodec': 'mp3',
-        },
-      ],
-      'quiet': True,
-      'verbose': False,
-    }
 
   def download(self, url: str, retries: int = 3, save_response: bool = False) -> dict[str, Any]:
     while True:
@@ -49,10 +31,33 @@ class Downloader:
     return url_data
 
   def _initialize_youtube_dl_with_archive(self) -> None:
-    self.youtube_dl_with_archive = yt_dlp.YoutubeDL(self._config(os.path.join(self.output_dir, 'archive.txt')))
+    self.youtube_dl_with_archive = yt_dlp.YoutubeDL(self._config(
+      download_archive=os.path.join(self.output_dir, 'archive.txt'),
+    ))
 
   def _initialize_youtube_dl_without_archive(self) -> None:
-    self.youtube_dl_without_archive = yt_dlp.YoutubeDL(self._config(False))
+    self.youtube_dl_without_archive = yt_dlp.YoutubeDL(self._config(extract_flat=True))
+
+  def _config(self, **kwargs: Any) -> dict[str, Any]:
+    config = {
+      'extract_audio': True,
+      'format': 'bestaudio',
+      'ignoreerrors': True,
+      'outtmpl': os.path.join(self.output_dir, '%(id)s.%(ext)s'),
+      'playlist_items': self.playlist_items,
+      'postprocessors': [
+        {
+          'key': 'FFmpegExtractAudio',
+          'preferredcodec': 'mp3',
+        },
+      ],
+      'quiet': True,
+      'verbose': False,
+    }
+
+    config.update(kwargs)
+
+    return config
 
   def _should_retry(self, url_data: dict[str, Any]) -> bool:
     def file_exists(file_name: str) -> bool:
