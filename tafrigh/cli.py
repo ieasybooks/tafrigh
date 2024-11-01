@@ -202,7 +202,16 @@ def process_url(
   elements = [url_data]
 
   if url_data.get('_type', '') == 'playlist':
-    elements = list(filter(lambda entry: entry, url_data['entries']))
+    entries = url_data['entries']
+    elements = []
+
+    for entry in entries:
+      if entry.get('_type', '') == 'playlist':
+        elements.extend(entry['entries'])
+      else:
+        elements.append(entry)
+
+    elements = list(filter(lambda element: element, elements))
 
   for idx, element in enumerate(tqdm(elements, desc='URL elements')):
     new_progress_info = progress_info.copy()
