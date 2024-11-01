@@ -214,6 +214,9 @@ def process_url(
     elements = list(filter(lambda element: element, elements))
 
   for idx, element in enumerate(tqdm(elements, desc='URL elements')):
+    if element['title'] == '[Private video]' or element['title'] == '[Deleted video]':
+      continue
+
     new_progress_info = progress_info.copy()
     new_progress_info.update({
       'inner_total': len(elements),
