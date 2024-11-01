@@ -1,7 +1,18 @@
 import argparse
 import importlib.metadata
+import re
 
 from tafrigh.types.transcript_type import TranscriptType
+
+
+PLAYLIST_ITEMS_RE = re.compile(
+  r'''(?x)
+      (?P<start>[+-]?\d+)?
+      (?P<range>[:-]
+          (?P<end>[+-]?\d+|inf(?:inite)?)?
+          (?::(?P<step>[+-]?\d+))?
+      )?'''
+)
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -26,6 +37,19 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     action=argparse.BooleanOptionalAction,
     default=False,
     help='Whether to skip generating the output if the output file already exists.',
+  )
+
+  input_group.add_argument(
+    '--playlist_items',
+    type=parse_playlist_items,
+    help='Comma separated playlist_index of the items to download. You can specify a range using "[START]:[STOP][:STEP]".',
+  )
+
+  input_group.add_argument(
+    '--download_retries',
+    type=int,
+    default=3,
+    help="Number of retries for yt-dlp downloads that fail.",
   )
 
   input_group.add_argument(
@@ -155,6 +179,22 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
   output_group.add_argument('-o', '--output_dir', default='.', help='Directory to save the outputs.')
 
   return parser.parse_args(argv)
+
+
+def parse_playlist_items(arg_value: str) -> str:
+  for segment in arg_value.split(','):
+    if not segment:
+      raise ValueError('There is two or more consecutive commas.')
+
+    mobj = PLAYLIST_ITEMS_RE.fullmatch(segment)
+    if not mobj:
+      raise ValueError(f'{segment!r} is not a valid specification.')
+
+    _, _, step, _ = mobj.group('start', 'end', 'step', 'range')
+    if int_or_none(step) == 0:
+      raise ValueError(f'Step in {segment!r} cannot be zero.')
+
+  return arg_value
 
 
 def int_or_none(v, scale=1, default=None, get_attr=None, invscale=1):

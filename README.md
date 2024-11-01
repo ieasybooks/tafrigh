@@ -72,6 +72,8 @@
     <ul dir="rtl">
       <li>الروابط أو مسارات الملفات: يجب تمرير الروابط أو مسارات الملفات للمواد المُراد تفريغها بعد اسم أداة تفريغ بشكل مباشر. على سبيل المثال: <code dir="ltr">tafrigh "https://yout..." "https://yout..." "C:\Users\ieasybooks\leactue.wav"</code></li>
       <li>تخطي عملية التفريغ في حال وجود المخرجات مسبقًا: يمكن تمرير الاختيار <code dir="ltr">--skip_if_output_exist</code> لتخطي عملية التفريغ إذا كانت المخرجات المطلوبة موجودة بالفعل في مجلد الإخراج المحدد</li>
+      <li>المواد المُراد تفريفها من قائمة التشغيل: يمكن تحديد نطاق معين من المواد ليتم تفريغه من قائمة التشغيل من خلال الاختيار <code dir="ltr">--playlist_items</code> من خلال تمرير قيمة على صيغة <code dir="ltr">"[START]:[STOP][:STEP]"</code>. على سبيل المثال، عند تمرير <code dir="ltr">2:5</code> سيتم تنزيل المواد من <code>2</code> إلى <code>5</code> من قائمة التشغيل. هذا الاختيار يُؤثّر على كل قوائم التشغيل التي يتم تمريرها كمدخلات لتفريغ</li>
+      <li>عدد مرات محاولة إعادة تحميل المواد: قد يفشل تحميل بعض المواد عند تحميل قائمة تشغيل كاملة باستخدام مكتبة <code dir="ltr">yt-dlp</code>، يمكن من خلال الاختيار <code dir="ltr">--download_retries</code> تحديد عدد مرات محاولة إعادة التحميل في حال فشل تحميل إحدى المواد. القيمة الافتراضية هي <code dir="ltr">3</code></li>
     </ul>
   </li>
 
@@ -318,6 +320,8 @@ if __name__ == '__main__':
     input=Config.Input(
       urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
       skip_if_output_exist=False,
+      playlist_items='',
+      download_retries=3,
       verbose=False,
     ),
     whisper=Config.Whisper(

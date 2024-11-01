@@ -73,6 +73,8 @@
     <ul>
       <li>Links or file paths: Pass the links or file paths of the materials to be transcribed directly after the Tafrigh tool name. For example: <code>tafrigh "https://yout..." "https://yout..." "C:\Users\ieasybooks\leactue.wav"</code></li>
       <li>Skip transcription if output exists: Use the <code>--skip_if_output_exist</code> option to skip transcription if the required outputs already exist in the specified output folder</li>
+      <li>Specify items to transcribe from a playlist: You can specify a range of items to be transcribed from a playlist using the <code>--playlist_items</code> option by passing a value in the format <code>"[START]:[STOP][:STEP]"</code>. For example, passing <code>2:5</code> will download items from <code>2</code> to <code>5</code> from the playlist. This option affects all playlists passed as inputs to Tafrigh</li>
+      <li>Number of download retries: If downloading a full playlist using the <code>yt-dlp</code> library, some items may fail to download. The <code>--download_retries</code> option can be used to specify the number of retry attempts if a download fails. The default value is <code>3</code></li>
     </ul>
   </li>
 
@@ -319,6 +321,8 @@ if __name__ == '__main__':
     input=Config.Input(
       urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
       skip_if_output_exist=False,
+      playlist_items='',
+      download_retries=3,
       verbose=False,
     ),
     whisper=Config.Whisper(
