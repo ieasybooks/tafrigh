@@ -21,11 +21,13 @@ class Config:
       urls_or_paths: list[str],
       skip_if_output_exist: bool,
       download_retries: int,
+      yt_dlp_options: str,
       verbose: bool,
     ):
       self.urls_or_paths = urls_or_paths
       self.skip_if_output_exist = skip_if_output_exist
       self.download_retries = download_retries
+      self.yt_dlp_options = yt_dlp_options
       self.verbose = verbose
 
   class Whisper:

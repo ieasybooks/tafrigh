@@ -73,6 +73,7 @@
       <li>الروابط أو مسارات الملفات: يجب تمرير الروابط أو مسارات الملفات للمواد المُراد تفريغها بعد اسم أداة تفريغ بشكل مباشر. على سبيل المثال: <code dir="ltr">tafrigh "https://yout..." "https://yout..." "C:\Users\ieasybooks\leactue.wav"</code></li>
       <li>تخطي عملية التفريغ في حال وجود المخرجات مسبقًا: يمكن تمرير الاختيار <code dir="ltr">--skip_if_output_exist</code> لتخطي عملية التفريغ إذا كانت المخرجات المطلوبة موجودة بالفعل في مجلد الإخراج المحدد</li>
       <li>عدد مرات محاولة إعادة تحميل المواد: قد يفشل تحميل بعض المواد عند تحميل قائمة تشغيل كاملة باستخدام مكتبة <code dir="ltr">yt-dlp</code>، يمكن من خلال الاختيار <code dir="ltr">--download_retries</code> تحديد عدد مرات محاولة إعادة التحميل في حال فشل تحميل إحدى المواد. القيمة الافتراضية هي <code dir="ltr">3</code></li>
+      <li>إضافة الخيارات المخصصة لمكتبة <code dir="ltr">yt-dlp</code>: يمكنك تمرير الاختيار <code dir="ltr">--yt_dlp_options</code> لإضافة الخيارات المخصصة لمكتبة <code dir="ltr">yt-dlp</code> في صيغة JSON. على سبيل المثال، لتحميل القسم الأول من قائمة تشغيل YouTube، يمكنك تمرير <code dir="ltr">--yt_dlp_options '{"playlist_items": "1-10"}'</code></li>
     </ul>
   </li>
 
@@ -157,7 +158,7 @@
 
 ```
 ➜ tafrigh --help
-usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--download_retries DOWNLOAD_RETRIES] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
+usage: tafrigh [-h] [--version] [--skip_if_output_exist | --no-skip_if_output_exist] [--download_retries DOWNLOAD_RETRIES] [--yt_dlp_options YT_DLP_OPTIONS] [--verbose | --no-verbose] [-m MODEL_NAME_OR_PATH] [-t {transcribe,translate}]
                [-l {af,am,ar,as,az,ba,be,bg,bn,bo,br,bs,ca,cs,cy,da,de,el,en,es,et,eu,fa,fi,fo,fr,gl,gu,ha,haw,he,hi,hr,ht,hu,hy,id,is,it,ja,jw,ka,kk,km,kn,ko,la,lb,ln,lo,lt,lv,mg,mi,mk,ml,mn,mr,ms,mt,my,ne,nl,nn,no,oc,pa,pl,ps,pt,ro,ru,sa,sd,si,sk,sl,sn,so,sq,sr,su,sv,sw,ta,te,tg,th,tk,tl,tr,tt,uk,ur,uz,vi,yi,yo,zh}]
                [--use_faster_whisper | --no-use_faster_whisper] [--beam_size BEAM_SIZE] [--ct2_compute_type {default,int8,int8_float16,int16,float16}] [-w WIT_CLIENT_ACCESS_TOKENS [WIT_CLIENT_ACCESS_TOKENS ...]] [--max_cutting_duration [1-17]]
                [--min_words_per_segment MIN_WORDS_PER_SEGMENT] [--save_files_before_compact | --no-save_files_before_compact] [--save_yt_dlp_responses | --no-save_yt_dlp_responses] [--output_sample OUTPUT_SAMPLE]
@@ -174,6 +175,8 @@ Input:
                         Whether to skip generating the output if the output file already exists.
   --download_retries DOWNLOAD_RETRIES
                         Number of retries for yt-dlp downloads that fail.
+  --yt_dlp_options YT_DLP_OPTIONS
+                        Additional options to pass to yt-dlp in valid JSON format (e.g. `'{"playlist_items": "1-10"}'`).
   --verbose, --no-verbose
                         Whether to print out the progress and debug messages.
 

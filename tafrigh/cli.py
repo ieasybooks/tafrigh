@@ -43,6 +43,7 @@ def main():
       urls_or_paths=args.urls_or_paths,
       skip_if_output_exist=args.skip_if_output_exist,
       download_retries=args.download_retries,
+      yt_dlp_options=args.yt_dlp_options,
       verbose=args.verbose,
     ),
     whisper=Config.Whisper(
@@ -192,7 +193,7 @@ def process_url(
   config: Config,
   progress_info: dict,
 ) -> Generator[tuple[dict[str, Any], list[SegmentType]], None, None]:
-  url_data = Downloader(output_dir=config.output.output_dir).download(
+  url_data = Downloader(yt_dlp_options=config.input.yt_dlp_options, output_dir=config.output.output_dir).download(
     url,
     retries=config.input.download_retries,
     save_response=config.output.save_yt_dlp_responses,

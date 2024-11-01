@@ -7,7 +7,8 @@ import yt_dlp
 
 
 class Downloader:
-  def __init__(self, output_dir: str):
+  def __init__(self, yt_dlp_options: str, output_dir: str):
+    self.yt_dlp_options = yt_dlp_options
     self.output_dir = output_dir
 
     self._initialize_youtube_dl_with_archive()
@@ -54,6 +55,7 @@ class Downloader:
     }
 
     config.update(kwargs)
+    config.update(json.loads(self.yt_dlp_options))
 
     return config
 

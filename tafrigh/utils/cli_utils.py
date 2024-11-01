@@ -37,6 +37,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
   )
 
   input_group.add_argument(
+    '--yt_dlp_options',
+    type=str,
+    default='{}',
+    help="Additional options to pass to yt-dlp in valid JSON format (e.g. `'{\"playlist_items\": \"1-10\"}'`).",
+  )
+
+  input_group.add_argument(
     '--verbose',
     action=argparse.BooleanOptionalAction,
     default=False,
