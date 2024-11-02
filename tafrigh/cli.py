@@ -214,7 +214,7 @@ def process_url(
     elements = list(filter(lambda element: element, elements))
 
   for idx, element in enumerate(tqdm(elements, desc='URL elements')):
-    if element['title'] == '[Private video]' or element['title'] == '[Deleted video]':
+    if should_skip(element):
       continue
 
     new_progress_info = progress_info.copy()
@@ -285,3 +285,9 @@ def write_output_sample(segments: list[SegmentType], output: Config.Output) -> N
         'url': segment['url'],
         'file_path': segment['file_path'],
       })
+
+
+def should_skip(element: dict[str, Any]) -> bool:
+  return (element['title'] == '[Private video]' or
+          element['title'] == '[Deleted video]' or
+          element['availability'] == 'subscriber_only')
