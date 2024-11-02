@@ -315,6 +315,7 @@ if __name__ == '__main__':
       urls_or_paths=['https://youtu.be/qFsUwp5iomU'],
       skip_if_output_exist=False,
       download_retries=3,
+      yt_dlp_options='{}',
       verbose=False,
     ),
     whisper=Config.Whisper(
