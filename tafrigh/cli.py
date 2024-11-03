@@ -290,4 +290,4 @@ def write_output_sample(segments: list[SegmentType], output: Config.Output) -> N
 def should_skip(element: dict[str, Any]) -> bool:
   return (element['title'] == '[Private video]' or
           element['title'] == '[Deleted video]' or
-          element['availability'] == 'subscriber_only')
+          ('availability' in element and element['availability'] == 'subscriber_only'))
