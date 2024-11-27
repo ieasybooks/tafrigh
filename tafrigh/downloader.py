@@ -61,7 +61,8 @@ class Downloader:
 
   def _should_retry(self, url_data: dict[str, Any]) -> bool:
     def file_exists(file_name: str) -> bool:
-      extensions = ['mp3', 'wav', 'm4a', 'webm']
+      extensions = ['mp3', 'wav', 'm4a', 'webm', 'opus']
+
       return any(os.path.exists(os.path.join(self.output_dir, f"{file_name}.{ext}")) for ext in extensions)
 
     if '_type' in url_data and url_data['_type'] == 'playlist':

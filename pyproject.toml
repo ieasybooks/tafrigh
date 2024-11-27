@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tafrigh"
-version = "1.7.2"
+version = "1.7.3"
 description = "تفريغ النصوص وإنشاء ملفات SRT و VTT باستخدام نماذج Whisper وتقنية wit.ai."
 authors = ["EasyBooks <easybooksdev@gmail.com>"]
 license = "MIT"
@@ -25,12 +25,12 @@ repository = "https://github.com/ieasybooks/tafrigh"
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-tqdm = ">=4.66.5"
-yt-dlp = ">=2024.10.22"
-auditok = ">=0.2.0"
+tqdm = ">=4.67.1"
+yt-dlp = ">=2024.11.18"
+auditok = ">=0.3.0"
 pydub = ">=0.25.1"
 requests = ">=2.32.0"
-faster-whisper = ">=1.0.2"
+faster-whisper = ">=1.1.0"
 stable-ts = ">=2.17.5"
 openai-whisper = ">=20240930"
 numba = ">=0.60.0" # This is required to be able to install llvmlite.
