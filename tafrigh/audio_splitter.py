@@ -105,7 +105,7 @@ class AudioSplitter:
 
   def _expand_segment_with_noise(self, segment: AudioRegion, noise_seconds: int, noise_amplitude: int) -> AudioSegment:
     audio_segment = AudioSegment(
-      segment._data,
+      segment.data,
       frame_rate=segment.sampling_rate,
       sample_width=segment.sample_width,
       channels=segment.channels,
