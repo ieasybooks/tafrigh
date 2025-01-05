@@ -6,8 +6,13 @@ WORKDIR /tafrigh
 
 # Install system dependencies
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    gcc \
+    build-essential \
+    portaudio19-dev \
+    libasound2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Use build arguments to specify dependencies
 ARG DEPS="wit,whisper"
