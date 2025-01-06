@@ -11,8 +11,8 @@ RUN apt-get update && \
     gcc \
     build-essential \
     portaudio19-dev \
-    libasound2-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libasound2-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Use build arguments to specify dependencies
 ARG DEPS="wit,whisper"
