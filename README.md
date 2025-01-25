@@ -104,7 +104,7 @@
         المهمة: يمكنك تحديد المهمة من خلال الاختيار <code dir="ltr">--task</code>. المهمات المتوفرة:
         <ul dir="rtl">
           <li><code dir="ltr">transcribe</code>: تحويل الصوت إلى نص <strong>(الاختيار الإفتراضي)</strong></li>
-          <li><code dir="ltr">translation</code>: ترجمة الصوت إلى نص باللغة الانجليزية</li>
+          <li><code dir="ltr">translate</code>: ترجمة الصوت إلى نص باللغة الانجليزية</li>
         </ul>
       </li>
       <li>اللغة: يمكنك تحديد لغة الصوت من خلال الاختيار <code dir="ltr">--language</code>. على سبيل المثال، لتحديد اللغة العربية قم بتمرير <code dir="ltr">ar</code>. إذا لم يتم تحديد اللغة، سيتم التعرف عليها تلقائيا</li>

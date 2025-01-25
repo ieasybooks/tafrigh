@@ -105,7 +105,7 @@
         Task: You can specify the task using the <code>--task</code> option. Available tasks:
         <ul>
           <li><code>transcribe</code>: Convert speech to text <strong>(default)</strong></li>
-          <li><code>translation</code>: Translate speech to text in English</li>
+          <li><code>translate</code>: Translate speech to text in English</li>
         </ul>
       </li>
       <li>Language: You can specify the audio language using the <code>--language</code> option. For example, to specify Arabic, pass <code>ar</code>. If not specified, the language will be detected automatically</li>
