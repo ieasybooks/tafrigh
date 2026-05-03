@@ -46,8 +46,8 @@ class AudioSplitter:
       return self._segments_to_data([
         (
           self._expand_segment_with_noise(segment, noise_seconds, noise_amplitude),
-          segment.meta.start,
-          segment.meta.end,
+          segment.start or 0,
+          (segment.start or 0) + segment.seconds.len,
         ) for segment in split(
           file_path,
           min_dur=min_dur,
