@@ -27,7 +27,7 @@ repository = "https://github.com/ieasybooks/tafrigh"
 python = ">=3.10"
 tqdm = ">=4.67.1"
 yt-dlp = {version = ">=2025.3.31", extras = ["default"]}
-auditok = ">=0.3.0"
+auditok = ">=0.4.1"
 pydub = ">=0.25.1"
 requests = ">=2.32.0"
 faster-whisper = ">=1.1.0"
