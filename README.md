@@ -44,6 +44,16 @@
   <li>تثبيت برمجية <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> على حاسبك</li>
 </ul>
 
+<h2 dir="rtl">متطلبات استخدام معالج الرسوميات</h2>
+<p dir="rtl">يمكنك استخدام معالج الرسوميات Nvidia لتسريع عملية التفريغ من خلال ثتبيت الملفات الواردة <a href= "https://github.com/Purfview/whisper-standalone-win/releases/tag/libs">هنا</a>
+  <ul dir="rtl">
+    <li dir="rtl">اذا ما كان المعالج قبل سلسلة الGTX 1000 فعليك بتحميل <code>CUDA11_v2</code></li>
+    <li dir="rtl">أما بالنسبة لسلسلة GTX 1000 وما فوقها فينصح بآخر نسخة <code>CUDA12_v3</code></li>
+  </ul>
+<p dir="rtl">ثم قم باستخراج الملفات من الzip وضعها في ملف <code>C:\Windows\System32</code></p>
+<p dir="rtl">للمزيد من المعلومات انظر في <a href="https://github.com/SYSTRAN/faster-whisper?tab=readme-ov-file#gpu">هذه الفقرة</a>من ملف اقرأني ل<code>faster-whisper</code></p>
+
+
 <h2 dir="rtl">تثبيت تفريغ</h2>
 
 <h3 dir="rtl">من خلال <code>pip</code></h3>
