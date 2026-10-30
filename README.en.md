@@ -1,3 +1,7 @@
+> **Archived:** This repository is no longer maintained. The new maintained version is [tafrigh-rs](https://github.com/ieasybooks/tafrigh-rs).
+>
+> The documentation below describes this archived implementation.
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/7662492/229289746-89c5a4c7-afa6-4d46-a0e6-63dfdeb98285.jpg" style="width: 100%;"/>
 </p>
