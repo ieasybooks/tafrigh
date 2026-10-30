@@ -1,3 +1,7 @@
+> **مؤرشف:** لم يعد هذا المستودع قيد الصيانة. الإصدار الجديد الذي تتم صيانته هو [tafrigh-rs](https://github.com/ieasybooks/tafrigh-rs).
+>
+> التوثيق أدناه يخص هذا الإصدار المؤرشف.
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/7662492/229289746-89c5a4c7-afa6-4d46-a0e6-63dfdeb98285.jpg" style="width: 100%;"/>
 </p>
